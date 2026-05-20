@@ -163,7 +163,7 @@ Behaviour:
 
 ### Task 6: Re-qualification policy
 
-- [ ] Create `src/lib/pipeline/qualification/policy.ts`:
+- [x] Create `src/lib/pipeline/qualification/policy.ts`:
 
 ```typescript
 export type RequalifyDecision =
@@ -176,8 +176,8 @@ export async function shouldQualify(
 ): Promise<RequalifyDecision>;
 ```
 
-- [ ] Logic: skip if `force=false` AND `lastQualifiedAt` is within `filters.requalifyAfterDays`; skip if `discoveryStatus != 'enriched' && != 'qualified'`; skip if there are no rows in `videos` for the channel
-- [ ] Mark completed
+- [x] Logic: skip if `force=false` AND `lastQualifiedAt` is within `filters.requalifyAfterDays`; skip if `discoveryStatus != 'enriched' && != 'qualified'`; skip if there are no rows in `videos` for the channel
+- [x] Mark completed
 
 ### Task 7: Per-channel orchestrator
 
