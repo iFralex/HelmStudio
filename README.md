@@ -8,8 +8,8 @@ A single-operator system that discovers Italian YouTube channels, qualifies each
 git clone <repo-url>
 cd creator-pipeline
 pnpm install
-cp .env.example .env
-# Fill in required variables in .env (see table below)
+pnpm bootstrap      # copies .env.example → .env, creates data/ dirs, seeds DB
+# Edit .env with real values before starting (see table below)
 pnpm dev
 ```
 
@@ -17,19 +17,30 @@ Open http://localhost:3000 — you will be redirected to `/login`. Enter your `A
 
 ## Environment variables
 
-| Variable                        | Required | Default              | Description                                               |
-| ------------------------------- | -------- | -------------------- | --------------------------------------------------------- |
-| `ADMIN_PASSWORD`                | Yes      | —                    | Single shared password for the operator UI                |
-| `SESSION_SECRET`                | Yes      | —                    | At least 32 random characters; signs HMAC session cookies |
-| `DATABASE_PATH`                 | No       | `./data/pipeline.db` | Path to the SQLite database file                          |
-| `FILTER_MIN_SUBSCRIBERS`        | No       | `1000`               | Minimum subscriber count for discovery filtering          |
-| `FILTER_MAX_SUBSCRIBERS`        | No       | `500000`             | Maximum subscriber count for discovery filtering          |
-| `FILTER_COUNTRY`                | No       | _(any)_              | ISO country code filter (e.g. `IT`)                       |
-| `FILTER_LANGUAGE`               | No       | _(any)_              | Language code filter (e.g. `it`)                          |
-| `FILTER_REQUALIFY_AFTER_DAYS`   | No       | `90`                 | Days before a channel is eligible for re-qualification    |
-| `FILTER_INACTIVE_DAYS`          | No       | `180`                | Channels inactive longer than this are skipped            |
-| `PIPELINE_KEYWORDS_PER_RUN`     | No       | `3`                  | Number of seed keywords searched per pipeline run         |
-| `PIPELINE_TARGET_QUALIFIED_PER_RUN` | No   | `10`                 | Target number of qualified channels per run               |
+| Variable                               | Required | Default              | Description                                                           |
+| -------------------------------------- | -------- | -------------------- | --------------------------------------------------------------------- |
+| `ADMIN_PASSWORD`                       | Yes      | —                    | Min 8 characters; single shared password for the operator UI          |
+| `SESSION_SECRET`                       | Yes      | —                    | Min 32 random characters; signs HMAC session cookies                  |
+| `YOUTUBE_API_KEY`                      | Yes      | —                    | Google Cloud API key with YouTube Data API v3 enabled (min 20 chars)  |
+| `LLM_BASE_URL`                         | Yes      | —                    | Base URL of the LLM API (e.g. `https://api.anthropic.com`)            |
+| `LLM_MODEL_THINK`                      | Yes      | —                    | Model identifier for slow/high-quality reasoning step                 |
+| `LLM_MODEL_FAST`                       | Yes      | —                    | Model identifier for fast/cheap operations                            |
+| `DATABASE_PATH`                        | No       | `./data/pipeline.db` | Path to the SQLite database file                                      |
+| `LLM_API_KEY`                          | No       | `not-needed`         | API key for the LLM provider                                          |
+| `DATA_DIR`                             | No       | `./data`             | Root directory for all persisted data (db, logs, raw API dumps)       |
+| `LOG_LEVEL`                            | No       | `info`               | Log verbosity: `debug`, `info`, `warn`, `error`                       |
+| `PIPELINE_TRIGGER_HOUR`                | No       | `4`                  | Hour (0–23) for the daily cron trigger                                |
+| `PIPELINE_TRIGGER_MINUTE`              | No       | `0`                  | Minute (0–59) for the daily cron trigger                              |
+| `PIPELINE_MIN_SUBSCRIBERS`             | No       | `80000`              | Minimum subscriber count for channel qualification                    |
+| `PIPELINE_MAX_SUBSCRIBERS`             | No       | `1000000`            | Maximum subscriber count for channel qualification                    |
+| `PIPELINE_TARGET_COUNTRY`              | No       | `IT`                 | ISO 3166-1 alpha-2 country code for targeting                         |
+| `PIPELINE_TARGET_LANGUAGE`             | No       | `it`                 | ISO 639-1 language code for targeting                                 |
+| `PIPELINE_KEYWORDS_PER_RUN`            | No       | `30`                 | Number of keywords to process per pipeline run                        |
+| `PIPELINE_TARGET_QUALIFIED_PER_RUN`    | No       | `50`                 | Target number of newly qualified channels per run                     |
+| `PIPELINE_INACTIVE_DAYS`               | No       | `60`                 | Days of inactivity before a channel is skipped                        |
+| `PIPELINE_REQUALIFY_AFTER_DAYS`        | No       | `90`                 | Days after qualification before a channel can be re-qualified         |
+| `PIPELINE_YOUTUBE_QUOTA_DAILY_LIMIT`   | No       | `10000`              | YouTube Data API v3 daily quota limit                                 |
+| `PIPELINE_YOUTUBE_QUOTA_SAFETY_BUFFER` | No       | `500`                | Quota units to keep in reserve before the pipeline stops              |
 
 Generate a secure secret:
 
@@ -41,6 +52,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 | Command             | Description                                            |
 | ------------------- | ------------------------------------------------------ |
+| `pnpm bootstrap`    | First-run setup: copy .env, create data/ dirs, seed DB |
 | `pnpm dev`          | Start Next.js dev server on port 3000                  |
 | `pnpm build`        | Production build                                       |
 | `pnpm start`        | Start production server                                |
@@ -63,18 +75,22 @@ The database file lives at `data/pipeline.db` by default (override with the `DAT
 
 ### Initialization
 
-Run once before starting the app for the first time:
+For first-time setup, use `pnpm bootstrap` (called from the Quickstart above). It:
+- Copies `.env.example` → `.env` if no `.env` exists
+- Creates `data/`, `data/logs/`, and `data/raw/` directories
+- Runs `pnpm db:init` to apply migrations and seed defaults
+
+To re-run only the database step (safe to repeat, idempotent):
 
 ```bash
 pnpm db:init
 ```
 
 This command:
-- Creates the `data/` directory if it does not exist
 - Applies all pending Drizzle migrations
 - Upserts default rows in the `settings` table (filter thresholds, pipeline config)
 
-Re-running `pnpm db:init` is safe and idempotent — it only applies migrations that have not been applied yet and skips settings rows that already exist, so existing customizations are preserved.
+Re-running `pnpm db:init` skips settings rows that already exist, so existing customizations are preserved.
 
 ### Schema evolution
 

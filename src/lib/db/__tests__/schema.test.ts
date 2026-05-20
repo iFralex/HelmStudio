@@ -27,7 +27,14 @@ function makeDb(): Db {
   return db;
 }
 
-describe('database schema', () => {
+let sqlite3Available = true;
+try {
+  new Database(':memory:').close();
+} catch {
+  sqlite3Available = false;
+}
+
+describe.runIf(sqlite3Available)('database schema', () => {
   let db: Db;
 
   beforeEach(() => {
