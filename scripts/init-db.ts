@@ -19,17 +19,17 @@ const db = drizzle(sqlite, { schema });
 migrate(db, { migrationsFolder: './drizzle' });
 
 const defaultFilters = {
-  minSubscribers: Number(process.env.FILTER_MIN_SUBSCRIBERS ?? 1000),
-  maxSubscribers: Number(process.env.FILTER_MAX_SUBSCRIBERS ?? 500000),
-  country: process.env.FILTER_COUNTRY ?? null,
-  language: process.env.FILTER_LANGUAGE ?? null,
-  requalifyAfterDays: Number(process.env.FILTER_REQUALIFY_AFTER_DAYS ?? 90),
-  inactiveDays: Number(process.env.FILTER_INACTIVE_DAYS ?? 180),
+  minSubscribers: Number(process.env.PIPELINE_MIN_SUBSCRIBERS ?? 80000),
+  maxSubscribers: Number(process.env.PIPELINE_MAX_SUBSCRIBERS ?? 1000000),
+  country: process.env.PIPELINE_TARGET_COUNTRY ?? 'IT',
+  language: process.env.PIPELINE_TARGET_LANGUAGE ?? 'it',
+  requalifyAfterDays: Number(process.env.PIPELINE_REQUALIFY_AFTER_DAYS ?? 90),
+  inactiveDays: Number(process.env.PIPELINE_INACTIVE_DAYS ?? 60),
 };
 
 const defaultPipelineConfig = {
-  keywordsPerRun: Number(process.env.PIPELINE_KEYWORDS_PER_RUN ?? 3),
-  targetQualifiedPerRun: Number(process.env.PIPELINE_TARGET_QUALIFIED_PER_RUN ?? 10),
+  keywordsPerRun: Number(process.env.PIPELINE_KEYWORDS_PER_RUN ?? 30),
+  targetQualifiedPerRun: Number(process.env.PIPELINE_TARGET_QUALIFIED_PER_RUN ?? 50),
 };
 
 const now = new Date();
