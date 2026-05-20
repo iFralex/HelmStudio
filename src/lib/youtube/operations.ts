@@ -265,6 +265,7 @@ export async function getVideos(
     lastRawPath = rawPath;
 
     for (const item of res.data.items ?? []) {
+      if (!item.id || !item.snippet?.publishedAt) continue;
       allVideos.push(mapVideo(item));
     }
   }
