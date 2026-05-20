@@ -70,8 +70,8 @@ export function userTemplate(args: SelectInput): string { ... }
 
 ### Task 4: Concurrency limiter
 
-- [ ] Create `src/lib/llm/limiter.ts` with `pLimit(3)` for concurrent LLM calls
-- [ ] Mark completed
+- [x] Create `src/lib/llm/limiter.ts` with `pLimit(3)` for concurrent LLM calls
+- [x] Mark completed
 
 ### Task 5: Generic `callLLM` wrapper
 
