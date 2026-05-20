@@ -72,6 +72,9 @@ async function fetchTranscriptInner(
     try {
       const rawSegments = await YoutubeTranscript.fetchTranscript(videoId, { lang });
       const segments = normalizeSegments(rawSegments);
+      if (segments.length === 0) {
+        return { ok: false, videoId, reason: 'no_captions', message: 'empty transcript returned' };
+      }
       const text = segments.map((s) => s.text).join(' ');
       return {
         ok: true,
@@ -97,6 +100,9 @@ async function fetchTranscriptInner(
   try {
     const rawSegments = await YoutubeTranscript.fetchTranscript(videoId);
     const segments = normalizeSegments(rawSegments);
+    if (segments.length === 0) {
+      return { ok: false, videoId, reason: 'no_captions', message: 'empty transcript returned' };
+    }
     const text = segments.map((s) => s.text).join(' ');
     return {
       ok: true,

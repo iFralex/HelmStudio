@@ -1,4 +1,4 @@
-import { eq, desc } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import path from 'path';
 import fs from 'fs/promises';
 import { transcripts } from '../db/schema';
@@ -41,8 +41,6 @@ export async function getOrFetchTranscript(
     .select()
     .from(transcripts)
     .where(eq(transcripts.videoId, videoId))
-    .orderBy(desc(transcripts.fetchedAt))
-    .limit(1)
     .get();
 
   if (existing) {
@@ -120,6 +118,11 @@ export async function getOrFetchTranscript(
         fetchSucceeded: false,
         fetchError,
         fetchedAt: now,
+        language: null,
+        text: null,
+        segments: null,
+        characterCount: null,
+        rawPath: null,
       };
 
       if (existing) {
