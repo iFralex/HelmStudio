@@ -31,7 +31,10 @@ if (env.NODE_ENV === 'production') {
   // Flush async pino buffers before exit; 'exit' fires synchronously so it cannot drain async I/O
   ['SIGTERM', 'SIGINT'].forEach((sig) => {
     process.once(sig, () => {
-      logger.flush(() => process.exit(0));
+      logger.flush((err) => {
+        if (err) process.stderr.write(`logger flush error: ${err.message}\n`);
+        process.exit(0);
+      });
     });
   });
 }

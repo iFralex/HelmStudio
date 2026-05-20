@@ -33,7 +33,7 @@ for (const dir of dirs) {
 
 console.log('\nRunning db:init...');
 try {
-  execSync('node_modules/.bin/tsx scripts/init-db.ts', { stdio: 'inherit', cwd: ROOT });
+  execSync('npm run db:init', { stdio: 'inherit', cwd: ROOT });
 } catch {
   console.error('❌ db:init failed');
   process.exit(1);
