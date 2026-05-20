@@ -101,6 +101,7 @@ export async function fetchVideosForSurvivingChannels(
       continue;
     }
 
+    let channelNewVideos = 0;
     for (const video of videoDetailList) {
       const insertResult = db
         .insert(videos)
@@ -125,10 +126,13 @@ export async function fetchVideosForSurvivingChannels(
         .onConflictDoNothing()
         .run();
 
+      channelNewVideos += insertResult.changes;
       videosFetched += insertResult.changes;
     }
 
-    channelsWithVideos += 1;
+    if (channelNewVideos > 0) {
+      channelsWithVideos += 1;
+    }
 
     log.info({ channelId: channel.id, videoCount: videoDetailList.length }, 'videos fetched for channel');
   }

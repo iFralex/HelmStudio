@@ -75,6 +75,7 @@ export async function runKeywordSweep(
               discoverySource: `keyword:${kw.keyword}`,
             })),
           )
+          .onConflictDoNothing()
           .run();
       }
     }

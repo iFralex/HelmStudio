@@ -65,6 +65,7 @@ export async function runCategoryExploration(
               discoverySource: `category:${categoryId}`,
             })),
           )
+          .onConflictDoNothing()
           .run();
       }
     }
