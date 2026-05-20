@@ -164,13 +164,13 @@ export const withYoutubeLimit = <T>(fn: () => Promise<T>) => ytLimit(fn);
 
 ### Task 7: Smoke script
 
-- [ ] Create `scripts/youtube-smoke.ts`:
+- [x] Create `scripts/youtube-smoke.ts`:
   - assert `YOUTUBE_API_KEY` present
   - call `searchChannels({ query: 'rassegna stampa' })` → log first 3 channel IDs
   - call `getChannels({ ids: [first 3] })` → log titles and subscriber counts
   - print quota used so far today
-- [ ] This script writes to `data/raw/...` so a successful run also exercises the storage layer
-- [ ] Mark completed
+- [x] This script writes to `data/raw/...` so a successful run also exercises the storage layer
+- [x] Mark completed
 
 ### Task 8: Unit tests with VCR-style fixtures
 
