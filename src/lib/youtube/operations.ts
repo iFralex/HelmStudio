@@ -5,6 +5,7 @@ import { dumpRaw } from '../storage/raw';
 import { paths, tsForFilename, slugify } from '../storage/paths';
 import { env } from '../env';
 import { withYoutubeLimit } from './limiter';
+import { withRetry } from './retry';
 import type { ChannelDetail, VideoDetail } from './types';
 
 type Db = Parameters<typeof assertHeadroom>[2];
@@ -85,16 +86,18 @@ export async function searchChannels(
   await assertHeadroom('search.list', params.runId, db);
 
   const yt = getYoutube();
-  const res = await withYoutubeLimit(() =>
-    yt.search.list({
-      part: ['id'],
-      type: ['channel'],
-      q: params.query,
-      maxResults: params.maxResults ?? 50,
-      regionCode: params.regionCode ?? env.PIPELINE_TARGET_COUNTRY,
-      relevanceLanguage: params.relevanceLanguage ?? env.PIPELINE_TARGET_LANGUAGE,
-      ...(params.pageToken ? { pageToken: params.pageToken } : {}),
-    }),
+  const res = await withRetry(() =>
+    withYoutubeLimit(() =>
+      yt.search.list({
+        part: ['id'],
+        type: ['channel'],
+        q: params.query,
+        maxResults: params.maxResults ?? 50,
+        regionCode: params.regionCode ?? env.PIPELINE_TARGET_COUNTRY,
+        relevanceLanguage: params.relevanceLanguage ?? env.PIPELINE_TARGET_LANGUAGE,
+        ...(params.pageToken ? { pageToken: params.pageToken } : {}),
+      }),
+    ),
   );
 
   await recordQuotaUse('search.list', params.runId, db);
@@ -130,12 +133,14 @@ export async function getChannels(
     await assertHeadroom('channels.list', params.runId, db);
 
     const yt = getYoutube();
-    const res = await withYoutubeLimit(() =>
-      yt.channels.list({
-        part: ['id', 'snippet', 'statistics', 'contentDetails'],
-        id: batch,
-        maxResults: 50,
-      }),
+    const res = await withRetry(() =>
+      withYoutubeLimit(() =>
+        yt.channels.list({
+          part: ['id', 'snippet', 'statistics', 'contentDetails'],
+          id: batch,
+          maxResults: 50,
+        }),
+      ),
     );
 
     await recordQuotaUse('channels.list', params.runId, db);
@@ -166,14 +171,16 @@ export async function getMostPopularByCategory(
   await assertHeadroom('videos.list', params.runId, db);
 
   const yt = getYoutube();
-  const res = await withYoutubeLimit(() =>
-    yt.videos.list({
-      part: ['snippet'],
-      chart: 'mostPopular',
-      videoCategoryId: params.categoryId,
-      regionCode: params.regionCode ?? env.PIPELINE_TARGET_COUNTRY,
-      maxResults: params.maxResults ?? 50,
-    }),
+  const res = await withRetry(() =>
+    withYoutubeLimit(() =>
+      yt.videos.list({
+        part: ['snippet'],
+        chart: 'mostPopular',
+        videoCategoryId: params.categoryId,
+        regionCode: params.regionCode ?? env.PIPELINE_TARGET_COUNTRY,
+        maxResults: params.maxResults ?? 50,
+      }),
+    ),
   );
 
   await recordQuotaUse('videos.list', params.runId, db);
@@ -205,12 +212,14 @@ export async function getUploadsPlaylistItems(
   await assertHeadroom('playlistItems.list', params.runId, db);
 
   const yt = getYoutube();
-  const res = await withYoutubeLimit(() =>
-    yt.playlistItems.list({
-      part: ['contentDetails'],
-      playlistId: params.playlistId,
-      maxResults: params.maxResults ?? 20,
-    }),
+  const res = await withRetry(() =>
+    withYoutubeLimit(() =>
+      yt.playlistItems.list({
+        part: ['contentDetails'],
+        playlistId: params.playlistId,
+        maxResults: params.maxResults ?? 20,
+      }),
+    ),
   );
 
   await recordQuotaUse('playlistItems.list', params.runId, db);
@@ -246,12 +255,14 @@ export async function getVideos(
     await assertHeadroom('videos.list', params.runId, db);
 
     const yt = getYoutube();
-    const res = await withYoutubeLimit(() =>
-      yt.videos.list({
-        part: ['id', 'snippet', 'statistics', 'contentDetails'],
-        id: batch,
-        maxResults: 50,
-      }),
+    const res = await withRetry(() =>
+      withYoutubeLimit(() =>
+        yt.videos.list({
+          part: ['id', 'snippet', 'statistics', 'contentDetails'],
+          id: batch,
+          maxResults: 50,
+        }),
+      ),
     );
 
     await recordQuotaUse('videos.list', params.runId, db);

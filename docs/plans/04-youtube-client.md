@@ -155,12 +155,12 @@ export const withYoutubeLimit = <T>(fn: () => Promise<T>) => ytLimit(fn);
 
 ### Task 6: Retry policy
 
-- [ ] Create `src/lib/youtube/retry.ts` with `withRetry(fn, { attempts: 4, baseMs: 500 })`:
+- [x] Create `src/lib/youtube/retry.ts` with `withRetry(fn, { attempts: 4, baseMs: 500 })`:
   - retries on `ECONNRESET`, `ETIMEDOUT`, HTTP 5xx, HTTP 429
   - does NOT retry on 400/401/403/404 (those are programmer errors or genuine misses)
   - jittered exponential backoff: `min(baseMs * 2^attempt + random(0..250), 10s)`
-- [ ] Apply `withRetry` inside the operation wrappers, AROUND the SDK call (so a successful retry still records quota only once)
-- [ ] Mark completed
+- [x] Apply `withRetry` inside the operation wrappers, AROUND the SDK call (so a successful retry still records quota only once)
+- [x] Mark completed
 
 ### Task 7: Smoke script
 
