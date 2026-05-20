@@ -156,17 +156,17 @@ export async function getOrFetchManyTranscripts(args: {
 
 ### Task 7: Tests
 
-- [ ] Create `src/lib/transcripts/__tests__/fetcher.test.ts`:
+- [x] Create `src/lib/transcripts/__tests__/fetcher.test.ts`:
   - mock `YoutubeTranscript.fetchTranscript` via a Vitest spy
   - test "returns ok when first language succeeds"
   - test "falls back from 'it' to 'en' and succeeds"
   - test "returns no_captions when all attempts fail with no-captions errors"
   - test "classifies rate_limit / forbidden / unavailable correctly from thrown error messages"
-- [ ] Create `src/lib/transcripts/__tests__/store.test.ts`:
+- [x] Create `src/lib/transcripts/__tests__/store.test.ts`:
   - test "first call writes DB row + raw file; second call reuses cached"
   - test "stores a failure row and short-circuits subsequent calls within 24h"
   - test "deleteTranscriptsForChannel clears DB and raw directory"
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 8: Definition of Done
 
