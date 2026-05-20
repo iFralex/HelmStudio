@@ -236,9 +236,9 @@ Behaviour:
 
 ### Task 9: Force re-qualify hook
 
-- [ ] Expose `forceRequalifyChannel(channelId: string): Promise<QualificationResult>` from `src/lib/pipeline/qualification/index.ts` for the UI (plan 12) to call from a server action
-- [ ] Internally calls `qualifyChannel({ channelId, runId: null as any, force: true })` — a synthetic `pipelineRuns` row is created with `triggeredBy='manual'` and finalised when the call returns
-- [ ] Mark completed
+- [x] Expose `forceRequalifyChannel(channelId: string): Promise<QualificationResult>` from `src/lib/pipeline/qualification/index.ts` for the UI (plan 12) to call from a server action
+- [x] Internally calls `qualifyChannel({ channelId, runId: null as any, force: true })` — a synthetic `pipelineRuns` row is created with `triggeredBy='manual'` and finalised when the call returns
+- [x] Mark completed
 
 ### Task 10: Integration test with mocked LLM and transcripts
 
