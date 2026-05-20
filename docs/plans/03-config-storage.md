@@ -221,10 +221,10 @@ export async function updatePipelineConfig(
 
 ### Task 7: Tests
 
-- [ ] `src/lib/env/__tests__/env.test.ts` — Vitest with `process.env` stub: missing required var → process exits with non-zero
-- [ ] `src/lib/storage/__tests__/raw.test.ts` — round-trip dump/load, atomic write, deleteRawForChannel removes the right tree
-- [ ] `src/lib/services/__tests__/settings.test.ts` — partial updates merge correctly, defaults are persisted on first read
-- [ ] Mark completed
+- [x] `src/lib/env/__tests__/env.test.ts` — Vitest with `process.env` stub: missing required var → process exits with non-zero
+- [x] `src/lib/storage/__tests__/raw.test.ts` — round-trip dump/load, atomic write, deleteRawForChannel removes the right tree
+- [x] `src/lib/services/__tests__/settings.test.ts` — partial updates merge correctly, defaults are persisted on first read
+- [x] Mark completed
 
 ### Task 8: Bootstrap script
 
