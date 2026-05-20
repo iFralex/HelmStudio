@@ -29,7 +29,7 @@ Discovery combines **strategy A** (~30 keyword searches/day, 100 units each) and
 
 ### Task 2: Category list
 
-- [ ] Create `src/lib/seeds/categories.ts`:
+- [x] Create `src/lib/seeds/categories.ts`:
 
 ```typescript
 export const IN_SCOPE_CATEGORY_IDS = [
@@ -48,8 +48,8 @@ export const IN_SCOPE_CATEGORY_IDS = [
 export type CategoryId = (typeof IN_SCOPE_CATEGORY_IDS)[number];
 ```
 
-- [ ] Source: spec Appendix C. Excluded: Music (10), Pets & Animals (15), Film & Animation (1), Nonprofits (29)
-- [ ] Mark completed
+- [x] Source: spec Appendix C. Excluded: Music (10), Pets & Animals (15), Film & Animation (1), Nonprofits (29)
+- [x] Mark completed
 
 ### Task 3: Keyword sweep
 
