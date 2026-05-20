@@ -187,7 +187,7 @@ export function parseIso8601Duration(iso: string): number;
 
 ### Task 9: Aggregate stats computation
 
-- [ ] Create `src/lib/pipeline/aggregates.ts`:
+- [x] Create `src/lib/pipeline/aggregates.ts`:
 
 ```typescript
 export type ChannelAggregates = {
@@ -202,11 +202,11 @@ export type ChannelAggregates = {
 export async function computeChannelAggregates(channelId: string): Promise<ChannelAggregates>;
 ```
 
-- [ ] Reads the 20 most recent rows from `videos` for that channel
-- [ ] Returns zeros when fewer than 3 videos exist (edge case)
-- [ ] Will be consumed by plan 08's prompt building
-- [ ] Unit tests with synthetic video fixtures
-- [ ] Mark completed
+- [x] Reads the 20 most recent rows from `videos` for that channel
+- [x] Returns zeros when fewer than 3 videos exist (edge case)
+- [x] Will be consumed by plan 08's prompt building
+- [x] Unit tests with synthetic video fixtures
+- [x] Mark completed
 
 ### Task 10: Orchestrator
 
