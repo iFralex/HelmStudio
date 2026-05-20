@@ -25,9 +25,14 @@ describe('env module', () => {
   });
 
   it('logs field-level errors for missing required vars', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errors: unknown[] = [];
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation((...args) => {
+      errors.push(...args);
+    });
     await import('../../env');
-    expect(consoleErrorSpy).toHaveBeenCalled();
+    const output = errors.map((a) => JSON.stringify(a)).join(' ');
+    expect(output).toContain('ADMIN_PASSWORD');
+    expect(output).toContain('SESSION_SECRET');
     consoleErrorSpy.mockRestore();
   });
 

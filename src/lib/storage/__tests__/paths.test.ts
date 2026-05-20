@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('../../env', () => ({
   env: {
@@ -107,6 +107,12 @@ describe('slugify', () => {
 
   it('handles empty string', () => {
     expect(slugify('')).toBe('');
+  });
+
+  it('does not produce a trailing dash when truncation cuts into a separator', () => {
+    // 49 alphanum chars + special chars that become a dash → slice at 50 would leave trailing dash
+    const result = slugify('a'.repeat(49) + '!!!rest');
+    expect(result).not.toMatch(/-$/);
   });
 });
 

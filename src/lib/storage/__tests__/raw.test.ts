@@ -109,4 +109,19 @@ describe('deleteRawForChannel', () => {
 
     await expect(loadRaw(deleteRel)).rejects.toMatchObject({ code: 'ENOENT' });
   });
+
+  it('does not delete raw/youtube/search data (keyed by date, not channelId)', async () => {
+    const channelId = 'UCtest123';
+    const searchRel = path.join('raw', 'youtube', 'search', '2024-01-01', 'keyword-ts.json');
+
+    await dumpRaw(searchRel, { search: true });
+    await deleteRawForChannel(channelId);
+
+    const loaded = await loadRaw(searchRel);
+    expect(loaded).toEqual({ search: true });
+  });
+
+  it('throws for channelId containing path traversal characters', async () => {
+    await expect(deleteRawForChannel('../etc')).rejects.toThrow('Invalid channelId');
+  });
 });

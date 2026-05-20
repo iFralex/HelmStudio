@@ -46,11 +46,19 @@ const EnvSchema = z.object({
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
 });
 
+const EnvSchemaRefined = EnvSchema.refine(
+  (d) => d.PIPELINE_MIN_SUBSCRIBERS < d.PIPELINE_MAX_SUBSCRIBERS,
+  {
+    message: 'PIPELINE_MIN_SUBSCRIBERS must be less than PIPELINE_MAX_SUBSCRIBERS',
+    path: ['PIPELINE_MIN_SUBSCRIBERS'],
+  },
+);
+
 export type Env = z.infer<typeof EnvSchema>;
 
 export { EnvSchema };
 
-const parsed = EnvSchema.safeParse(process.env);
+const parsed = EnvSchemaRefined.safeParse(process.env);
 if (!parsed.success) {
   console.error('❌ Invalid environment configuration:');
   console.error(parsed.error.flatten().fieldErrors);

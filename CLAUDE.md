@@ -13,6 +13,7 @@ pnpm format        # prettier --write .
 pnpm format:check  # prettier --check .
 pnpm test          # vitest run (unit tests under src/)
 pnpm test:e2e      # playwright test (E2E tests under e2e/)
+pnpm bootstrap     # first-run setup: copy .env, create data/ dirs, run db:init
 pnpm db:init       # create data/ dir, run migrations, seed default settings (first run only)
 pnpm db:generate   # generate new migration from schema changes
 pnpm db:migrate    # apply pending migrations
@@ -55,6 +56,38 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - Schema evolution: edit schema → `pnpm db:generate` → review generated SQL → `pnpm db:migrate`.
 - `pnpm db:init` seeds `filters` and `pipeline_config` settings using `onConflictDoNothing` — safe to re-run without overwriting user-customized values.
 - TypeScript scripts in `scripts/` are run with `tsx` (listed in devDependencies).
+
+## Environment validation
+
+- All env vars are declared and validated in `src/lib/env.ts` using a Zod schema (`EnvSchema`). The module calls `process.exit(1)` at import time if validation fails, printing field-level errors.
+- `dotenv` is loaded only when `NODE_ENV !== 'production'`; in production env vars are injected by the host OS.
+- To add a new env var: add it to `EnvSchema`, add it to `.env.example` with a comment, and add it to `DISPLAY_KEYS` in `scripts/bootstrap.ts`.
+- `EnvSchema` is exported separately so tests can validate the schema without triggering the module-level exit.
+
+## Raw storage
+
+- All external API responses are dumped verbatim to `DATA_DIR/raw/` via `dumpRaw()` in `src/lib/storage/raw.ts`.
+- Path helpers live in `src/lib/storage/paths.ts`. Paths returned are **relative** to `DATA_DIR`; use `absolutePath(rel)` only at I/O boundaries. Store only relative paths in the database.
+- All writes are atomic: written to `<path>.tmp` then renamed to the final path.
+- `deleteRawForChannel(channelId)` removes all per-channel raw data (transcripts, youtube/channels, youtube/videos, llm/*). It does NOT delete `raw/youtube/search/` (keyed by date/keyword, not channelId). This is the GDPR deletion hook.
+- `channelId` passed to storage functions must be alphanumeric/dash/underscore only — validated at the storage layer.
+
+## Logging
+
+- Logger is exported from `src/lib/logger.ts` as `logger` (pino instance) and `childLogger(bindings)`.
+- In development: pretty-printed to stdout via `pino-pretty`.
+- In production: written to both stdout and `DATA_DIR/logs/worker-<YYYY-MM-DD>.log` (date stamped at process startup, not rotated mid-run).
+- In test: plain pino, no pretty-print, no file output.
+- `LOG_LEVEL` env var controls verbosity (default `info`).
+
+## Settings service
+
+- Settings are accessed via `src/lib/services/settings.ts` — never via raw DB queries in application code.
+- Functions: `getFilters()`, `getPipelineConfig()`, `updateFilters(patch)`, `updatePipelineConfig(patch)`.
+- All functions accept an optional `db` parameter for test injection (use an in-memory DB).
+- The service keeps an in-process cache with a 30-second TTL; writes update the cache immediately.
+- On first read, if the DB row is absent, env defaults are persisted to the DB automatically.
+- Tests must call `_resetSettingsCache()` in `beforeEach` to avoid state leakage between test cases.
 
 ## Testing
 

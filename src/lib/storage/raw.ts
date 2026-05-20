@@ -20,6 +20,9 @@ export async function loadRaw<T = unknown>(relativePath: string): Promise<T> {
 }
 
 export async function deleteRawForChannel(channelId: string): Promise<void> {
+  if (!/^[A-Za-z0-9_-]+$/.test(channelId)) {
+    throw new Error(`Invalid channelId: ${channelId}`);
+  }
   const dirsToDelete = [
     path.join('raw', 'transcripts', channelId),
     path.join('raw', 'youtube', 'channels', channelId),

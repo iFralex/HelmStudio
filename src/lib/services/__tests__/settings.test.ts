@@ -2,9 +2,16 @@ import path from 'path';
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import * as schema from '../../db/schema';
 import { setSetting } from '../../db/queries';
+
+let sqlite3Available = true;
+try {
+  new Database(':memory:').close();
+} catch {
+  sqlite3Available = false;
+}
 
 vi.mock('../../env', () => ({
   env: {
@@ -42,12 +49,16 @@ import {
   _resetSettingsCache,
 } from '../settings';
 
-describe('settings service', () => {
+describe.runIf(sqlite3Available)('settings service', () => {
   let db: Db;
 
   beforeEach(() => {
     db = makeDb();
     _resetSettingsCache();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   describe('getFilters', () => {
@@ -107,6 +118,28 @@ describe('settings service', () => {
       // Cache is still valid — should return original value
       const cached = await getFilters(db);
       expect(cached.country).toBe('IT');
+    });
+
+    it('re-queries DB after TTL expires', async () => {
+      vi.useFakeTimers();
+      await getFilters(db);
+      // Write new value directly to DB bypassing cache
+      await setSetting(
+        'filters',
+        {
+          minSubscribers: 99999,
+          maxSubscribers: 500000,
+          country: 'US',
+          language: 'en',
+          requalifyAfterDays: 30,
+          inactiveDays: 20,
+        },
+        db,
+      );
+      // Advance past the 30s TTL
+      vi.advanceTimersByTime(31_000);
+      const fresh = await getFilters(db);
+      expect(fresh.country).toBe('US');
     });
   });
 
