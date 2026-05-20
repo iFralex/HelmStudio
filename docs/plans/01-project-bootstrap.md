@@ -30,11 +30,11 @@ The system is single-operator (spec §2 Non-Goals), so authentication is a singl
 
 ### Task 2: Scaffold Next.js 15 + React 19
 
-- [ ] Run `pnpm dlx create-next-app@latest .` with: TypeScript, ESLint, Tailwind, App Router, `src/` directory, import alias `@/*`
-- [ ] Replace the generated `app/` with the route group structure: `src/app/(app)/`, `src/app/login/`, `src/app/api/`
-- [ ] Tighten `tsconfig.json`: `"strict": true`, `"noUncheckedIndexedAccess": true`, `"noImplicitOverride": true`
-- [ ] Confirm `pnpm dev` boots the default landing page
-- [ ] Mark completed
+- [x] Run `pnpm dlx create-next-app@latest .` with: TypeScript, ESLint, Tailwind, App Router, `src/` directory, import alias `@/*`
+- [x] Replace the generated `app/` with the route group structure: `src/app/(app)/`, `src/app/login/`, `src/app/api/`
+- [x] Tighten `tsconfig.json`: `"strict": true`, `"noUncheckedIndexedAccess": true`, `"noImplicitOverride": true`
+- [x] Confirm `pnpm dev` boots the default landing page
+- [x] Mark completed
 
 ### Task 3: Tailwind v4 + shadcn/ui setup
 
