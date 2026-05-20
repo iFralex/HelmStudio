@@ -174,7 +174,7 @@ Behaviour:
 
 ### Task 8: ISO 8601 duration parser
 
-- [ ] Create `src/lib/youtube/duration.ts`:
+- [x] Create `src/lib/youtube/duration.ts`:
 
 ```typescript
 export function parseIso8601Duration(iso: string): number;
@@ -182,8 +182,8 @@ export function parseIso8601Duration(iso: string): number;
 // Throws on unparseable input.
 ```
 
-- [ ] Unit tests covering: seconds only, minutes only, hours+minutes+seconds, hours only, edge `PT0S`
-- [ ] Mark completed
+- [x] Unit tests covering: seconds only, minutes only, hours+minutes+seconds, hours only, edge `PT0S`
+- [x] Mark completed
 
 ### Task 9: Aggregate stats computation
 
