@@ -53,7 +53,7 @@ export type CategoryId = (typeof IN_SCOPE_CATEGORY_IDS)[number];
 
 ### Task 3: Keyword sweep
 
-- [ ] Create `src/lib/pipeline/discovery/keyword-sweep.ts`:
+- [x] Create `src/lib/pipeline/discovery/keyword-sweep.ts`:
 
 ```typescript
 export async function runKeywordSweep(args: {
@@ -76,7 +76,7 @@ Behaviour:
 - Log a `pipelineEvents` entry per keyword: `event='discovery_keyword_complete'`, `details={ keyword, newCount, alreadyKnownCount }`
 - Update `pipelineRuns.searchesPerformed` and `pipelineRuns.candidatesFound`
 - On `QuotaExhausted` (plan 04) mid-sweep: stop gracefully, log, return current totals
-- Mark completed
+- [x] Mark completed
 
 ### Task 4: Category exploration
 
