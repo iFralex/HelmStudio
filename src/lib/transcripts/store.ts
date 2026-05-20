@@ -38,7 +38,7 @@ type RawEnvelope = {
 };
 
 export async function getOrFetchTranscript(
-  args: { videoId: string; channelId: string },
+  args: { videoId: string; channelId: string; preferredLanguages?: string[] },
   db: Db = getDb(),
 ): Promise<TranscriptFetchResult> {
   const { videoId, channelId } = args;
@@ -84,7 +84,7 @@ export async function getOrFetchTranscript(
     }
   }
 
-  const result = await fetchTranscript(videoId);
+  const result = await fetchTranscript(videoId, { preferredLanguages: args.preferredLanguages });
   const now = new Date();
 
   if (result.ok) {

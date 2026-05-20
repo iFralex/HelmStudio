@@ -132,7 +132,7 @@ export async function withTranscriptLimit<T>(fn: () => Promise<T>): Promise<T> {
 
 ### Task 5: Batch helper
 
-- [ ] Create `src/lib/transcripts/batch.ts`:
+- [x] Create `src/lib/transcripts/batch.ts`:
 
 ```typescript
 export async function getOrFetchManyTranscripts(args: {
@@ -144,8 +144,8 @@ export async function getOrFetchManyTranscripts(args: {
 // Used directly by plan 08's step-2 orchestration.
 ```
 
-- [ ] Logs at `info` level a one-line summary per video (videoId, ok/reason, character count, language)
-- [ ] Mark completed
+- [x] Logs at `info` level a one-line summary per video (videoId, ok/reason, character count, language)
+- [x] Mark completed
 
 ### Task 6: Smoke script
 
