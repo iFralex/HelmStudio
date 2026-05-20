@@ -228,12 +228,12 @@ export async function updatePipelineConfig(
 
 ### Task 8: Bootstrap script
 
-- [ ] Create `scripts/bootstrap.ts` invoked by `pnpm bootstrap`:
+- [x] Create `scripts/bootstrap.ts` invoked by `pnpm bootstrap`:
   - confirms `.env` exists (else creates from `.env.example` with a warning)
   - creates `data/`, `data/logs/`, `data/raw/` if missing
   - runs `pnpm db:init` programmatically
   - logs the resolved env (with secrets masked) for sanity check
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 9: Definition of Done
 
