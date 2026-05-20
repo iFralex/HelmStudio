@@ -135,14 +135,14 @@ export async function setSetting(key: string, value: unknown): Promise<void>;
 
 ### Task 8: Unit tests
 
-- [ ] Create `src/lib/db/__tests__/schema.test.ts`:
+- [x] Create `src/lib/db/__tests__/schema.test.ts`:
   - test "inserts and reads a channel"
   - test "cascade-deletes videos, qualifications, drafts when a channel is deleted"
   - test "rejects duplicate channel id (PK constraint)"
   - test "stores and retrieves JSON-mode columns round-trip"
   - test "settings upsert" (insert then update on conflict)
-- [ ] Use an in-memory SQLite (`new Database(':memory:')`) for tests; apply migrations programmatically before each test suite
-- [ ] Mark completed
+- [x] Use an in-memory SQLite (`new Database(':memory:')`) for tests; apply migrations programmatically before each test suite
+- [x] Mark completed
 
 ### Task 9: Documentation
 
