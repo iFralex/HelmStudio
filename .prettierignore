@@ -1,0 +1,9 @@
+data/
+.next/
+node_modules/
+.pnpm-store/
+.pnpm-bin/
+.playwright-browsers/
+dist/
+drizzle/
+*.log

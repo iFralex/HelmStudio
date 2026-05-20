@@ -33,7 +33,7 @@ Discovery combines **strategy A** (~30 keyword searches/day, 100 units each) and
 
 ```typescript
 export const IN_SCOPE_CATEGORY_IDS = [
-  '2',  // Autos & Vehicles
+  '2', // Autos & Vehicles
   '17', // Sports
   '19', // Travel & Events
   '20', // Gaming
@@ -67,6 +67,7 @@ export async function runKeywordSweep(args: {
 ```
 
 Behaviour:
+
 - Select N keywords from `seed_keywords` where `isActive=true`, ordered by `lastUsedAt ASC NULLS FIRST` (oldest first; nulls = never used = highest priority)
 - For each keyword:
   - Call `searchChannels({ query, runId })` from plan 04
@@ -82,9 +83,7 @@ Behaviour:
 - [ ] Create `src/lib/pipeline/discovery/category-exploration.ts`:
 
 ```typescript
-export async function runCategoryExploration(args: {
-  runId: number;
-}): Promise<{
+export async function runCategoryExploration(args: { runId: number }): Promise<{
   categoriesProcessed: number;
   candidatesInserted: number;
   candidatesAlreadyKnown: number;
@@ -92,6 +91,7 @@ export async function runCategoryExploration(args: {
 ```
 
 Behaviour:
+
 - For each `IN_SCOPE_CATEGORY_IDS`:
   - Call `getMostPopularByCategory({ categoryId, runId })` (plan 04) — extracts unique channel IDs from the most-popular videos
   - Insert new channels with `discoverySource='category:<id>'`
@@ -110,6 +110,7 @@ export async function enrichCandidateChannels(args: {
 ```
 
 Behaviour:
+
 - Query channels WHERE `discoveryStatus='candidate'` AND `lastFetchedAt IS NULL`
 - Pass the IDs to `getChannels({ ids, runId })` (plan 04) — wrapper batches internally
 - For each returned channel detail:
@@ -161,6 +162,7 @@ export async function fetchVideosForSurvivingChannels(args: {
 ```
 
 Behaviour:
+
 - Select up to `limit` channels WHERE `discoveryStatus='enriched'` AND `latestQualificationId IS NULL` AND `uploadsPlaylistId IS NOT NULL`, ORDER BY `discoveredAt DESC` (newest first — we prefer fresh candidates over old leftovers)
 - For each channel:
   - `getUploadsPlaylistItems({ playlistId, maxResults: 20, runId })` (plan 04)
@@ -221,6 +223,7 @@ export async function runDiscovery(runId: number): Promise<{
 ```
 
 Sequence:
+
 1. `runKeywordSweep`
 2. `runCategoryExploration`
 3. `enrichCandidateChannels`

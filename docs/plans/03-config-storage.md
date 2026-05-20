@@ -130,7 +130,11 @@ export function tsForFilename(d = new Date()): string {
 }
 
 export function slugify(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50);
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 50);
 }
 ```
 
@@ -204,7 +208,9 @@ export async function getFilters(): Promise<FiltersSetting>;
 export async function updateFilters(patch: Partial<FiltersSetting>): Promise<FiltersSetting>;
 
 export async function getPipelineConfig(): Promise<PipelineConfigSetting>;
-export async function updatePipelineConfig(patch: Partial<PipelineConfigSetting>): Promise<PipelineConfigSetting>;
+export async function updatePipelineConfig(
+  patch: Partial<PipelineConfigSetting>,
+): Promise<PipelineConfigSetting>;
 ```
 
 - [ ] Backed by the `settings` table (plan 02); reads cache for 30 seconds in-process to reduce DB hits in hot paths

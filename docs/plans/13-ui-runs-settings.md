@@ -140,10 +140,13 @@ export async function listRuns(opts?: { limit?: number; before?: number }): Prom
 
 export async function getRunById(id: number): Promise<PipelineRun | null>;
 
-export async function listEventsForRun(runId: number, opts?: {
-  channelId?: string;
-  stage?: string;
-}): Promise<Array<PipelineEvent & { channelTitle: string | null }>>;
+export async function listEventsForRun(
+  runId: number,
+  opts?: {
+    channelId?: string;
+    stage?: string;
+  },
+): Promise<Array<PipelineEvent & { channelTitle: string | null }>>;
 // LEFT JOIN channels to surface the title alongside the channelId.
 ```
 
@@ -210,8 +213,14 @@ export function statusColor(s: PipelineRun['status']): 'green' | 'blue' | 'red' 
 export async function listKeywords(): Promise<SeedKeyword[]>;
 // Ordered by isActive DESC, lastUsedAt ASC NULLS FIRST.
 
-export async function createKeyword(input: { keyword: string; notes?: string }): Promise<SeedKeyword>;
-export async function updateKeyword(id: number, patch: Partial<Pick<SeedKeyword, 'isActive' | 'notes'>>): Promise<void>;
+export async function createKeyword(input: {
+  keyword: string;
+  notes?: string;
+}): Promise<SeedKeyword>;
+export async function updateKeyword(
+  id: number,
+  patch: Partial<Pick<SeedKeyword, 'isActive' | 'notes'>>,
+): Promise<void>;
 export async function deleteKeyword(id: number): Promise<void>;
 ```
 
@@ -242,11 +251,22 @@ export async function deleteKeyword(id: number): Promise<void>;
 ```typescript
 'use server';
 
-export async function updateFiltersAction(formData: FormData): Promise<{ ok: true } | { ok: false; error: string }>;
-export async function updatePipelineConfigAction(formData: FormData): Promise<{ ok: true } | { ok: false; error: string }>;
+export async function updateFiltersAction(
+  formData: FormData,
+): Promise<{ ok: true } | { ok: false; error: string }>;
+export async function updatePipelineConfigAction(
+  formData: FormData,
+): Promise<{ ok: true } | { ok: false; error: string }>;
 
-export async function createKeywordAction(input: { keyword: string; notes?: string }): Promise<void>;
-export async function updateKeywordAction(input: { id: number; isActive?: boolean; notes?: string }): Promise<void>;
+export async function createKeywordAction(input: {
+  keyword: string;
+  notes?: string;
+}): Promise<void>;
+export async function updateKeywordAction(input: {
+  id: number;
+  isActive?: boolean;
+  notes?: string;
+}): Promise<void>;
 export async function deleteKeywordAction(input: { id: number }): Promise<void>;
 ```
 

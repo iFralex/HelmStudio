@@ -1,4 +1,5 @@
 # Technical Design Document
+
 ## YouTube Creator Discovery, Qualification & Outreach Pipeline
 
 **Version:** 1.0
@@ -13,6 +14,7 @@
 A single-operator system that automatically discovers Italian YouTube channels, qualifies each one with an LLM that decides — per channel, with no hardcoded niche — whether the creator's workflow is automatable and what specifically could be offered, and prepares per-channel outreach drafts after the operator manually inserts the contact email.
 
 Key properties:
+
 - Runs as a **nightly batch** on the operator's Mac (no VPS required).
 - **No automated email send.** The operator inserts the email address per channel and reviews the AI-generated draft before sending it from their own email client.
 - **Free infrastructure**: SQLite on disk, official YouTube Data API v3 free tier (10,000 units/day), local LLM proxy exposing Claude via an OpenAI-compatible endpoint.
@@ -25,6 +27,7 @@ Key properties:
 ## 2. Scope, Goals & Non-Goals
 
 ### Goals
+
 - Produce ~50 fully-qualified candidate channels per day, each with a rich AI assessment.
 - Stay strictly within the YouTube Data API v3 free-tier daily quota (10,000 units).
 - Keep total monthly cost effectively zero (Mac-hosted, free APIs, LLM via local proxy on Claude subscription).
@@ -32,6 +35,7 @@ Key properties:
 - Save every raw artifact (search results, channel metadata, video lists, LLM prompts and responses) to disk in a structured, browsable layout.
 
 ### Non-Goals (v1)
+
 - Automated email sending.
 - Multi-tenant / multi-user.
 - Reply tracking via inbox integration. Statuses are updated manually.
@@ -77,6 +81,7 @@ Key properties:
 ```
 
 The worker and the UI are **two separate processes sharing the same SQLite file** and the same `data/raw/` tree:
+
 - `next dev` (or `next start` in production) → port 3000, the UI
 - `npx tsx src/worker/run.ts` → invoked by launchd at scheduled time, or by an internal API route triggered from the UI
 
@@ -86,22 +91,22 @@ SQLite is configured in **WAL mode** so the UI can read while the worker writes.
 
 ## 4. Technology Stack
 
-| Layer | Choice | Why |
-|---|---|---|
-| Language | **TypeScript 5.x** | Strong typing; you're more confident here than Python |
-| Runtime | **Node.js 20 LTS** | Stable, native fetch, good perf for I/O-bound work |
-| Framework | **Next.js 15 (App Router)** | Full-stack: UI + API routes + server actions in one project |
-| Database | **SQLite via better-sqlite3** | Zero-config, file-on-disk, fast synchronous reads, perfect for single user. WAL mode lets worker + UI coexist |
-| ORM | **Drizzle ORM** | TS-first, lightweight, great types, simple migrations |
-| Migrations | **drizzle-kit** | Generated from schema files |
-| UI styling | **Tailwind CSS v4** | Standard, zero-bikeshed |
-| UI components | **shadcn/ui** | Copy-pasteable, owned in your repo, Tailwind-native |
-| YouTube client | **googleapis** (official Google npm package) | Official, typed, handles auth & pagination |
-| LLM client | **openai** npm SDK | Used against your local OpenAI-compatible proxy |
-| Scheduling | **launchd** (macOS native) + manual UI trigger | More reliable on Mac than cron; wakes the machine if configured |
-| Logging | **pino** + log files in `data/logs/` | Structured JSON logs |
-| Schema validation | **zod** | Validate LLM JSON responses before persisting |
-| Process runner (dev) | **tsx** | Run TS files directly without a build step |
+| Layer                | Choice                                         | Why                                                                                                           |
+| -------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Language             | **TypeScript 5.x**                             | Strong typing; you're more confident here than Python                                                         |
+| Runtime              | **Node.js 20 LTS**                             | Stable, native fetch, good perf for I/O-bound work                                                            |
+| Framework            | **Next.js 15 (App Router)**                    | Full-stack: UI + API routes + server actions in one project                                                   |
+| Database             | **SQLite via better-sqlite3**                  | Zero-config, file-on-disk, fast synchronous reads, perfect for single user. WAL mode lets worker + UI coexist |
+| ORM                  | **Drizzle ORM**                                | TS-first, lightweight, great types, simple migrations                                                         |
+| Migrations           | **drizzle-kit**                                | Generated from schema files                                                                                   |
+| UI styling           | **Tailwind CSS v4**                            | Standard, zero-bikeshed                                                                                       |
+| UI components        | **shadcn/ui**                                  | Copy-pasteable, owned in your repo, Tailwind-native                                                           |
+| YouTube client       | **googleapis** (official Google npm package)   | Official, typed, handles auth & pagination                                                                    |
+| LLM client           | **openai** npm SDK                             | Used against your local OpenAI-compatible proxy                                                               |
+| Scheduling           | **launchd** (macOS native) + manual UI trigger | More reliable on Mac than cron; wakes the machine if configured                                               |
+| Logging              | **pino** + log files in `data/logs/`           | Structured JSON logs                                                                                          |
+| Schema validation    | **zod**                                        | Validate LLM JSON responses before persisting                                                                 |
+| Process runner (dev) | **tsx**                                        | Run TS files directly without a build step                                                                    |
 
 ### Stack rationale: why Node/TS over Python
 
@@ -222,198 +227,254 @@ import { sql } from 'drizzle-orm';
 
 // ─── Core entities ────────────────────────────────────────────────────────
 
-export const channels = sqliteTable('channels', {
-  // YouTube channel ID is the primary key (e.g. "UCxxx...")
-  id: text('id').primaryKey(),
-  handle: text('handle'),                        // @handle if available
-  title: text('title').notNull(),
-  description: text('description'),
-  country: text('country'),                      // ISO 3166-1 alpha-2
-  defaultLanguage: text('default_language'),
-  customUrl: text('custom_url'),
+export const channels = sqliteTable(
+  'channels',
+  {
+    // YouTube channel ID is the primary key (e.g. "UCxxx...")
+    id: text('id').primaryKey(),
+    handle: text('handle'), // @handle if available
+    title: text('title').notNull(),
+    description: text('description'),
+    country: text('country'), // ISO 3166-1 alpha-2
+    defaultLanguage: text('default_language'),
+    customUrl: text('custom_url'),
 
-  // Stats (snapshot at lastFetchedAt)
-  subscriberCount: integer('subscriber_count'),
-  viewCount: integer('view_count'),
-  videoCount: integer('video_count'),
+    // Stats (snapshot at lastFetchedAt)
+    subscriberCount: integer('subscriber_count'),
+    viewCount: integer('view_count'),
+    videoCount: integer('video_count'),
 
-  // YouTube metadata
-  uploadsPlaylistId: text('uploads_playlist_id'),
-  thumbnailUrl: text('thumbnail_url'),
-  channelPublishedAt: text('channel_published_at'),  // ISO 8601
+    // YouTube metadata
+    uploadsPlaylistId: text('uploads_playlist_id'),
+    thumbnailUrl: text('thumbnail_url'),
+    channelPublishedAt: text('channel_published_at'), // ISO 8601
 
-  // Pipeline state
-  discoveryStatus: text('discovery_status', {
-    enum: ['candidate', 'enriched', 'rejected_pre_qual', 'qualified', 'rejected_post_qual']
-  }).notNull().default('candidate'),
-  rejectionReason: text('rejection_reason'),
-  discoverySource: text('discovery_source'),     // e.g. "keyword:notizie" or "category:25"
+    // Pipeline state
+    discoveryStatus: text('discovery_status', {
+      enum: ['candidate', 'enriched', 'rejected_pre_qual', 'qualified', 'rejected_post_qual'],
+    })
+      .notNull()
+      .default('candidate'),
+    rejectionReason: text('rejection_reason'),
+    discoverySource: text('discovery_source'), // e.g. "keyword:notizie" or "category:25"
 
-  // Outreach state
-  outreachStatus: text('outreach_status', {
-    enum: ['none', 'email_added', 'drafted', 'sent', 'replied', 'no_reply', 'ignored']
-  }).notNull().default('none'),
-  email: text('email'),
-  emailAddedAt: integer('email_added_at', { mode: 'timestamp' }),
-  outreachSentAt: integer('outreach_sent_at', { mode: 'timestamp' }),
-  outreachNotes: text('outreach_notes'),
+    // Outreach state
+    outreachStatus: text('outreach_status', {
+      enum: ['none', 'email_added', 'drafted', 'sent', 'replied', 'no_reply', 'ignored'],
+    })
+      .notNull()
+      .default('none'),
+    email: text('email'),
+    emailAddedAt: integer('email_added_at', { mode: 'timestamp' }),
+    outreachSentAt: integer('outreach_sent_at', { mode: 'timestamp' }),
+    outreachNotes: text('outreach_notes'),
 
-  // Latest qualification ref (denormalized for fast UI)
-  latestQualificationId: integer('latest_qualification_id'),
-  latestAutomationScore: integer('latest_automation_score'),
+    // Latest qualification ref (denormalized for fast UI)
+    latestQualificationId: integer('latest_qualification_id'),
+    latestAutomationScore: integer('latest_automation_score'),
 
-  // Raw blob ref
-  rawMetaPath: text('raw_meta_path'),
+    // Raw blob ref
+    rawMetaPath: text('raw_meta_path'),
 
-  // Timestamps
-  discoveredAt: integer('discovered_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
-  lastFetchedAt: integer('last_fetched_at', { mode: 'timestamp' }),
-  lastQualifiedAt: integer('last_qualified_at', { mode: 'timestamp' }),
-}, (t) => ({
-  idxDiscoveryStatus: index('idx_channels_discovery_status').on(t.discoveryStatus),
-  idxOutreachStatus: index('idx_channels_outreach_status').on(t.outreachStatus),
-  idxScore: index('idx_channels_score').on(t.latestAutomationScore),
-  idxCountry: index('idx_channels_country').on(t.country),
-}));
+    // Timestamps
+    discoveredAt: integer('discovered_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    lastFetchedAt: integer('last_fetched_at', { mode: 'timestamp' }),
+    lastQualifiedAt: integer('last_qualified_at', { mode: 'timestamp' }),
+  },
+  (t) => ({
+    idxDiscoveryStatus: index('idx_channels_discovery_status').on(t.discoveryStatus),
+    idxOutreachStatus: index('idx_channels_outreach_status').on(t.outreachStatus),
+    idxScore: index('idx_channels_score').on(t.latestAutomationScore),
+    idxCountry: index('idx_channels_country').on(t.country),
+  }),
+);
 
-export const videos = sqliteTable('videos', {
-  id: text('id').primaryKey(),                   // YouTube video ID
-  channelId: text('channel_id').notNull().references(() => channels.id, { onDelete: 'cascade' }),
-  title: text('title').notNull(),
-  description: text('description'),
-  publishedAt: integer('published_at', { mode: 'timestamp' }).notNull(),
-  duration: text('duration'),                    // ISO 8601 (e.g. PT12M34S)
-  durationSeconds: integer('duration_seconds'),
-  viewCount: integer('view_count'),
-  likeCount: integer('like_count'),
-  commentCount: integer('comment_count'),
-  thumbnailUrl: text('thumbnail_url'),
-  tags: text('tags', { mode: 'json' }),          // string[]
-  categoryId: text('category_id'),
-  defaultLanguage: text('default_language'),
-  defaultAudioLanguage: text('default_audio_language'),
-  rawPath: text('raw_path'),
-  fetchedAt: integer('fetched_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
-}, (t) => ({
-  idxChannel: index('idx_videos_channel').on(t.channelId),
-  idxPublished: index('idx_videos_published').on(t.publishedAt),
-}));
+export const videos = sqliteTable(
+  'videos',
+  {
+    id: text('id').primaryKey(), // YouTube video ID
+    channelId: text('channel_id')
+      .notNull()
+      .references(() => channels.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    description: text('description'),
+    publishedAt: integer('published_at', { mode: 'timestamp' }).notNull(),
+    duration: text('duration'), // ISO 8601 (e.g. PT12M34S)
+    durationSeconds: integer('duration_seconds'),
+    viewCount: integer('view_count'),
+    likeCount: integer('like_count'),
+    commentCount: integer('comment_count'),
+    thumbnailUrl: text('thumbnail_url'),
+    tags: text('tags', { mode: 'json' }), // string[]
+    categoryId: text('category_id'),
+    defaultLanguage: text('default_language'),
+    defaultAudioLanguage: text('default_audio_language'),
+    rawPath: text('raw_path'),
+    fetchedAt: integer('fetched_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (t) => ({
+    idxChannel: index('idx_videos_channel').on(t.channelId),
+    idxPublished: index('idx_videos_published').on(t.publishedAt),
+  }),
+);
 
-export const qualifications = sqliteTable('qualifications', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  channelId: text('channel_id').notNull().references(() => channels.id, { onDelete: 'cascade' }),
-  runId: integer('run_id').references(() => pipelineRuns.id),
-  videoSelectionId: integer('video_selection_id').references(() => videoSelections.id),
+export const qualifications = sqliteTable(
+  'qualifications',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    channelId: text('channel_id')
+      .notNull()
+      .references(() => channels.id, { onDelete: 'cascade' }),
+    runId: integer('run_id').references(() => pipelineRuns.id),
+    videoSelectionId: integer('video_selection_id').references(() => videoSelections.id),
 
-  // LLM call metadata
-  modelUsed: text('model_used').notNull(),
-  promptVersion: text('prompt_version').notNull(),
-  inputTokens: integer('input_tokens'),
-  outputTokens: integer('output_tokens'),
-  latencyMs: integer('latency_ms'),
+    // LLM call metadata
+    modelUsed: text('model_used').notNull(),
+    promptVersion: text('prompt_version').notNull(),
+    inputTokens: integer('input_tokens'),
+    outputTokens: integer('output_tokens'),
+    latencyMs: integer('latency_ms'),
 
-  // Structured assessment (the LLM output, also stored separately as raw JSON on disk)
-  nicheClassification: text('niche_classification'),       // free-form text
-  formatType: text('format_type'),                          // free-form text
-  automationPotentialScore: integer('automation_potential_score'),  // 0-100
-  automatableWorkflows: text('automatable_workflows', { mode: 'json' }), // array of objects
-  suggestedSolution: text('suggested_solution'),
-  pitchAngle: text('pitch_angle'),
-  pitchLanguage: text('pitch_language', { enum: ['it', 'en'] }),
-  signals: text('signals', { mode: 'json' }),               // array of {type, evidence, videoId?}
-  disqualifiers: text('disqualifiers', { mode: 'json' }),   // array of strings
-  confidence: real('confidence'),                            // 0..1
-  rationale: text('rationale'),
+    // Structured assessment (the LLM output, also stored separately as raw JSON on disk)
+    nicheClassification: text('niche_classification'), // free-form text
+    formatType: text('format_type'), // free-form text
+    automationPotentialScore: integer('automation_potential_score'), // 0-100
+    automatableWorkflows: text('automatable_workflows', { mode: 'json' }), // array of objects
+    suggestedSolution: text('suggested_solution'),
+    pitchAngle: text('pitch_angle'),
+    pitchLanguage: text('pitch_language', { enum: ['it', 'en'] }),
+    signals: text('signals', { mode: 'json' }), // array of {type, evidence, videoId?}
+    disqualifiers: text('disqualifiers', { mode: 'json' }), // array of strings
+    confidence: real('confidence'), // 0..1
+    rationale: text('rationale'),
 
-  // Reference to raw dump
-  rawResponsePath: text('raw_response_path').notNull(),
-  rawPromptPath: text('raw_prompt_path').notNull(),
+    // Reference to raw dump
+    rawResponsePath: text('raw_response_path').notNull(),
+    rawPromptPath: text('raw_prompt_path').notNull(),
 
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
-}, (t) => ({
-  idxChannel: index('idx_qual_channel').on(t.channelId),
-  idxScore: index('idx_qual_score').on(t.automationPotentialScore),
-}));
+    createdAt: integer('created_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (t) => ({
+    idxChannel: index('idx_qual_channel').on(t.channelId),
+    idxScore: index('idx_qual_score').on(t.automationPotentialScore),
+  }),
+);
 
-export const videoSelections = sqliteTable('video_selections', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  channelId: text('channel_id').notNull().references(() => channels.id, { onDelete: 'cascade' }),
-  runId: integer('run_id').references(() => pipelineRuns.id),
+export const videoSelections = sqliteTable(
+  'video_selections',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    channelId: text('channel_id')
+      .notNull()
+      .references(() => channels.id, { onDelete: 'cascade' }),
+    runId: integer('run_id').references(() => pipelineRuns.id),
 
-  // LLM step-1 (agent) output, captured for inspection in the UI
-  videoClassifications: text('video_classifications', { mode: 'json' }).notNull(),
-      // Array of: { videoId, classification, reasoning, automationRelevanceScore }
-      // classification ∈ 'format_anchor' | 'representative' | 'extemporaneous' | 'outlier'
+    // LLM step-1 (agent) output, captured for inspection in the UI
+    videoClassifications: text('video_classifications', { mode: 'json' }).notNull(),
+    // Array of: { videoId, classification, reasoning, automationRelevanceScore }
+    // classification ∈ 'format_anchor' | 'representative' | 'extemporaneous' | 'outlier'
 
-  selectedVideoIds: text('selected_video_ids', { mode: 'json' }).notNull(),
-      // 3 to 5 videoIds chosen by the agent for transcript fetch
+    selectedVideoIds: text('selected_video_ids', { mode: 'json' }).notNull(),
+    // 3 to 5 videoIds chosen by the agent for transcript fetch
 
-  formatConsistencySummary: text('format_consistency_summary'),
-  selectionRationale: text('selection_rationale'),
+    formatConsistencySummary: text('format_consistency_summary'),
+    selectionRationale: text('selection_rationale'),
 
-  modelUsed: text('model_used').notNull(),
-  promptVersion: text('prompt_version').notNull(),
-  inputTokens: integer('input_tokens'),
-  outputTokens: integer('output_tokens'),
-  latencyMs: integer('latency_ms'),
-  rawResponsePath: text('raw_response_path').notNull(),
+    modelUsed: text('model_used').notNull(),
+    promptVersion: text('prompt_version').notNull(),
+    inputTokens: integer('input_tokens'),
+    outputTokens: integer('output_tokens'),
+    latencyMs: integer('latency_ms'),
+    rawResponsePath: text('raw_response_path').notNull(),
 
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
-}, (t) => ({
-  idxChannel: index('idx_vselect_channel').on(t.channelId),
-}));
+    createdAt: integer('created_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (t) => ({
+    idxChannel: index('idx_vselect_channel').on(t.channelId),
+  }),
+);
 
-export const transcripts = sqliteTable('transcripts', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  videoId: text('video_id').notNull().references(() => videos.id, { onDelete: 'cascade' }),
-  channelId: text('channel_id').notNull().references(() => channels.id, { onDelete: 'cascade' }),
+export const transcripts = sqliteTable(
+  'transcripts',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    videoId: text('video_id')
+      .notNull()
+      .references(() => videos.id, { onDelete: 'cascade' }),
+    channelId: text('channel_id')
+      .notNull()
+      .references(() => channels.id, { onDelete: 'cascade' }),
 
-  language: text('language'),                       // detected lang code
-  source: text('source', { enum: ['youtube_transcript', 'captions_api'] }).notNull(),
-      // 'youtube_transcript' = via npm `youtube-transcript` (public timedtext)
-      // 'captions_api' = official Data API captions.download (kept for the future)
+    language: text('language'), // detected lang code
+    source: text('source', { enum: ['youtube_transcript', 'captions_api'] }).notNull(),
+    // 'youtube_transcript' = via npm `youtube-transcript` (public timedtext)
+    // 'captions_api' = official Data API captions.download (kept for the future)
 
-  text: text('text'),                                // full concatenated transcript text
-  segments: text('segments', { mode: 'json' }),      // [{ start, duration, text }, ...]
-  characterCount: integer('character_count'),
-  fetchSucceeded: integer('fetch_succeeded', { mode: 'boolean' }).notNull().default(true),
-  fetchError: text('fetch_error'),
-  rawPath: text('raw_path'),
+    text: text('text'), // full concatenated transcript text
+    segments: text('segments', { mode: 'json' }), // [{ start, duration, text }, ...]
+    characterCount: integer('character_count'),
+    fetchSucceeded: integer('fetch_succeeded', { mode: 'boolean' }).notNull().default(true),
+    fetchError: text('fetch_error'),
+    rawPath: text('raw_path'),
 
-  fetchedAt: integer('fetched_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
-}, (t) => ({
-  idxVideo: index('idx_transcripts_video').on(t.videoId),
-  idxChannel: index('idx_transcripts_channel').on(t.channelId),
-}));
+    fetchedAt: integer('fetched_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (t) => ({
+    idxVideo: index('idx_transcripts_video').on(t.videoId),
+    idxChannel: index('idx_transcripts_channel').on(t.channelId),
+  }),
+);
 
-export const outreachDrafts = sqliteTable('outreach_drafts', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  channelId: text('channel_id').notNull().references(() => channels.id, { onDelete: 'cascade' }),
-  qualificationId: integer('qualification_id').references(() => qualifications.id),
+export const outreachDrafts = sqliteTable(
+  'outreach_drafts',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    channelId: text('channel_id')
+      .notNull()
+      .references(() => channels.id, { onDelete: 'cascade' }),
+    qualificationId: integer('qualification_id').references(() => qualifications.id),
 
-  language: text('language', { enum: ['it', 'en'] }).notNull(),
-  subject: text('subject').notNull(),
-  body: text('body').notNull(),
+    language: text('language', { enum: ['it', 'en'] }).notNull(),
+    subject: text('subject').notNull(),
+    body: text('body').notNull(),
 
-  modelUsed: text('model_used').notNull(),
-  promptVersion: text('prompt_version').notNull(),
-  inputTokens: integer('input_tokens'),
-  outputTokens: integer('output_tokens'),
-  rawResponsePath: text('raw_response_path').notNull(),
+    modelUsed: text('model_used').notNull(),
+    promptVersion: text('prompt_version').notNull(),
+    inputTokens: integer('input_tokens'),
+    outputTokens: integer('output_tokens'),
+    rawResponsePath: text('raw_response_path').notNull(),
 
-  isCurrent: integer('is_current', { mode: 'boolean' }).notNull().default(true),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
-}, (t) => ({
-  idxChannel: index('idx_draft_channel').on(t.channelId),
-}));
+    isCurrent: integer('is_current', { mode: 'boolean' }).notNull().default(true),
+    createdAt: integer('created_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (t) => ({
+    idxChannel: index('idx_draft_channel').on(t.channelId),
+  }),
+);
 
 // ─── Operational tables ───────────────────────────────────────────────────
 
 export const pipelineRuns = sqliteTable('pipeline_runs', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  startedAt: integer('started_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  startedAt: integer('started_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(unixepoch())`),
   finishedAt: integer('finished_at', { mode: 'timestamp' }),
-  status: text('status', { enum: ['running', 'completed', 'failed', 'cancelled'] }).notNull().default('running'),
+  status: text('status', { enum: ['running', 'completed', 'failed', 'cancelled'] })
+    .notNull()
+    .default('running'),
   triggeredBy: text('triggered_by', { enum: ['cron', 'manual'] }).notNull(),
 
   // Stage counters
@@ -434,33 +495,49 @@ export const pipelineRuns = sqliteTable('pipeline_runs', {
   errorStack: text('error_stack'),
 });
 
-export const pipelineEvents = sqliteTable('pipeline_events', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  runId: integer('run_id').references(() => pipelineRuns.id, { onDelete: 'cascade' }),
-  channelId: text('channel_id').references(() => channels.id, { onDelete: 'set null' }),
-  stage: text('stage', { enum: ['discovery', 'enrichment', 'filter', 'qualification', 'meta'] }).notNull(),
-  level: text('level', { enum: ['info', 'warn', 'error'] }).notNull().default('info'),
-  event: text('event').notNull(),                  // short code e.g. "channel_enriched"
-  message: text('message'),                        // human-readable
-  details: text('details', { mode: 'json' }),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
-}, (t) => ({
-  idxRun: index('idx_events_run').on(t.runId),
-  idxChannel: index('idx_events_channel').on(t.channelId),
-}));
+export const pipelineEvents = sqliteTable(
+  'pipeline_events',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    runId: integer('run_id').references(() => pipelineRuns.id, { onDelete: 'cascade' }),
+    channelId: text('channel_id').references(() => channels.id, { onDelete: 'set null' }),
+    stage: text('stage', {
+      enum: ['discovery', 'enrichment', 'filter', 'qualification', 'meta'],
+    }).notNull(),
+    level: text('level', { enum: ['info', 'warn', 'error'] })
+      .notNull()
+      .default('info'),
+    event: text('event').notNull(), // short code e.g. "channel_enriched"
+    message: text('message'), // human-readable
+    details: text('details', { mode: 'json' }),
+    createdAt: integer('created_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (t) => ({
+    idxRun: index('idx_events_run').on(t.runId),
+    idxChannel: index('idx_events_channel').on(t.channelId),
+  }),
+);
 
-export const quotaLedger = sqliteTable('quota_ledger', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  // YouTube quota resets at midnight Pacific Time, but we track per UTC day for simplicity
-  // and reserve a buffer to be safe.
-  date: text('date').notNull(),                    // YYYY-MM-DD
-  operation: text('operation').notNull(),          // 'search.list', 'channels.list', etc.
-  units: integer('units').notNull(),
-  runId: integer('run_id').references(() => pipelineRuns.id),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
-}, (t) => ({
-  idxDate: index('idx_quota_date').on(t.date),
-}));
+export const quotaLedger = sqliteTable(
+  'quota_ledger',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    // YouTube quota resets at midnight Pacific Time, but we track per UTC day for simplicity
+    // and reserve a buffer to be safe.
+    date: text('date').notNull(), // YYYY-MM-DD
+    operation: text('operation').notNull(), // 'search.list', 'channels.list', etc.
+    units: integer('units').notNull(),
+    runId: integer('run_id').references(() => pipelineRuns.id),
+    createdAt: integer('created_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (t) => ({
+    idxDate: index('idx_quota_date').on(t.date),
+  }),
+);
 
 export const seedKeywords = sqliteTable('seed_keywords', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -470,13 +547,17 @@ export const seedKeywords = sqliteTable('seed_keywords', {
   lastUsedAt: integer('last_used_at', { mode: 'timestamp' }),
   totalUses: integer('total_uses').notNull().default(0),
   totalCandidatesProduced: integer('total_candidates_produced').notNull().default(0),
-  addedAt: integer('added_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  addedAt: integer('added_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(unixepoch())`),
 });
 
 export const settings = sqliteTable('settings', {
   key: text('key').primaryKey(),
   value: text('value', { mode: 'json' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(unixepoch())`),
 });
 ```
 
@@ -491,6 +572,7 @@ export const settings = sqliteTable('settings', {
 ### 6.3 Initialization
 
 `scripts/init-db.ts` runs the Drizzle migrator, then seeds:
+
 - The default keyword list (appendix B) into `seed_keywords`.
 - Default settings into `settings` (filters, model names, etc.).
 
@@ -557,8 +639,12 @@ Each LLM blob is wrapped with full reproducibility context:
     "temperature": 0.3,
     "max_tokens": 2000
   },
-  "response": { /* full OpenAI-compatible response */ },
-  "parsed": { /* the validated object that went into the DB */ },
+  "response": {
+    /* full OpenAI-compatible response */
+  },
+  "parsed": {
+    /* the validated object that went into the DB */
+  },
   "usage": { "input_tokens": 3421, "output_tokens": 512 },
   "latency_ms": 8312,
   "timestamp": "2026-05-20T04:30:12Z"
@@ -582,11 +668,11 @@ YouTube blobs are the raw `googleapis` response as returned, plus a thin envelop
 ```typescript
 export async function dumpRaw(
   category: 'youtube' | 'llm',
-  subPath: string,                  // e.g. "search/2026-05-20/notizie-...json"
-  payload: object
-): Promise<string>                   // returns relative path stored in DB
+  subPath: string, // e.g. "search/2026-05-20/notizie-...json"
+  payload: object,
+): Promise<string>; // returns relative path stored in DB
 
-export async function loadRaw(relativePath: string): Promise<object>
+export async function loadRaw(relativePath: string): Promise<object>;
 ```
 
 The storage layer creates parent directories as needed and uses ISO timestamps with `:` replaced by `-` to be filesystem-safe on all platforms.
@@ -610,6 +696,7 @@ YouTube Data API v3 `search.list` is used with `type=channel` and `regionCode=IT
 Keyword rotation: from `seed_keywords` table, pick the N keywords with the smallest `lastUsedAt` (oldest first). N is computed dynamically based on remaining quota budget. Default N = 30 keywords/day → 30 × 100 = 3,000 units.
 
 For each keyword:
+
 1. Call `search.list` with `q=<keyword>`, `type=channel`, `regionCode=IT`, `relevanceLanguage=it`, `maxResults=50`.
 2. Dump response to `data/raw/youtube/search/<date>/<slug>-<ts>.json`.
 3. Insert new candidate channel IDs into `channels` table (status=`candidate`, `discoverySource`=`keyword:<keyword>`).
@@ -667,15 +754,15 @@ Cost: 50 channels × (1 + 1) = 100 units.
 
 ### 8.7 Quota budget summary
 
-| Sub-stage | Calls | Unit cost | Total | Notes |
-|---|---|---|---|---|
-| 1a Keyword sweep | 30 | 100 | 3,000 | 30 keywords × 1 page |
-| 1b Category exploration | 11 | 1 | 11 | One call per category |
-| 1c Channel enrichment | ~50 | 1 | 50 | Batches of 50 |
-| 2 Video metadata | ~100 | 1 | 100 | 50 channels × (playlist + videos) |
-| **Subtotal** | | | **~3,200** | |
-| **Buffer for retries** | | | **~1,000** | |
-| **Total budget** | | | **~4,200** | Well under 10,000 |
+| Sub-stage               | Calls | Unit cost | Total      | Notes                             |
+| ----------------------- | ----- | --------- | ---------- | --------------------------------- |
+| 1a Keyword sweep        | 30    | 100       | 3,000      | 30 keywords × 1 page              |
+| 1b Category exploration | 11    | 1         | 11         | One call per category             |
+| 1c Channel enrichment   | ~50   | 1         | 50         | Batches of 50                     |
+| 2 Video metadata        | ~100  | 1         | 100        | 50 channels × (playlist + videos) |
+| **Subtotal**            |       |           | **~3,200** |                                   |
+| **Buffer for retries**  |       |           | **~1,000** |                                   |
+| **Total budget**        |       |           | **~4,200** | Well under 10,000                 |
 
 The remaining ~5,800 units/day are intentional headroom. If you later want to add more keywords or scan more pages per keyword for thoroughness, you have room to do it without redesign.
 
@@ -708,7 +795,7 @@ For each channel surviving the pre-qualification filter (typically ~50/day):
     Output: full structured assessment (same schema as v1)
 ```
 
-The orchestration is in code, but the *judgment* — which videos are recurring formats, which look like one-offs, which are most informative for an automation assessment — is the LLM's. This makes it agentic without the unpredictability of a full tool-calling loop.
+The orchestration is in code, but the _judgment_ — which videos are recurring formats, which look like one-offs, which are most informative for an automation assessment — is the LLM's. This makes it agentic without the unpredictability of a full tool-calling loop.
 
 ### 9.2 Why two steps instead of one
 
@@ -724,7 +811,7 @@ A tool-calling agent (LLM has a `fetch_transcript(videoId)` tool and runs a free
 
 - More LLM calls per channel (3-6 instead of 2) → more latency and cost on paid endpoints.
 - Unpredictable bounds (an agent might decide to fetch 12 transcripts).
-- The two-step structured approach achieves the same user-facing property — *the AI picks what to examine* — with deterministic cost and clear audit trail.
+- The two-step structured approach achieves the same user-facing property — _the AI picks what to examine_ — with deterministic cost and clear audit trail.
 
 Tool-calling is listed in §17 Future Considerations as a possible v2 evolution.
 
@@ -969,24 +1056,29 @@ A 12-minute Italian video transcript is roughly 3,000-4,000 words ≈ 4,500-6,00
 ### 9.9 Validation, retry, failure modes
 
 For both step 1 and step 3:
+
 - Parse JSON. On parse failure, retry once with the appended user message: `"Your previous response did not match the required JSON schema. Reply with the JSON only."`
 - After a second failure, mark the channel `rejected_post_qual` with reason `'llm_format_failure'` and log the raw response.
 
 For step 2 (transcript fetch):
+
 - Per-video failures are **non-blocking**. Logged in `transcripts.fetchError`, do not abort the channel's qualification.
 - If 0 of N transcripts succeed, step 3 runs with the `<transcripts count="0">` block and an empty list. Step 3's system prompt is explicit about this case — the LLM should reflect the reduced evidence in a lower `confidence`.
 
 ### 9.10 Persistence
 
 On step 1 success:
+
 - Insert `video_selections` row.
 - Dump `{request, response, parsed, usage, latency_ms, timestamp}` to `data/raw/llm/video_selections/<channelId>/run-<runId>-<ts>.json`.
 
 On step 2 (per video):
+
 - Insert `transcripts` row (success or failure).
 - On success, dump segments + metadata to `data/raw/transcripts/<channelId>/<videoId>.json`.
 
 On step 3 success:
+
 - Dump qualification raw to `data/raw/llm/qualifications/<channelId>/run-<runId>-<ts>.json`.
 - Insert `qualifications` row with `videoSelectionId` populated.
 - Update `channels.latestQualificationId`, `channels.latestAutomationScore`, `channels.lastQualifiedAt`, `channels.discoveryStatus = 'qualified'`.
@@ -997,6 +1089,7 @@ On step 3 success:
 The channel detail page (§11.4) gains a new section between **AI assessment** and **Sample videos**:
 
 **"Why these videos" — agent reasoning panel**
+
 - The `formatConsistencySummary` rendered as a quote-styled paragraph.
 - The `selectionRationale`.
 - A compact 20-row table of every video: thumbnail, title, classification (colored badge), automationRelevanceScore (bar), reasoning. Selected videos are highlighted with a left-border accent.
@@ -1008,12 +1101,12 @@ This makes the agent's reasoning fully auditable: the operator can scan the tabl
 
 Per channel:
 
-| Step | Input tokens | Output tokens | Wall-clock |
-|---|---|---|---|
-| 1 (selection) | ~3,500 | ~1,500 | 6-10 s |
-| 2 (transcripts × 5) | 0 | 0 | 2-4 s |
-| 3 (final) | ~3,500 + ~20,000 | ~600 | 15-25 s |
-| **Total** | **~27k** | **~2.1k** | **~25-40 s** |
+| Step                | Input tokens     | Output tokens | Wall-clock   |
+| ------------------- | ---------------- | ------------- | ------------ |
+| 1 (selection)       | ~3,500           | ~1,500        | 6-10 s       |
+| 2 (transcripts × 5) | 0                | 0             | 2-4 s        |
+| 3 (final)           | ~3,500 + ~20,000 | ~600          | 15-25 s      |
+| **Total**           | **~27k**         | **~2.1k**     | **~25-40 s** |
 
 For 50 channels/run with LLM concurrency 3: ~10-15 min wall-clock for the LLM stages. All free through the local Claude proxy.
 
@@ -1121,20 +1214,20 @@ Next.js 15 App Router. Tailwind v4 + shadcn/ui for components. Server Components
 
 ### 11.1 Routes
 
-| Route | Purpose |
-|---|---|
-| `/login` | Single password form |
-| `/` | Dashboard |
-| `/channels` | List with filters, sort, search |
-| `/channels/[id]` | Channel detail + outreach actions |
-| `/runs` | Pipeline run history |
-| `/runs/[id]` | Single run detail (events log) |
-| `/settings` | Keywords, filters, model config |
-| `/api/pipeline/run` | POST: trigger an ad-hoc run |
-| `/api/channels/[id]/email` | POST: save email + generate draft |
-| `/api/channels/[id]/draft` | POST: regenerate draft |
-| `/api/channels/[id]/status` | PATCH: update outreach status |
-| `/api/channels/[id]/delete` | DELETE: GDPR delete |
+| Route                       | Purpose                           |
+| --------------------------- | --------------------------------- |
+| `/login`                    | Single password form              |
+| `/`                         | Dashboard                         |
+| `/channels`                 | List with filters, sort, search   |
+| `/channels/[id]`            | Channel detail + outreach actions |
+| `/runs`                     | Pipeline run history              |
+| `/runs/[id]`                | Single run detail (events log)    |
+| `/settings`                 | Keywords, filters, model config   |
+| `/api/pipeline/run`         | POST: trigger an ad-hoc run       |
+| `/api/channels/[id]/email`  | POST: save email + generate draft |
+| `/api/channels/[id]/draft`  | POST: regenerate draft            |
+| `/api/channels/[id]/status` | PATCH: update outreach status     |
+| `/api/channels/[id]/delete` | DELETE: GDPR delete               |
 
 ### 11.2 Dashboard (`/`)
 
@@ -1153,6 +1246,7 @@ A prominent **"Run pipeline now"** button (POSTs to `/api/pipeline/run`) is hidd
 Server-rendered table. Filters in URL search params (so links are shareable, refreshes are state-preserving):
 
 **Filters:**
+
 - `status`: outreach status (multi-select)
 - `minScore`, `maxScore`: automation score range
 - `minSubs`, `maxSubs`: subscriber range
@@ -1162,12 +1256,14 @@ Server-rendered table. Filters in URL search params (so links are shareable, ref
 - `search`: free-text against title + handle + description
 
 **Sort:**
+
 - `latestAutomationScore` desc (default)
 - `subscriberCount` desc
 - `lastQualifiedAt` desc
 - `discoveredAt` desc
 
 **Columns:**
+
 - Thumbnail
 - Title + handle
 - Subscribers (formatted: 124K, 1.2M)
@@ -1185,6 +1281,7 @@ Each row links to detail. Pagination: 50/page.
 Three columns on desktop, stacked on mobile.
 
 **Left column: channel info**
+
 - Thumbnail, title, handle, channel URL (external link to YouTube)
 - Subscribers, total videos, country, language, channel age
 - Description (collapsible if long)
@@ -1195,6 +1292,7 @@ Three columns on desktop, stacked on mobile.
 **Middle column: AI assessment**
 
 The full qualification rendered in human-readable form:
+
 - **Score badge** (large, colored)
 - **Niche** + **Format** + **Confidence** + **Pitch language**
 - **Rationale** (prose)
@@ -1214,21 +1312,17 @@ State-dependent:
 - If `outreachStatus = 'none'`:
   - Email input field + Save button
   - On save: stores email, sets `email_added`, automatically triggers draft generation, transitions to next state
-  
 - If `outreachStatus = 'email_added'`:
   - Loading spinner ("Generating draft…")
-  
 - If `outreachStatus = 'drafted'` (or later):
   - **Subject** (editable text input)
   - **Body** (editable textarea, ~12 rows)
   - Buttons: **Copy** (copies "Subject: …\n\n…body" to clipboard), **Regenerate**, **Mark as sent**
   - Below: a small log of all drafts ever generated for this channel (collapsed by default)
-  
 - If `outreachStatus = 'sent'`:
   - Shown timestamp of send
   - Buttons: **Mark as replied**, **Mark as no reply**, **Mark as ignored**
   - **Notes** textarea (free-form, auto-saved on blur)
-  
 - If `outreachStatus ∈ {'replied', 'no_reply', 'ignored'}`:
   - Final state, with summary
   - **Reopen** button (back to drafted state)
@@ -1266,6 +1360,7 @@ npx tsx src/worker/run.ts [--manual]
 ```
 
 `src/worker/run.ts` is responsible for:
+
 1. Opening the DB.
 2. Creating a `pipeline_runs` row with status `running`, `triggeredBy=cron|manual`.
 3. Wrapping the entire pipeline in a try/catch that updates the run on success or failure.
@@ -1278,7 +1373,7 @@ Pseudocode:
 
 ```typescript
 export async function runPipeline(runId: number) {
-  await ensureQuotaHeadroom(runId);                 // throws if < 4500 units remaining today
+  await ensureQuotaHeadroom(runId); // throws if < 4500 units remaining today
 
   // Discovery
   const newCandidates = await discoverViaKeywords(runId);
@@ -1294,7 +1389,7 @@ export async function runPipeline(runId: number) {
   // Pick the top N enriched channels for video fetch + LLM
   const pick = await selectChannelsForQualification(runId, /* limit */ 50);
   await fetchRecentVideos(runId, pick);
-  await preQualificationFilter(runId);              // re-run for the "inactive" rule that needs videos
+  await preQualificationFilter(runId); // re-run for the "inactive" rule that needs videos
 
   // LLM qualification
   await qualifyChannels(runId, pick.filter(stillEnriched));
@@ -1304,6 +1399,7 @@ export async function runPipeline(runId: number) {
 ```
 
 Each function:
+
 - Logs `pipelineEvents` for major sub-steps.
 - Updates run counters on `pipelineRuns`.
 - Persists raw blobs.
@@ -1315,7 +1411,7 @@ YouTube API has rate limits even before quota: nominally 1 request/sec per proje
 
 ```typescript
 import pLimit from 'p-limit';
-const ytLimiter = pLimit(2);   // max 2 concurrent YT API calls
+const ytLimiter = pLimit(2); // max 2 concurrent YT API calls
 ```
 
 LLM calls (local proxy) — we throttle to a reasonable concurrency to not overload the local process:
@@ -1359,11 +1455,13 @@ Use launchd, not cron, on macOS — it's the supported scheduler and handles wak
 ```
 
 Load with:
+
 ```bash
 launchctl load ~/Library/LaunchAgents/com.you.yt-creator-pipeline.plist
 ```
 
 **Caveat:** if the Mac is asleep at 4:00 AM, launchd does not wake it. Two options:
+
 1. `pmset` schedule a wake at 03:58:
    ```bash
    sudo pmset repeat wakeorpoweron MTWRFSU 03:58:00
@@ -1373,6 +1471,7 @@ launchctl load ~/Library/LaunchAgents/com.you.yt-creator-pipeline.plist
 ### 12.5 Idempotency
 
 The orchestrator is safe to re-run:
+
 - Channels are deduplicated by primary key. Re-discovery just updates `lastFetchedAt`.
 - Videos are deduplicated by primary key.
 - Qualification is skipped for a channel whose `lastQualifiedAt` is more recent than `REQUALIFY_AFTER_DAYS` ago. Force re-qualification is possible from the UI (the **Re-qualify** button bypasses the check).
@@ -1389,6 +1488,7 @@ Transcripts are fetched via the `youtube-transcript` npm library, which uses You
 ### 13.1 YouTube quota tracking
 
 Every YouTube API call is wrapped in a function that:
+
 1. Computes the unit cost for the operation.
 2. Reads today's spent units from `quotaLedger` (sum where `date = today`).
 3. If `spent + cost > 9500` (500-unit safety buffer), throws `QuotaExhausted`.
@@ -1404,6 +1504,7 @@ If the local proxy rejects calls with 429 or proxy-busy errors, we retry with ex
 ### 13.3 Run abort
 
 If `QuotaExhausted` is raised mid-run:
+
 - Current stage finishes the in-flight item.
 - The run is marked `cancelled` (not `failed`) with an informational message.
 - Channels that made it through are kept in their current state; the next run picks up where this one left off.
@@ -1463,12 +1564,14 @@ LOG_LEVEL=info                   # debug | info | warn | error
 ### 15.1 GDPR posture
 
 The system processes public channel data and a manually-entered email address per channel. The lawful basis for the email outreach is **legitimate interest** under GDPR Art. 6(1)(f), provided each outreach:
+
 - Identifies the sender clearly.
 - States how the recipient's contact was obtained ("from your public channel description").
 - Provides an opt-out (a single sentence: "Reply 'unsubscribe' and I won't contact you again").
 - Doesn't continue after an opt-out.
 
 The system supports compliance by:
+
 - Logging when each email was added, sent, and any status updates.
 - Providing the `DELETE /api/channels/[id]/delete` endpoint that removes the channel and **all** related rows + raw blobs.
 - Keeping an `outreachNotes` field where the operator can record an opt-out request.
@@ -1492,6 +1595,7 @@ A `data/processing_register.md` template is included in the repo for documenting
 Five phases, each independently testable. Numbers are rough effort estimates assuming AI-assisted development.
 
 ### Phase 1 — Foundations (1-2 days)
+
 - `package.json`, TypeScript config, Next.js project init.
 - Drizzle schema, migrations, `npm run db:init`.
 - `src/lib/env.ts` with zod validation.
@@ -1502,6 +1606,7 @@ Five phases, each independently testable. Numbers are rough effort estimates ass
 **Done when:** `npm run dev` starts, login works, an empty `/channels` page renders.
 
 ### Phase 2 — Discovery (2-3 days)
+
 - `src/lib/youtube/client.ts` with googleapis init.
 - `src/lib/youtube/quota.ts` quota tracker.
 - `src/lib/youtube/search.ts` — keyword sweep.
@@ -1514,6 +1619,7 @@ Five phases, each independently testable. Numbers are rough effort estimates ass
 **Done when:** running `npx tsx src/worker/run.ts` with only Phase 1+2 produces ~100-200 enriched candidates in the DB, all raw blobs on disk, list page shows them.
 
 ### Phase 3 — Pre-qualification + video fetch (1 day)
+
 - Pre-qualification filter (sub count, country, language, video count).
 - `src/lib/youtube/videos.ts` — uploads playlist + video details.
 - Inactive-channel rejection.
@@ -1522,6 +1628,7 @@ Five phases, each independently testable. Numbers are rough effort estimates ass
 **Done when:** the surviving ~50 channels have 10-20 recent videos each in the DB, visible in the UI.
 
 ### Phase 4 — Agentic qualification (3-4 days)
+
 - `src/lib/llm/client.ts` OpenAI SDK wired to local proxy.
 - `src/lib/llm/schemas.ts` zod schemas for **both** step-1 and step-3 outputs.
 - `src/lib/llm/select.ts` step 1: video selection prompt + call + validate.
@@ -1534,6 +1641,7 @@ Five phases, each independently testable. Numbers are rough effort estimates ass
 **Done when:** all enriched channels become qualified via the two-step agent, the UI shows rich assessments with the agent's video classifications and accessible transcripts, all raw LLM blobs and transcripts are on disk.
 
 ### Phase 5 — Outreach + polish (2 days)
+
 - Manual email input form.
 - Draft generation server action (`src/lib/llm/draft.ts`).
 - Editable subject/body, copy, regenerate, mark-as-sent flow.
@@ -1595,11 +1703,31 @@ These are explicitly out of scope for v1 but worth keeping in mind so the archit
   "pitchAngle": "Lead with the daily research workload. Reference the consistency of their 8am Mon-Fri uploads as proof of disciplined production. Frame the offering as 'I'll cut your morning research from 2 hours to 15 minutes, free pilot for a week'. Avoid generic AI buzzwords.",
   "pitchLanguage": "it",
   "signals": [
-    { "type": "positive", "evidence": "5 of last 5 weekday videos uploaded between 7:30-8:30 Italian time, indicating disciplined morning production pipeline", "videoId": null },
-    { "type": "positive", "evidence": "Video titled 'Il vero motivo per cui...' shows consistent provocative-statement format across recent uploads", "videoId": "abc123XYZ_" },
-    { "type": "positive", "evidence": "Description of latest video lists 7 distinct source citations, suggesting heavy research workload", "videoId": "def456ABC_" },
-    { "type": "positive", "evidence": "No co-host or guest voices detected across last 20 videos, suggesting single-operator production", "videoId": null },
-    { "type": "negative", "evidence": "Channel description references a small team ('il nostro team') — production might be less single-operator than visible content suggests", "videoId": null }
+    {
+      "type": "positive",
+      "evidence": "5 of last 5 weekday videos uploaded between 7:30-8:30 Italian time, indicating disciplined morning production pipeline",
+      "videoId": null
+    },
+    {
+      "type": "positive",
+      "evidence": "Video titled 'Il vero motivo per cui...' shows consistent provocative-statement format across recent uploads",
+      "videoId": "abc123XYZ_"
+    },
+    {
+      "type": "positive",
+      "evidence": "Description of latest video lists 7 distinct source citations, suggesting heavy research workload",
+      "videoId": "def456ABC_"
+    },
+    {
+      "type": "positive",
+      "evidence": "No co-host or guest voices detected across last 20 videos, suggesting single-operator production",
+      "videoId": null
+    },
+    {
+      "type": "negative",
+      "evidence": "Channel description references a small team ('il nostro team') — production might be less single-operator than visible content suggests",
+      "videoId": null
+    }
   ],
   "disqualifiers": [],
   "confidence": 0.78,
@@ -1649,23 +1777,23 @@ Approximately 70 keywords. Add/remove via the Settings UI as you learn which pro
 
 ## Appendix C — YouTube video category IDs (in scope vs excluded)
 
-| ID | Category | Use? |
-|---|---|---|
-| 1 | Film & Animation | exclude (mostly licensed/clip content) |
-| 2 | Autos & Vehicles | **include** |
-| 10 | Music | **exclude** (per default filters) |
-| 15 | Pets & Animals | exclude (often kid-targeted) |
-| 17 | Sports | **include** |
-| 19 | Travel & Events | **include** |
-| 20 | Gaming | **include** |
-| 22 | People & Blogs | **include** |
-| 23 | Comedy | **include** |
-| 24 | Entertainment | **include** |
-| 25 | News & Politics | **include** |
-| 26 | Howto & Style | **include** |
-| 27 | Education | **include** |
-| 28 | Science & Technology | **include** |
-| 29 | Nonprofits & Activism | exclude (volume too low) |
+| ID  | Category              | Use?                                   |
+| --- | --------------------- | -------------------------------------- |
+| 1   | Film & Animation      | exclude (mostly licensed/clip content) |
+| 2   | Autos & Vehicles      | **include**                            |
+| 10  | Music                 | **exclude** (per default filters)      |
+| 15  | Pets & Animals        | exclude (often kid-targeted)           |
+| 17  | Sports                | **include**                            |
+| 19  | Travel & Events       | **include**                            |
+| 20  | Gaming                | **include**                            |
+| 22  | People & Blogs        | **include**                            |
+| 23  | Comedy                | **include**                            |
+| 24  | Entertainment         | **include**                            |
+| 25  | News & Politics       | **include**                            |
+| 26  | Howto & Style         | **include**                            |
+| 27  | Education             | **include**                            |
+| 28  | Science & Technology  | **include**                            |
+| 29  | Nonprofits & Activism | exclude (volume too low)               |
 
 So 11 categories in scope. The included set is hardcoded in `src/lib/seeds/categories.ts` but listed here for clarity.
 
@@ -1706,32 +1834,32 @@ tail -f data/logs/launchd.log
 
 For traceability, these are the design decisions confirmed in the requirements pass:
 
-| # | Question | Decision |
-|---|---|---|
-| 1 | Who builds | Operator + AI assistant — doc written as implementation spec |
-| 2 | Stack | Node.js + TypeScript + Next.js (operator's preferred ecosystem) |
-| 3 | Host | Mac, with optional later move to Vercel UI + Mac/VPS worker |
-| 4 | Budget | Effectively zero — Mac + free YouTube tier + LLM via local proxy on existing Claude subscription |
-| 5 | Volume | ~150 candidates/day, ~50 qualified/day |
-| 6 | Schedule | Nightly batch (launchd at 4am), plus manual UI trigger |
-| 7 | Geo | Italy only |
-| 8 | Min subs | 80,000 |
-| 9 | Max subs | 1,000,000 |
-| 10 | Excluded categories | Music, Pets & Animals (kid-safety); Film & Animation, Nonprofits also excluded |
-| 11 | Discovery | A (keyword sweep, 30 keywords/day from a pool of ~70) + C (10 categories) |
-| 12 | LLM client | OpenAI SDK against local proxy; two models (think, fast) in `.env` |
-| 13 | Qualification output | All requested fields, rich, JSON-validated |
-| 13b | Qualification flow | **Agentic two-step**: LLM selects representative videos → fetch transcripts → LLM produces final assessment with transcript evidence |
-| 13c | Transcript source | `youtube-transcript` library (public timedtext endpoint, free); official `captions` API kept as future option in `transcripts.source` column |
-| 14 | Outreach language | Decided per-channel by the LLM (`pitchLanguage`) |
-| 15 | Draft generation | Automatic on email save |
-| 16 | Post-send tracking | Manual statuses (no inbox integration) |
-| 17 | UI | Next.js (SPA) per operator preference |
-| 18 | Auth | Single-user with password gate |
-| 19 | Re-qualification | Default 90 days, overridable from UI |
-| 20 | GDPR | Deletion endpoint + processing register + opt-out support in outreach |
-| 21 | Raw data persistence | All YouTube + LLM blobs dumped to `data/raw/` in structured tree |
+| #   | Question             | Decision                                                                                                                                     |
+| --- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Who builds           | Operator + AI assistant — doc written as implementation spec                                                                                 |
+| 2   | Stack                | Node.js + TypeScript + Next.js (operator's preferred ecosystem)                                                                              |
+| 3   | Host                 | Mac, with optional later move to Vercel UI + Mac/VPS worker                                                                                  |
+| 4   | Budget               | Effectively zero — Mac + free YouTube tier + LLM via local proxy on existing Claude subscription                                             |
+| 5   | Volume               | ~150 candidates/day, ~50 qualified/day                                                                                                       |
+| 6   | Schedule             | Nightly batch (launchd at 4am), plus manual UI trigger                                                                                       |
+| 7   | Geo                  | Italy only                                                                                                                                   |
+| 8   | Min subs             | 80,000                                                                                                                                       |
+| 9   | Max subs             | 1,000,000                                                                                                                                    |
+| 10  | Excluded categories  | Music, Pets & Animals (kid-safety); Film & Animation, Nonprofits also excluded                                                               |
+| 11  | Discovery            | A (keyword sweep, 30 keywords/day from a pool of ~70) + C (10 categories)                                                                    |
+| 12  | LLM client           | OpenAI SDK against local proxy; two models (think, fast) in `.env`                                                                           |
+| 13  | Qualification output | All requested fields, rich, JSON-validated                                                                                                   |
+| 13b | Qualification flow   | **Agentic two-step**: LLM selects representative videos → fetch transcripts → LLM produces final assessment with transcript evidence         |
+| 13c | Transcript source    | `youtube-transcript` library (public timedtext endpoint, free); official `captions` API kept as future option in `transcripts.source` column |
+| 14  | Outreach language    | Decided per-channel by the LLM (`pitchLanguage`)                                                                                             |
+| 15  | Draft generation     | Automatic on email save                                                                                                                      |
+| 16  | Post-send tracking   | Manual statuses (no inbox integration)                                                                                                       |
+| 17  | UI                   | Next.js (SPA) per operator preference                                                                                                        |
+| 18  | Auth                 | Single-user with password gate                                                                                                               |
+| 19  | Re-qualification     | Default 90 days, overridable from UI                                                                                                         |
+| 20  | GDPR                 | Deletion endpoint + processing register + opt-out support in outreach                                                                        |
+| 21  | Raw data persistence | All YouTube + LLM blobs dumped to `data/raw/` in structured tree                                                                             |
 
 ---
 
-*End of design document.*
+_End of design document._

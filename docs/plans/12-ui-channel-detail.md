@@ -26,12 +26,12 @@ This page is the most state-rich in the app. It reads from `channels`, `videos`,
 ```typescript
 export async function getChannelDetail(channelId: string): Promise<{
   channel: Channel;
-  videos: Video[];                  // 20 most recent, joined with classification
+  videos: Video[]; // 20 most recent, joined with classification
   qualification: Qualification | null;
   videoSelection: VideoSelection | null;
   transcriptsByVideo: Map<string, Transcript | null>;
   currentDraft: OutreachDraft | null;
-  draftHistory: OutreachDraft[];    // ordered by createdAt desc
+  draftHistory: OutreachDraft[]; // ordered by createdAt desc
 } | null>;
 ```
 
@@ -238,13 +238,19 @@ channelDetail: {
 
 export async function saveEmailAndDraft(input: { channelId: string; email: string }): Promise<void>;
 export async function regenerateDraft(input: { channelId: string }): Promise<void>;
-export async function updateDraftSubject(input: { draftId: number; subject: string }): Promise<void>;
+export async function updateDraftSubject(input: {
+  draftId: number;
+  subject: string;
+}): Promise<void>;
 export async function updateDraftBody(input: { draftId: number; body: string }): Promise<void>;
 export async function markOutreachStatus(input: {
   channelId: string;
   status: OutreachStatus;
 }): Promise<void>;
-export async function updateOutreachNotes(input: { channelId: string; notes: string }): Promise<void>;
+export async function updateOutreachNotes(input: {
+  channelId: string;
+  notes: string;
+}): Promise<void>;
 export async function requalifyChannel(input: { channelId: string }): Promise<void>;
 export async function deleteChannel(input: { channelId: string }): Promise<void>;
 ```
