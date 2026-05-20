@@ -69,11 +69,11 @@ export function verifySessionCookie(token: string | undefined): boolean;
 
 ### Task 5: App shell layout
 
-- [ ] Create `src/app/(app)/layout.tsx` rendering a top nav with: Dashboard / Canali / Run / Impostazioni (links to `/`, `/channels`, `/runs`, `/settings` — most are 404 stubs at this stage)
-- [ ] Add a "Logout" item in the nav posting to `/api/auth/logout`
-- [ ] Create `src/app/(app)/page.tsx` as an empty dashboard stub with the placeholder copy "Pipeline non ancora avviata."
-- [ ] All visible strings in Italian
-- [ ] Mark completed
+- [x] Create `src/app/(app)/layout.tsx` rendering a top nav with: Dashboard / Canali / Run / Impostazioni (links to `/`, `/channels`, `/runs`, `/settings` — most are 404 stubs at this stage)
+- [x] Add a "Logout" item in the nav posting to `/api/auth/logout`
+- [x] Create `src/app/(app)/page.tsx` as an empty dashboard stub with the placeholder copy "Pipeline non ancora avviata."
+- [x] All visible strings in Italian
+- [x] Mark completed
 
 ### Task 6: Tooling
 
