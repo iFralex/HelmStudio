@@ -21,8 +21,8 @@ The YouTube Data API v3 free tier is 10,000 units/day, resetting at midnight Pac
 
 ### Task 1: Install dependencies
 
-- [ ] Install `googleapis` and `p-limit`
-- [ ] Mark completed
+- [x] Install `googleapis` and `p-limit`
+- [x] Mark completed
 
 ### Task 2: Client singleton
 
