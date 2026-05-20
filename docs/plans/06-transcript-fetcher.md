@@ -27,7 +27,7 @@ The official `captions` Data API would cost 250 quota units per transcript (spec
 
 ### Task 2: Fetcher API
 
-- [ ] Create `src/lib/transcripts/fetcher.ts`:
+- [x] Create `src/lib/transcripts/fetcher.ts`:
 
 ```typescript
 export type TranscriptSegment = {
@@ -66,9 +66,9 @@ export async function fetchTranscript(
 // and classifies the failure mode if all attempts fail.
 ```
 
-- [ ] Use `youtube-transcript`'s `YoutubeTranscript.fetchTranscript(videoId, { lang })`; map its thrown errors to the `reason` enum
-- [ ] Auto-generated transcripts are accepted (no quality filtering at this layer)
-- [ ] Mark completed
+- [x] Use `youtube-transcript`'s `YoutubeTranscript.fetchTranscript(videoId, { lang })`; map its thrown errors to the `reason` enum
+- [x] Auto-generated transcripts are accepted (no quality filtering at this layer)
+- [x] Mark completed
 
 ### Task 3: Persistence layer
 
