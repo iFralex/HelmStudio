@@ -91,10 +91,10 @@ export default {
 
 ### Task 5: Initial migration
 
-- [ ] Run `pnpm db:generate` to produce `drizzle/0000_init.sql` from the schema
-- [ ] Inspect the generated SQL for correctness (foreign keys, indexes, defaults)
-- [ ] Commit the generated migration files
-- [ ] Mark completed
+- [x] Run `pnpm db:generate` to produce `drizzle/0000_init.sql` from the schema
+- [x] Inspect the generated SQL for correctness (foreign keys, indexes, defaults)
+- [x] Commit the generated migration files
+- [x] Mark completed
 
 ### Task 6: Init script
 
