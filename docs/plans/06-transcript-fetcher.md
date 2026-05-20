@@ -72,7 +72,7 @@ export async function fetchTranscript(
 
 ### Task 3: Persistence layer
 
-- [ ] Create `src/lib/transcripts/store.ts`:
+- [x] Create `src/lib/transcripts/store.ts`:
 
 ```typescript
 export async function getOrFetchTranscript(args: {
@@ -97,8 +97,8 @@ export async function deleteTranscriptsForChannel(channelId: string): Promise<vo
 // directory for the channel.
 ```
 
-- [ ] All writes idempotent on `videoId`
-- [ ] Mark completed
+- [x] All writes idempotent on `videoId`
+- [x] Mark completed
 
 ### Task 4: Polite throttling
 
