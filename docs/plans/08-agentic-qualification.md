@@ -181,7 +181,7 @@ export async function shouldQualify(
 
 ### Task 7: Per-channel orchestrator
 
-- [ ] Create `src/lib/pipeline/qualification/qualify-channel.ts`:
+- [x] Create `src/lib/pipeline/qualification/qualify-channel.ts`:
 
 ```typescript
 export async function qualifyChannel(args: {
@@ -212,7 +212,7 @@ Error handling:
 - `LlmBusinessRuleError` from step 1 → same treatment
 - Transient errors (network, proxy down) bubble up to the worker (plan 10) which decides whether to retry the whole run
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 8: Batch orchestrator
 
