@@ -75,7 +75,7 @@ export function userTemplate(args: SelectInput): string { ... }
 
 ### Task 5: Generic `callLLM` wrapper
 
-- [ ] Create `src/lib/llm/call.ts`:
+- [x] Create `src/lib/llm/call.ts`:
 
 ```typescript
 import { z, ZodSchema } from 'zod';
@@ -122,8 +122,8 @@ Behaviour:
   - `paths.rawLlmPlaceholder(...)` for kind `placeholder` (test-only)
 - return `{ parsed, usage, latencyMs, modelUsed, rawPath }`
 
-- [ ] Define `LlmFormatError`, `LlmCallError` exceptions; both carry `rawPath` so the caller can write a failure record
-- [ ] Mark completed
+- [x] Define `LlmFormatError`, `LlmCallError` exceptions; both carry `rawPath` so the caller can write a failure record
+- [x] Mark completed
 
 ### Task 6: Token estimation utility
 

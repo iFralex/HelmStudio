@@ -60,6 +60,11 @@ export const paths = {
     assertChannelId(channelId);
     return path.join('raw', 'llm', 'drafts', channelId, `${ts}.json`);
   },
+
+  rawLlmPlaceholder: (channelId: string, ts: string) => {
+    assertChannelId(channelId);
+    return path.join('raw', 'llm', 'placeholder', channelId, `${ts}.json`);
+  },
 };
 
 export function tsForFilename(d = new Date()): string {
