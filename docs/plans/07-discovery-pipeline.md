@@ -237,13 +237,13 @@ Sequence:
 
 ### Task 11: Integration test
 
-- [ ] Create `src/lib/pipeline/__tests__/discovery.integration.test.ts`:
+- [x] Create `src/lib/pipeline/__tests__/discovery.integration.test.ts`:
   - Use an in-memory SQLite + mocked YouTube operations (via the test seam from plan 04)
   - Fixture: 3 keywords + 2 categories → produces 8 channels
   - Half have <80k subs, half above → filter rejects 4
   - Survivors: 2 with recent uploads, 2 inactive → final pool = 2 with full video metadata
   - Assert correct row counts in `channels`, `videos`, `pipeline_events`, `quota_ledger`
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 12: Smoke script
 
