@@ -21,9 +21,9 @@ The official `captions` Data API would cost 250 quota units per transcript (spec
 
 ### Task 1: Install dependency
 
-- [ ] Install `youtube-transcript` (latest)
-- [ ] Pin the version in `package.json`; document in README that the library can break when YouTube changes the endpoint
-- [ ] Mark completed
+- [x] Install `youtube-transcript` (latest)
+- [x] Pin the version in `package.json`; document in README that the library can break when YouTube changes the endpoint
+- [x] Mark completed
 
 ### Task 2: Fetcher API
 

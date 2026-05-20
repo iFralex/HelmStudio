@@ -68,6 +68,10 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | `pnpm db:studio`    | Open Drizzle Studio to browse the database interactively |
 | `pnpm tsx scripts/llm-smoke.ts` | Manual LLM connectivity smoke test (requires local proxy) |
 
+## Third-party library notes
+
+**youtube-transcript** (`youtube-transcript` package, pinned): fetches captions via YouTube's public `timedtext` endpoint (no API quota cost). This endpoint is undocumented and can break without notice when YouTube changes its internal implementation. If transcript fetching stops working, check the package's issue tracker for updates and bump the pin.
+
 ## Database
 
 The app uses SQLite via `better-sqlite3` with WAL mode enabled so the background worker and the Next.js UI can read and write concurrently.
