@@ -148,7 +148,7 @@ Logic (spec §8.5), applied to channels WHERE `discoveryStatus='enriched'` AND n
 
 ### Task 7: Video enrichment
 
-- [ ] Create `src/lib/pipeline/discovery/video-enrichment.ts`:
+- [x] Create `src/lib/pipeline/discovery/video-enrichment.ts`:
 
 ```typescript
 export async function fetchVideosForSurvivingChannels(args: {
@@ -170,7 +170,7 @@ Behaviour:
   - `getVideos({ ids: videoIds, channelIdForStorage: channelId, runId })` (plan 04) — auto-batches into ≤50/call
   - For each `VideoDetail`: insert into `videos` table (idempotent on PK); store `tags`, `categoryId`, `defaultLanguage`, `defaultAudioLanguage`, `durationSeconds` (parsed from ISO 8601), `rawPath`
 - Update `pipelineRuns.channelsEnriched` (only the channels that passed) — leave `discoveryStatus='enriched'` for the survivors; plan 08 will move them to `qualified` or `rejected_post_qual`
-- Mark completed
+- [x] Mark completed
 
 ### Task 8: ISO 8601 duration parser
 
