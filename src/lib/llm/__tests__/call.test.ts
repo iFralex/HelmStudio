@@ -125,7 +125,47 @@ describe('callLLM', () => {
 
     const secondCallArgs = createFn.mock.calls[1]![0] as { messages: Array<{ role: string; content: string }> };
     expect(secondCallArgs.messages).toHaveLength(4);
+    expect(secondCallArgs.messages[2]).toMatchObject({ role: 'assistant', content: 'not valid json' });
     expect(secondCallArgs.messages[3]!.content).toContain('did not match the required JSON schema');
+  });
+
+  it('accumulates token usage across retry attempts', async () => {
+    let callCount = 0;
+    const createFn = vi.fn().mockImplementation(async () => {
+      callCount++;
+      return {
+        id: 'test-id',
+        object: 'chat.completion',
+        created: Date.now(),
+        model: 'claude-test-think',
+        choices: [{ index: 0, message: { role: 'assistant', content: callCount === 1 ? 'bad json' : '{"ok": true}' }, finish_reason: 'stop' }],
+        usage: { prompt_tokens: callCount === 1 ? 10 : 20, completion_tokens: callCount === 1 ? 5 : 8 },
+      };
+    });
+    __setLlmForTest({ chat: { completions: { create: createFn } } } as unknown as OpenAI);
+
+    const result = await callLLM(baseArgs);
+
+    expect(result.usage).toEqual({ inputTokens: 30, outputTokens: 13 });
+  });
+
+  it('throws LlmCallError when retry API call fails after first parse failure', async () => {
+    const retryErr = new Error('Network timeout on retry');
+    let callCount = 0;
+    const createFn = vi.fn().mockImplementation(async () => {
+      callCount++;
+      if (callCount === 1) return makeCompletionResponse('not valid json');
+      throw retryErr;
+    });
+    __setLlmForTest({ chat: { completions: { create: createFn } } } as unknown as OpenAI);
+
+    await expect(callLLM(baseArgs)).rejects.toThrow(LlmCallError);
+    expect(createFn).toHaveBeenCalledTimes(2);
+
+    expect(mockDumpRaw).toHaveBeenCalledOnce();
+    const payload = mockDumpRaw.mock.calls[0]![1] as Record<string, unknown>;
+    expect((payload.attempts as string[])).toHaveLength(1);
+    expect(payload.attempts).toContain('not valid json');
   });
 
   it('throws LlmFormatError after two consecutive format failures', async () => {
@@ -196,6 +236,64 @@ describe('callLLM', () => {
 
     const result = await callLLM(baseArgs);
     expect(result.parsed).toEqual({ ok: true });
+  });
+
+  it('uses fast model when tier is fast', async () => {
+    const createFn = vi.fn().mockImplementation(async () => {
+      return makeCompletionResponse('{"ok": true}', 'claude-test-fast');
+    });
+    const fakeClient = { chat: { completions: { create: createFn } } } as unknown as OpenAI;
+    __setLlmForTest(fakeClient);
+
+    const result = await callLLM({ ...baseArgs, tier: 'fast' });
+
+    expect(result.modelUsed).toBe('claude-test-fast');
+    const callArgs = createFn.mock.calls[0]![0] as { model: string };
+    expect(callArgs.model).toBe('claude-test-fast');
+  });
+
+  it('routes kind video_selection with runId to correct raw path', async () => {
+    const fakeClient = makeFakeClient(['{"ok": true}']);
+    __setLlmForTest(fakeClient);
+
+    const result = await callLLM({
+      ...baseArgs,
+      context: { channelId: 'test-channel', runId: 42, kind: 'video_selection' },
+    });
+
+    expect(result.rawPath).toContain('video_selections');
+    expect(result.rawPath).toContain('run-42-');
+  });
+
+  it('routes kind qualification with runId to correct raw path', async () => {
+    const fakeClient = makeFakeClient(['{"ok": true}']);
+    __setLlmForTest(fakeClient);
+
+    const result = await callLLM({
+      ...baseArgs,
+      context: { channelId: 'test-channel', runId: 7, kind: 'qualification' },
+    });
+
+    expect(result.rawPath).toContain('qualifications');
+    expect(result.rawPath).toContain('run-7-');
+  });
+
+  it('throws when video_selection is called without runId', async () => {
+    const fakeClient = makeFakeClient(['{"ok": true}']);
+    __setLlmForTest(fakeClient);
+
+    await expect(
+      callLLM({ ...baseArgs, context: { channelId: 'test-channel', kind: 'video_selection' } }),
+    ).rejects.toThrow('runId is required');
+  });
+
+  it('throws when qualification is called without runId', async () => {
+    const fakeClient = makeFakeClient(['{"ok": true}']);
+    __setLlmForTest(fakeClient);
+
+    await expect(
+      callLLM({ ...baseArgs, context: { channelId: 'test-channel', kind: 'qualification' } }),
+    ).rejects.toThrow('runId is required');
   });
 
   it('throws LlmCallError when the API call fails', async () => {

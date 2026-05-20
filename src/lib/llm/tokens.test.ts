@@ -62,4 +62,12 @@ describe('truncateMiddle', () => {
     const reported = parseInt(match![1]!, 10);
     expect(reported).toBe(estimateTokens('a'.repeat(4000 - 216 - 144)));
   });
+
+  it('falls back to plain slice without marker when maxTokens is very small (maxChars <= 0)', () => {
+    // maxTokens=10 => maxChars = 10*4 - 40 = 0 => fallback to text.slice(0, 40)
+    const text = 'a'.repeat(200);
+    const result = truncateMiddle(text, 10);
+    expect(result).toBe(text.slice(0, 40));
+    expect(result).not.toMatch(/tokens omitted/);
+  });
 });

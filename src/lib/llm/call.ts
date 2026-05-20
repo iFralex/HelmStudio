@@ -58,9 +58,11 @@ function buildRawPath(
   const { channelId, runId, kind } = context;
   switch (kind) {
     case 'video_selection':
-      return paths.rawLlmVideoSelection(channelId, runId!, ts);
+      if (runId === undefined) throw new Error('runId is required for kind video_selection');
+      return paths.rawLlmVideoSelection(channelId, runId, ts);
     case 'qualification':
-      return paths.rawLlmQualification(channelId, runId!, ts);
+      if (runId === undefined) throw new Error('runId is required for kind qualification');
+      return paths.rawLlmQualification(channelId, runId, ts);
     case 'draft':
       return paths.rawLlmDraft(channelId, ts);
     case 'placeholder':
@@ -81,7 +83,7 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
       context,
     } = args;
 
-    const model = MODELS[tier]();
+    const model = MODELS[tier];
     const llm = getLlm();
     const ts = tsForFilename();
     const rawPath = buildRawPath(context, ts);
@@ -104,8 +106,8 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
       modelUsed = response.model ?? model;
       if (response.usage) {
         usage = {
-          inputTokens: response.usage.prompt_tokens,
-          outputTokens: response.usage.completion_tokens,
+          inputTokens: usage.inputTokens + response.usage.prompt_tokens,
+          outputTokens: usage.outputTokens + response.usage.completion_tokens,
         };
       }
       return response.choices[0]?.message?.content ?? '';

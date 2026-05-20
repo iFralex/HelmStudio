@@ -20,7 +20,7 @@ vi.mock('../../env', () => ({
   },
 }));
 
-const MIGRATIONS_FOLDER = path.resolve(import.meta.dirname, '../../../../../drizzle');
+const MIGRATIONS_FOLDER = path.resolve(import.meta.dirname, '../../../../drizzle');
 
 type Db = ReturnType<typeof drizzle<typeof schema>>;
 

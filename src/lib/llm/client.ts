@@ -12,12 +12,12 @@ export function getLlm(): OpenAI {
   return _client;
 }
 
-export const MODELS = {
-  think: () => env.LLM_MODEL_THINK,
-  fast: () => env.LLM_MODEL_FAST,
-} as const;
+export type ModelTier = 'think' | 'fast';
 
-export type ModelTier = keyof typeof MODELS;
+export const MODELS: Record<ModelTier, string> = {
+  think: env.LLM_MODEL_THINK,
+  fast: env.LLM_MODEL_FAST,
+};
 
 export function __setLlmForTest(fakeClient: OpenAI): void {
   _client = fakeClient;

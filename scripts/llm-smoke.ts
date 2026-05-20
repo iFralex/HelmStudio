@@ -43,7 +43,7 @@ async function main() {
     tier: 'think',
     promptVersion: version,
     system,
-    user: userTemplate({}),
+    user: userTemplate(),
     schema: OkSchema,
     context: { channelId: 'smoke-test', kind: 'placeholder' },
   });

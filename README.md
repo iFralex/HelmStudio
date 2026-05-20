@@ -66,6 +66,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | `pnpm db:generate`  | Generate a new migration from schema changes           |
 | `pnpm db:migrate`   | Apply pending migrations to the database               |
 | `pnpm db:studio`    | Open Drizzle Studio to browse the database interactively |
+| `pnpm tsx scripts/llm-smoke.ts` | Manual LLM connectivity smoke test (requires local proxy) |
 
 ## Database
 

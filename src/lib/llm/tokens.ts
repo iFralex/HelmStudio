@@ -18,8 +18,8 @@ export function truncateMiddle(text: string, maxTokens: number): string {
   const tailChars = maxChars - headChars;
 
   const head = text.slice(0, headChars);
-  const tail = tailChars > 0 ? text.slice(text.length - tailChars) : '';
-  const omitted = text.slice(headChars, tailChars > 0 ? text.length - tailChars : text.length);
+  const tail = text.slice(text.length - tailChars);
+  const omitted = text.slice(headChars, text.length - tailChars);
   const omittedTokens = estimateTokens(omitted);
 
   return `${head}[... ${omittedTokens} tokens omitted ...]${tail}`;

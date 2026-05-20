@@ -36,6 +36,7 @@ export async function deleteRawForChannel(channelId: string): Promise<void> {
     path.join('raw', 'llm', 'qualifications', channelId),
     path.join('raw', 'llm', 'video_selections', channelId),
     path.join('raw', 'llm', 'drafts', channelId),
+    path.join('raw', 'llm', 'placeholder', channelId),
   ];
 
   await Promise.all(
