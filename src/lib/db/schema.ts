@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, real, index } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, real, index, uniqueIndex } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
 export const channels = sqliteTable(
@@ -132,7 +132,7 @@ export const transcripts = sqliteTable(
     language: text('language'),
     source: text('source', { enum: ['youtube_transcript', 'captions_api'] }).notNull(),
     text: text('text'),
-    segments: text('segments', { mode: 'json' }),
+    segments: text('segments', { mode: 'json' }).$type<{ text: string; start: number; duration: number }[] | null>(),
     characterCount: integer('character_count'),
     fetchSucceeded: integer('fetch_succeeded', { mode: 'boolean' }).notNull().default(true),
     fetchError: text('fetch_error'),
@@ -143,7 +143,7 @@ export const transcripts = sqliteTable(
       .default(sql`(unixepoch())`),
   },
   (t) => ({
-    idxVideo: index('idx_transcripts_video').on(t.videoId),
+    uniqVideoId: uniqueIndex('uniq_transcripts_video_id').on(t.videoId),
     idxChannel: index('idx_transcripts_channel').on(t.channelId),
   }),
 );
