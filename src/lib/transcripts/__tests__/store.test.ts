@@ -40,10 +40,20 @@ type Db = ReturnType<typeof drizzle<typeof schema>>;
 
 function makeDb(): Db {
   const sqlite = new Database(':memory:');
-  sqlite.pragma('foreign_keys = OFF');
+  sqlite.pragma('foreign_keys = ON');
   const db = drizzle(sqlite, { schema });
   migrate(db, { migrationsFolder: MIGRATIONS_FOLDER });
   return db;
+}
+
+function seedChannel(db: Db, channelId: string) {
+  db.insert(schema.channels).values({ id: channelId, title: 'Test Channel' }).run();
+}
+
+function seedVideo(db: Db, videoId: string, channelId: string) {
+  db.insert(schema.videos)
+    .values({ id: videoId, channelId, title: 'Test Video', publishedAt: new Date() })
+    .run();
 }
 
 import { getOrFetchTranscript, deleteTranscriptsForChannel } from '../store';
@@ -73,6 +83,8 @@ describe.runIf(sqlite3Available)('getOrFetchTranscript', () => {
   beforeEach(async () => {
     tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'store-test-'));
     db = makeDb();
+    seedChannel(db, CHANNEL_ID);
+    seedVideo(db, VIDEO_ID, CHANNEL_ID);
     mockFetchTranscript.mockReset();
   });
 
@@ -166,6 +178,10 @@ describe.runIf(sqlite3Available)('deleteTranscriptsForChannel', () => {
   beforeEach(async () => {
     tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'store-test-'));
     db = makeDb();
+    seedChannel(db, CHANNEL_ID);
+    seedVideo(db, VIDEO_ID, CHANNEL_ID);
+    seedChannel(db, 'other-channel');
+    seedVideo(db, 'vid-other', 'other-channel');
   });
 
   afterEach(async () => {

@@ -5,6 +5,7 @@ import { transcripts } from '../db/schema';
 import { getDb } from '../db/client';
 import { dumpRaw, loadRaw } from '../storage/raw';
 import { paths, absolutePath } from '../storage/paths';
+import { logger } from '../logger';
 import { fetchTranscript } from './fetcher';
 import type { TranscriptFetchResult, TranscriptSegment } from './fetcher';
 
@@ -87,51 +88,55 @@ export async function getOrFetchTranscript(
   const result = await fetchTranscript(videoId, { preferredLanguages: args.preferredLanguages });
   const now = new Date();
 
-  if (result.ok) {
-    const envelope: RawEnvelope = {
-      params: { videoId, channelId },
-      language: result.language,
-      segments: result.segments,
-      fetchedAt: now.toISOString(),
-    };
-    const rawPath = await dumpRaw(paths.rawTranscript(channelId, videoId), envelope);
+  try {
+    if (result.ok) {
+      const envelope: RawEnvelope = {
+        params: { videoId, channelId },
+        language: result.language,
+        segments: result.segments,
+        fetchedAt: now.toISOString(),
+      };
+      const rawPath = await dumpRaw(paths.rawTranscript(channelId, videoId), envelope);
 
-    const row = {
-      videoId,
-      channelId,
-      language: result.language,
-      source: 'youtube_transcript' as const,
-      text: result.text,
-      segments: result.segments as unknown as null,
-      characterCount: result.characterCount,
-      fetchSucceeded: true,
-      fetchError: null,
-      rawPath,
-      fetchedAt: now,
-    };
+      const row = {
+        videoId,
+        channelId,
+        language: result.language,
+        source: 'youtube_transcript' as const,
+        text: result.text,
+        segments: result.segments,
+        characterCount: result.characterCount,
+        fetchSucceeded: true,
+        fetchError: null,
+        rawPath,
+        fetchedAt: now,
+      };
 
-    if (existing) {
-      db.update(transcripts).set(row).where(eq(transcripts.id, existing.id)).run();
+      if (existing) {
+        db.update(transcripts).set(row).where(eq(transcripts.id, existing.id)).run();
+      } else {
+        db.insert(transcripts).values(row).run();
+      }
     } else {
-      db.insert(transcripts).values(row).run();
-    }
-  } else {
-    const fetchError = `${result.reason}: ${result.message}`;
+      const fetchError = `${result.reason}: ${result.message}`;
 
-    const row = {
-      videoId,
-      channelId,
-      source: 'youtube_transcript' as const,
-      fetchSucceeded: false,
-      fetchError,
-      fetchedAt: now,
-    };
+      const row = {
+        videoId,
+        channelId,
+        source: 'youtube_transcript' as const,
+        fetchSucceeded: false,
+        fetchError,
+        fetchedAt: now,
+      };
 
-    if (existing) {
-      db.update(transcripts).set(row).where(eq(transcripts.id, existing.id)).run();
-    } else {
-      db.insert(transcripts).values(row).run();
+      if (existing) {
+        db.update(transcripts).set(row).where(eq(transcripts.id, existing.id)).run();
+      } else {
+        db.insert(transcripts).values(row).run();
+      }
     }
+  } catch (err) {
+    logger.warn({ err, videoId }, 'transcript persistence failed');
   }
 
   return result;

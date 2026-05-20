@@ -39,10 +39,11 @@ export type TranscriptFetchResult =
 type RawSegment = { text: string; duration: number; offset: number; lang?: string };
 
 // The youtube-transcript library returns ms in srv3 format and seconds in classic
-// format. Heuristic: if the first segment's duration > 10, assume milliseconds.
+// format. Heuristic: srv3 ms values are always >= 1000 for any speech segment;
+// classic second values are never >= 1000. Threshold 1000 is safe.
 function normalizeSegments(rawSegments: RawSegment[]): TranscriptSegment[] {
   const first = rawSegments[0];
-  const inMs = first != null && first.duration > 10;
+  const inMs = first != null && first.duration >= 1000;
   const divisor = inMs ? 1000 : 1;
   return rawSegments.map((seg) => ({
     text: seg.text,
@@ -56,6 +57,7 @@ function classifyError(err: unknown): Exclude<TranscriptFetchResult, { ok: true 
   if (err instanceof YoutubeTranscriptVideoUnavailableError) return 'unavailable';
   if (err instanceof YoutubeTranscriptDisabledError) return 'no_captions';
   if (err instanceof YoutubeTranscriptNotAvailableError) return 'no_captions';
+  if (err instanceof YoutubeTranscriptNotAvailableLanguageError) return 'no_captions';
   return 'unknown';
 }
 

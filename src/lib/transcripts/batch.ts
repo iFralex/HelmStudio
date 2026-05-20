@@ -15,7 +15,7 @@ export async function getOrFetchManyTranscripts(args: {
         const result = await getOrFetchTranscript({
           videoId,
           channelId,
-          ...(preferredLanguages ? { preferredLanguages } : {}),
+          preferredLanguages,
         });
         if (result.ok) {
           logger.info(

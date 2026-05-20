@@ -132,7 +132,7 @@ export const transcripts = sqliteTable(
     language: text('language'),
     source: text('source', { enum: ['youtube_transcript', 'captions_api'] }).notNull(),
     text: text('text'),
-    segments: text('segments', { mode: 'json' }),
+    segments: text('segments', { mode: 'json' }).$type<{ text: string; start: number; duration: number }[] | null>(),
     characterCount: integer('character_count'),
     fetchSucceeded: integer('fetch_succeeded', { mode: 'boolean' }).notNull().default(true),
     fetchError: text('fetch_error'),

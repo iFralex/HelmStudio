@@ -67,6 +67,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | `pnpm db:migrate`   | Apply pending migrations to the database               |
 | `pnpm db:studio`    | Open Drizzle Studio to browse the database interactively |
 | `pnpm tsx scripts/llm-smoke.ts` | Manual LLM connectivity smoke test (requires local proxy) |
+| `pnpm tsx scripts/transcript-smoke.ts <videoId>` | Manual transcript fetch smoke test for a single video (no API key required) |
 
 ## Third-party library notes
 
@@ -126,6 +127,7 @@ src/
     db/                 Drizzle schema, client, queries
     youtube/            YouTube Data API v3 client
     llm/                OpenAI-compatible LLM client + prompts
+    transcripts/        youtube-transcript client, store, and batch helper
     storage/            Raw blob persistence (disk)
     pipeline/           Orchestrator + pipeline stages
     seeds/              Italian keyword pool + category IDs

@@ -19,6 +19,7 @@ pnpm db:generate   # generate new migration from schema changes
 pnpm db:migrate    # apply pending migrations
 pnpm db:studio     # open Drizzle Studio browser UI
 pnpm tsx scripts/llm-smoke.ts  # manual LLM connectivity smoke test (requires local proxy)
+pnpm tsx scripts/transcript-smoke.ts <videoId>  # manual transcript fetch smoke test (no API key required)
 ```
 
 ## Language convention
@@ -73,6 +74,7 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `deleteRawForChannel(channelId)` removes all per-channel raw data (transcripts, youtube/channels, youtube/videos, llm/*). It does NOT delete `raw/youtube/search/` (keyed by date/keyword, not channelId). This is the GDPR deletion hook.
 - `channelId` passed to storage functions must be alphanumeric/dash/underscore only — validated at the storage layer.
 - LLM raw envelopes are stored under `raw/llm/<kind>/<channelId>/`. Path helpers: `paths.rawLlmVideoSelection(channelId, runId, ts)`, `paths.rawLlmQualification(channelId, runId, ts)`, `paths.rawLlmDraft(channelId, ts)`, `paths.rawLlmPlaceholder(channelId, ts)`. `runId` is required for the first two.
+- Transcript raw envelopes are stored under `raw/transcripts/<channelId>/`. Path helper: `paths.rawTranscript(channelId, videoId)` — one file per video (overwritten on re-fetch).
 
 ## Logging
 
@@ -119,6 +121,16 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `llmStatsForRun(runId, db?)` in `src/lib/llm/dashboard.ts` is the stable contract for per-run LLM stats in the dashboard UI.
 - `estimateTokens` and `truncateMiddle` in `src/lib/llm/tokens.ts` are used for prompt budgeting; `truncateMiddle` keeps head 60% / tail 40% with a marker.
 - Test seams: `__setLlmForTest(fakeClient)` and `__resetLlmForTest()` in `src/lib/llm/client.ts`; call both in `beforeEach`/`afterEach`.
+
+## Transcript client
+
+- All transcript fetches in pipeline code go through `getOrFetchTranscript` in `src/lib/transcripts/store.ts`; call `fetchTranscript` directly only from scripts or tests.
+- `fetchTranscript` in `src/lib/transcripts/fetcher.ts` calls the `youtube-transcript` library against YouTube's public `timedtext` endpoint (no API quota cost). It tries each preferred language in order, then falls back to any language, and always returns a structured `TranscriptFetchResult` — never throws.
+- `withTranscriptLimit` (from `src/lib/transcripts/limiter.ts`) caps concurrency at 2 simultaneous timedtext fetches with a 200ms inter-request delay for sequential requests.
+- `getOrFetchTranscript` provides idempotent persistence: on success it saves to the `transcripts` table and dumps a raw envelope to `data/raw/transcripts/<channelId>/<videoId>.json`; on failure it records `fetchSucceeded=false` with a 24-hour short-circuit cache to avoid hammering the endpoint.
+- `getOrFetchManyTranscripts` in `src/lib/transcripts/batch.ts` is the batch entry point for plan 08. Runs all fetches through the concurrency throttle, preserves input order, and never throws.
+- `deleteTranscriptsForChannel(channelId)` in `src/lib/transcripts/store.ts` is the GDPR deletion hook for transcripts: removes DB rows and the `data/raw/transcripts/<channelId>/` directory.
+- Transcript store tests conditionally skip DB-dependent cases when `better-sqlite3` native bindings cannot load — same pattern as YouTube/quota tests.
 
 ## Testing
 

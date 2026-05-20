@@ -155,11 +155,56 @@ describe('fetchTranscript', () => {
     expect(result.message).toBe('unexpected network issue');
   });
 
-  it('uses custom preferred languages when provided', async () => {
-    mockYtFetch.mockResolvedValueOnce(SEGMENTS_IT);
+  it('uses custom preferred languages when provided, trying each in order', async () => {
+    mockYtFetch
+      .mockRejectedValueOnce(
+        new YoutubeTranscriptNotAvailableLanguageError('it', [], 'abc123'),
+      )
+      .mockResolvedValueOnce([{ text: 'Bonjour', offset: 0, duration: 2000, lang: 'fr' }]);
 
-    await fetchTranscript('abc123', { preferredLanguages: ['it', 'fr'] });
+    const result = await fetchTranscript('abc123', { preferredLanguages: ['it', 'fr'] });
 
-    expect(mockYtFetch).toHaveBeenCalledWith('abc123', { lang: 'it' });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.language).toBe('fr');
+    expect(mockYtFetch).toHaveBeenCalledTimes(2);
+    expect(mockYtFetch).toHaveBeenNthCalledWith(1, 'abc123', { lang: 'it' });
+    expect(mockYtFetch).toHaveBeenNthCalledWith(2, 'abc123', { lang: 'fr' });
+  });
+
+  it('normalizes classic seconds-format segments (duration < 1000) without dividing', async () => {
+    mockYtFetch.mockResolvedValueOnce([
+      { text: 'Ciao', offset: 0, duration: 3.5, lang: 'it' },
+      { text: 'mondo', offset: 3.5, duration: 2.0, lang: 'it' },
+    ]);
+
+    const result = await fetchTranscript('abc123', { preferredLanguages: ['it'] });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.segments[0]!.start).toBeCloseTo(0);
+    expect(result.segments[0]!.duration).toBeCloseTo(3.5);
+    expect(result.segments[1]!.start).toBeCloseTo(3.5);
+    expect(result.segments[1]!.duration).toBeCloseTo(2.0);
+  });
+
+  it('returns no_captions when fallback any-language call throws NotAvailableLanguageError', async () => {
+    mockYtFetch
+      .mockRejectedValueOnce(
+        new YoutubeTranscriptNotAvailableLanguageError('it', [], 'abc123'),
+      )
+      .mockRejectedValueOnce(
+        new YoutubeTranscriptNotAvailableLanguageError('en', [], 'abc123'),
+      )
+      .mockRejectedValueOnce(
+        new YoutubeTranscriptNotAvailableLanguageError('', [], 'abc123'),
+      );
+
+    const result = await fetchTranscript('abc123');
+
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.reason).toBe('no_captions');
+    expect(mockYtFetch).toHaveBeenCalledTimes(3);
   });
 });
