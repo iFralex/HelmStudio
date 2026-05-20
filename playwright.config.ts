@@ -21,5 +21,9 @@ export default defineConfig({
     command: 'pnpm dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env['CI'],
+    env: {
+      ADMIN_PASSWORD: process.env['ADMIN_PASSWORD'] ?? 'test1234',
+      SESSION_SECRET: process.env['SESSION_SECRET'] ?? 'playwright-test-secret-32-chars!!',
+    },
   },
 });

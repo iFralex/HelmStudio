@@ -94,12 +94,12 @@ export function verifySessionCookie(token: string | undefined): boolean;
 
 ### Task 8: E2E smoke test
 
-- [ ] Create `e2e/auth.spec.ts`:
+- [x] Create `e2e/auth.spec.ts`:
   - test "redirects to login when unauthenticated"
   - test "logs in with correct password and lands on dashboard"
   - test "rejects wrong password"
-- [ ] Use `ADMIN_PASSWORD=test1234` set via Playwright env config
-- [ ] Mark completed
+- [x] Use `ADMIN_PASSWORD=test1234` set via Playwright env config
+- [x] Mark completed
 
 ### Task 9: Definition of Done
 
