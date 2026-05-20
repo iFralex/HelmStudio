@@ -144,6 +144,27 @@ describe('fetchTranscript', () => {
     expect(result.reason).toBe('unavailable');
   });
 
+  it('classifies forbidden for HTTP 403 error messages', async () => {
+    mockYtFetch.mockRejectedValueOnce(new Error('Request failed with status 403: Forbidden'));
+
+    const result = await fetchTranscript('abc123');
+
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.reason).toBe('forbidden');
+    expect(result.videoId).toBe('abc123');
+  });
+
+  it('classifies parse_error for XML parse failures', async () => {
+    mockYtFetch.mockRejectedValueOnce(new Error('Failed to parse XML response'));
+
+    const result = await fetchTranscript('abc123');
+
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.reason).toBe('parse_error');
+  });
+
   it('classifies unknown for unrecognized errors', async () => {
     mockYtFetch.mockRejectedValueOnce(new Error('unexpected network issue'));
 

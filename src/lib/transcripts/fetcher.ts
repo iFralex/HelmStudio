@@ -26,7 +26,7 @@ export type TranscriptFetchResult =
   | {
       ok: false;
       videoId: string;
-      reason: 'no_captions' | 'unavailable' | 'rate_limited' | 'unknown';
+      reason: 'no_captions' | 'unavailable' | 'forbidden' | 'rate_limited' | 'parse_error' | 'unknown';
       message: string;
     };
 
@@ -52,6 +52,11 @@ function classifyError(err: unknown): Exclude<TranscriptFetchResult, { ok: true 
   if (err instanceof YoutubeTranscriptDisabledError) return 'no_captions';
   if (err instanceof YoutubeTranscriptNotAvailableError) return 'no_captions';
   if (err instanceof YoutubeTranscriptNotAvailableLanguageError) return 'no_captions';
+  if (err instanceof Error) {
+    const msg = err.message.toLowerCase();
+    if (msg.includes('403') || msg.includes('forbidden')) return 'forbidden';
+    if (msg.includes('parse') || msg.includes('xml')) return 'parse_error';
+  }
   return 'unknown';
 }
 

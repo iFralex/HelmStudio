@@ -11,7 +11,7 @@ import type { TranscriptFetchResult, TranscriptSegment } from './fetcher';
 
 type Db = ReturnType<typeof getDb>;
 
-const VALID_REASONS = ['no_captions', 'unavailable', 'rate_limited', 'unknown'] as const;
+const VALID_REASONS = ['no_captions', 'unavailable', 'forbidden', 'rate_limited', 'parse_error', 'unknown'] as const;
 type FailureReason = (typeof VALID_REASONS)[number];
 
 function parseStoredFailure(fetchError: string): { reason: FailureReason; message: string } {
