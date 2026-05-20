@@ -11,14 +11,7 @@ import type { TranscriptFetchResult, TranscriptSegment } from './fetcher';
 
 type Db = ReturnType<typeof getDb>;
 
-const VALID_REASONS = [
-  'no_captions',
-  'unavailable',
-  'forbidden',
-  'rate_limited',
-  'parse_error',
-  'unknown',
-] as const;
+const VALID_REASONS = ['no_captions', 'unavailable', 'rate_limited', 'unknown'] as const;
 type FailureReason = (typeof VALID_REASONS)[number];
 
 function parseStoredFailure(fetchError: string): { reason: FailureReason; message: string } {
@@ -57,7 +50,7 @@ export async function getOrFetchTranscript(
       let text = existing.text;
       let segments = existing.segments as TranscriptSegment[] | null;
 
-      if (!text && existing.rawPath) {
+      if (text == null && existing.rawPath) {
         try {
           const envelope = await loadRaw<RawEnvelope>(existing.rawPath);
           segments = envelope.segments;
@@ -115,7 +108,7 @@ export async function getOrFetchTranscript(
       if (existing) {
         db.update(transcripts).set(row).where(eq(transcripts.id, existing.id)).run();
       } else {
-        db.insert(transcripts).values(row).run();
+        db.insert(transcripts).values(row).onConflictDoUpdate({ target: transcripts.videoId, set: row }).run();
       }
     } else {
       const fetchError = `${result.reason}: ${result.message}`;
@@ -132,7 +125,7 @@ export async function getOrFetchTranscript(
       if (existing) {
         db.update(transcripts).set(row).where(eq(transcripts.id, existing.id)).run();
       } else {
-        db.insert(transcripts).values(row).run();
+        db.insert(transcripts).values(row).onConflictDoUpdate({ target: transcripts.videoId, set: row }).run();
       }
     }
   } catch (err) {

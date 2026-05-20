@@ -26,13 +26,7 @@ export type TranscriptFetchResult =
   | {
       ok: false;
       videoId: string;
-      reason:
-        | 'no_captions'
-        | 'unavailable'
-        | 'forbidden'
-        | 'rate_limited'
-        | 'parse_error'
-        | 'unknown';
+      reason: 'no_captions' | 'unavailable' | 'rate_limited' | 'unknown';
       message: string;
     };
 
