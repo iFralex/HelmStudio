@@ -9,6 +9,12 @@ function assertChannelId(channelId: string): void {
   }
 }
 
+function assertVideoId(videoId: string): void {
+  if (!/^[A-Za-z0-9_-]+$/.test(videoId)) {
+    throw new Error(`Invalid videoId: ${videoId}`);
+  }
+}
+
 export const paths = {
   db: () => path.resolve(env.DATABASE_PATH),
   logsDir: () => path.join(env.DATA_DIR, 'logs'),
@@ -33,6 +39,7 @@ export const paths = {
 
   rawTranscript: (channelId: string, videoId: string) => {
     assertChannelId(channelId);
+    assertVideoId(videoId);
     return path.join('raw', 'transcripts', channelId, `${videoId}.json`);
   },
 
@@ -67,7 +74,7 @@ export function slugify(s: string): string {
 export function absolutePath(relativePath: string): string {
   const base = path.resolve(env.DATA_DIR);
   const abs = path.resolve(base, relativePath);
-  if (abs !== base && !abs.startsWith(base + path.sep)) {
+  if (!abs.startsWith(base + path.sep)) {
     throw new Error(`Path escapes DATA_DIR: ${relativePath}`);
   }
   return abs;

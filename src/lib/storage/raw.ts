@@ -3,6 +3,9 @@ import path from 'path';
 import { absolutePath } from './paths';
 
 export async function dumpRaw(relativePath: string, payload: unknown): Promise<string> {
+  if (path.isAbsolute(relativePath)) {
+    throw new Error(`Expected relative path, got absolute: ${relativePath}`);
+  }
   const absPath = absolutePath(relativePath);
   const tmpPath = `${absPath}.tmp`;
 
@@ -14,6 +17,9 @@ export async function dumpRaw(relativePath: string, payload: unknown): Promise<s
 }
 
 export async function loadRaw<T = unknown>(relativePath: string): Promise<T> {
+  if (path.isAbsolute(relativePath)) {
+    throw new Error(`Expected relative path, got absolute: ${relativePath}`);
+  }
   const absPath = absolutePath(relativePath);
   const content = await fs.readFile(absPath, 'utf8');
   return JSON.parse(content) as T;

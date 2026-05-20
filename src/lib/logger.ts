@@ -28,7 +28,12 @@ export const logger =
       : pino(baseOptions);
 
 if (env.NODE_ENV === 'production') {
-  process.on('exit', () => logger.flush());
+  // Flush async pino buffers before exit; 'exit' fires synchronously so it cannot drain async I/O
+  ['SIGTERM', 'SIGINT'].forEach((sig) => {
+    process.once(sig, () => {
+      logger.flush(() => process.exit(0));
+    });
+  });
 }
 
 export function childLogger(bindings: Record<string, unknown>) {

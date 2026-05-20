@@ -67,6 +67,31 @@ describe('env module', () => {
 });
 
 describe('EnvSchemaRefined cross-field validation', () => {
+  let exitSpy: ReturnType<typeof vi.spyOn>;
+  let savedEnv: Record<string, string | undefined>;
+
+  beforeEach(() => {
+    vi.resetModules();
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {}) as never);
+    savedEnv = { ...process.env };
+    Object.keys(process.env).forEach((k) => delete process.env[k]);
+    Object.assign(process.env, {
+      NODE_ENV: 'production',
+      ADMIN_PASSWORD: 'securepassword123',
+      SESSION_SECRET: 'a'.repeat(32),
+      YOUTUBE_API_KEY: 'a'.repeat(20),
+      LLM_BASE_URL: 'http://localhost:11434',
+      LLM_MODEL_THINK: 'deepseek-r1',
+      LLM_MODEL_FAST: 'llama3',
+    });
+  });
+
+  afterEach(() => {
+    exitSpy.mockRestore();
+    Object.keys(process.env).forEach((k) => delete process.env[k]);
+    Object.assign(process.env, savedEnv);
+  });
+
   const validBase = {
     ADMIN_PASSWORD: 'securepassword123',
     SESSION_SECRET: 'a'.repeat(32),
@@ -101,6 +126,31 @@ describe('EnvSchemaRefined cross-field validation', () => {
 });
 
 describe('EnvSchema direct validation', () => {
+  let exitSpy: ReturnType<typeof vi.spyOn>;
+  let savedEnv: Record<string, string | undefined>;
+
+  beforeEach(() => {
+    vi.resetModules();
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {}) as never);
+    savedEnv = { ...process.env };
+    Object.keys(process.env).forEach((k) => delete process.env[k]);
+    Object.assign(process.env, {
+      NODE_ENV: 'production',
+      ADMIN_PASSWORD: 'securepassword123',
+      SESSION_SECRET: 'a'.repeat(32),
+      YOUTUBE_API_KEY: 'a'.repeat(20),
+      LLM_BASE_URL: 'http://localhost:11434',
+      LLM_MODEL_THINK: 'deepseek-r1',
+      LLM_MODEL_FAST: 'llama3',
+    });
+  });
+
+  afterEach(() => {
+    exitSpy.mockRestore();
+    Object.keys(process.env).forEach((k) => delete process.env[k]);
+    Object.assign(process.env, savedEnv);
+  });
+
   it('fails when required vars are missing', async () => {
     const { EnvSchema } = await import('../../env');
     const result = EnvSchema.safeParse({});
