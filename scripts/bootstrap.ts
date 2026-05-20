@@ -39,6 +39,14 @@ try {
   process.exit(1);
 }
 
+console.log('\nRunning seed:keywords...');
+try {
+  execSync('npm run seed:keywords', { stdio: 'inherit', cwd: ROOT });
+} catch {
+  console.error('❌ seed:keywords failed');
+  process.exit(1);
+}
+
 const SECRET_KEYS = new Set(['ADMIN_PASSWORD', 'SESSION_SECRET', 'YOUTUBE_API_KEY', 'LLM_API_KEY']);
 
 const DISPLAY_KEYS = [

@@ -21,11 +21,11 @@ Discovery combines **strategy A** (~30 keyword searches/day, 100 units each) and
 
 ### Task 1: Seed keyword pool
 
-- [ ] Create `src/lib/seeds/keywords.ts` exporting the curated Italian keyword list from spec Appendix B (~70 keywords)
-- [ ] Create `scripts/seed-keywords.ts` that upserts each keyword into `seed_keywords` (idempotent: existing rows untouched, missing ones inserted)
-- [ ] Add npm script `seed:keywords` → `tsx scripts/seed-keywords.ts`
-- [ ] Run it as part of `pnpm bootstrap` (extend the bootstrap script from plan 03)
-- [ ] Mark completed
+- [x] Create `src/lib/seeds/keywords.ts` exporting the curated Italian keyword list from spec Appendix B (~70 keywords)
+- [x] Create `scripts/seed-keywords.ts` that upserts each keyword into `seed_keywords` (idempotent: existing rows untouched, missing ones inserted)
+- [x] Add npm script `seed:keywords` → `tsx scripts/seed-keywords.ts`
+- [x] Run it as part of `pnpm bootstrap` (extend the bootstrap script from plan 03)
+- [x] Mark completed
 
 ### Task 2: Category list
 
