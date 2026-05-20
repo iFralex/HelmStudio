@@ -22,6 +22,7 @@ export async function runCategoryExploration(
   let categoriesProcessed = 0;
   let candidatesInserted = 0;
   let candidatesAlreadyKnown = 0;
+  let quotaExhausted: QuotaExhausted | null = null;
 
   for (const categoryId of IN_SCOPE_CATEGORY_IDS) {
     let result: Awaited<ReturnType<typeof getMostPopularByCategory>>;
@@ -30,6 +31,7 @@ export async function runCategoryExploration(
     } catch (err) {
       if (err instanceof QuotaExhausted) {
         log.warn({ categoryId, spent: err.spent, cap: err.cap }, 'quota exhausted mid-category-exploration, stopping');
+        quotaExhausted = err;
         break;
       }
       throw err;
@@ -90,6 +92,8 @@ export async function runCategoryExploration(
       .where(eq(pipelineRuns.id, args.runId))
       .run();
   }
+
+  if (quotaExhausted) throw quotaExhausted;
 
   return { categoriesProcessed, candidatesInserted, candidatesAlreadyKnown };
 }

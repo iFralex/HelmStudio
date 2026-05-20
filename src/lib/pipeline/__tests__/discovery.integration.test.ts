@@ -269,6 +269,8 @@ describe.runIf(sqlite3Available)('runDiscovery integration', () => {
     expect(run.candidatesFound).toBe(8);
     expect(run.channelsEnriched).toBe(10);
     expect(run.channelsPreRejected).toBe(6);
+    expect(run.status).toBe('completed');
+    expect(run.finishedAt).not.toBeNull();
   });
 
   it('is idempotent: re-running does not create duplicate channels or videos', async () => {

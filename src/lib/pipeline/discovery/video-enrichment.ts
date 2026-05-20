@@ -38,6 +38,7 @@ export async function fetchVideosForSurvivingChannels(
   let channelsWithVideos = 0;
   let channelsInactive = 0;
   let videosFetched = 0;
+  let quotaExhausted: QuotaExhausted | null = null;
 
   const inactiveCutoff = new Date(Date.now() - filters.inactiveDays * 24 * 60 * 60 * 1000);
 
@@ -54,6 +55,7 @@ export async function fetchVideosForSurvivingChannels(
     } catch (err) {
       if (err instanceof QuotaExhausted) {
         log.warn({ spent: err.spent, cap: err.cap }, 'quota exhausted during playlist fetch, stopping');
+        quotaExhausted = err;
         break;
       }
       throw err;
@@ -74,6 +76,7 @@ export async function fetchVideosForSurvivingChannels(
     } catch (err) {
       if (err instanceof QuotaExhausted) {
         log.warn({ spent: err.spent, cap: err.cap }, 'quota exhausted during video fetch, stopping');
+        quotaExhausted = err;
         break;
       }
       throw err;
@@ -99,7 +102,8 @@ export async function fetchVideosForSurvivingChannels(
     }
 
     for (const video of videoDetailList) {
-      db.insert(videos)
+      const insertResult = db
+        .insert(videos)
         .values({
           id: video.id,
           channelId: channel.id,
@@ -121,7 +125,7 @@ export async function fetchVideosForSurvivingChannels(
         .onConflictDoNothing()
         .run();
 
-      videosFetched += 1;
+      videosFetched += insertResult.changes;
     }
 
     channelsWithVideos += 1;
@@ -144,6 +148,8 @@ export async function fetchVideosForSurvivingChannels(
   }
 
   log.info({ channelsWithVideos, channelsInactive, videosFetched }, 'video enrichment complete');
+
+  if (quotaExhausted) throw quotaExhausted;
 
   return { channelsWithVideos, channelsInactive, videosFetched };
 }

@@ -1,19 +1,11 @@
 import { eq, and, isNull, sql } from 'drizzle-orm';
 import { getDb } from '../../db/client';
 import { channels, pipelineRuns, pipelineEvents } from '../../db/schema';
-import { getChannels } from '../../youtube/operations';
+import { getChannels, chunk } from '../../youtube/operations';
 import { QuotaExhausted } from '../../youtube/quota';
 import { childLogger } from '../../logger';
 
 type Db = ReturnType<typeof getDb>;
-
-function chunk<T>(arr: T[], size: number): T[][] {
-  const result: T[][] = [];
-  for (let i = 0; i < arr.length; i += size) {
-    result.push(arr.slice(i, i + size));
-  }
-  return result;
-}
 
 export async function enrichCandidateChannels(
   args: { runId: number },
@@ -36,6 +28,7 @@ export async function enrichCandidateChannels(
   const batches = chunk(candidateIds, 50);
   let enrichedCount = 0;
   let failedCount = 0;
+  let quotaExhausted: QuotaExhausted | null = null;
 
   for (const batch of batches) {
     let result: Awaited<ReturnType<typeof getChannels>>;
@@ -44,6 +37,7 @@ export async function enrichCandidateChannels(
     } catch (err) {
       if (err instanceof QuotaExhausted) {
         log.warn({ spent: err.spent, cap: err.cap }, 'quota exhausted mid-enrichment, stopping');
+        quotaExhausted = err;
         break;
       }
       throw err;
@@ -111,6 +105,8 @@ export async function enrichCandidateChannels(
       .where(eq(pipelineRuns.id, args.runId))
       .run();
   }
+
+  if (quotaExhausted) throw quotaExhausted;
 
   return { enrichedCount, failedCount };
 }

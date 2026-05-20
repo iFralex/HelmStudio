@@ -68,6 +68,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | `pnpm db:studio`    | Open Drizzle Studio to browse the database interactively |
 | `pnpm tsx scripts/llm-smoke.ts` | Manual LLM connectivity smoke test (requires local proxy) |
 | `pnpm tsx scripts/transcript-smoke.ts <videoId>` | Manual transcript fetch smoke test for a single video (no API key required) |
+| `pnpm seed:keywords` | Upsert the curated Italian keyword list into the database (idempotent) |
+| `pnpm tsx scripts/run-discovery.ts` | Manual discovery pipeline smoke run (~3,200 YouTube quota units consumed) |
 
 ## Third-party library notes
 
@@ -85,6 +87,7 @@ For first-time setup, use `pnpm bootstrap` (called from the Quickstart above). I
 - Copies `.env.example` → `.env` if no `.env` exists
 - Creates `data/`, `data/logs/`, and `data/raw/` directories
 - Runs `pnpm db:init` to apply migrations and seed defaults
+- Runs `pnpm seed:keywords` to upsert the curated Italian keyword list
 
 To re-run only the database step (safe to repeat, idempotent):
 

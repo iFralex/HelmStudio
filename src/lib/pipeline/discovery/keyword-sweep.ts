@@ -32,6 +32,7 @@ export async function runKeywordSweep(
   let searchesPerformed = 0;
   let candidatesInserted = 0;
   let candidatesAlreadyKnown = 0;
+  let quotaExhausted: QuotaExhausted | null = null;
 
   for (const kw of keywords) {
     let searchResult: Awaited<ReturnType<typeof searchChannels>>;
@@ -40,6 +41,7 @@ export async function runKeywordSweep(
     } catch (err) {
       if (err instanceof QuotaExhausted) {
         log.warn({ keyword: kw.keyword, spent: err.spent, cap: err.cap }, 'quota exhausted mid-sweep, stopping');
+        quotaExhausted = err;
         break;
       }
       throw err;
@@ -111,6 +113,8 @@ export async function runKeywordSweep(
       .where(eq(pipelineRuns.id, args.runId))
       .run();
   }
+
+  if (quotaExhausted) throw quotaExhausted;
 
   return { searchesPerformed, candidatesInserted, candidatesAlreadyKnown };
 }

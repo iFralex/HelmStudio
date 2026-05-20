@@ -32,9 +32,11 @@ export async function applyPreQualificationFilter(
   for (const row of enrichedRows) {
     let rejectionReason: string | null = null;
 
-    if (row.subscriberCount !== null && row.subscriberCount < filters.minSubscribers) {
+    if (row.subscriberCount === null) {
+      rejectionReason = 'unknown_subscriber_count';
+    } else if (row.subscriberCount < filters.minSubscribers) {
       rejectionReason = 'below_min_subscribers';
-    } else if (row.subscriberCount !== null && row.subscriberCount > filters.maxSubscribers) {
+    } else if (row.subscriberCount > filters.maxSubscribers) {
       rejectionReason = 'above_max_subscribers';
     } else if (row.country !== null && row.country !== filters.country) {
       rejectionReason = 'wrong_country';

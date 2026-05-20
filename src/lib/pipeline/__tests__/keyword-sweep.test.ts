@@ -62,9 +62,14 @@ function seedRun(db: Db): number {
   return result.id;
 }
 
-function seedKeyword(db: Db, keyword: string, lastUsedAt?: Date | null): void {
+function seedKeyword(
+  db: Db,
+  keyword: string,
+  lastUsedAt?: Date | null,
+  isActive = true,
+): void {
   db.insert(schema.seedKeywords)
-    .values({ keyword, isActive: true, lastUsedAt: lastUsedAt ?? null })
+    .values({ keyword, isActive, lastUsedAt: lastUsedAt ?? null })
     .run();
 }
 
@@ -118,6 +123,7 @@ describe.runIf(sqlite3Available)('runKeywordSweep', () => {
     expect(kw.totalUses).toBe(1);
     expect(kw.totalCandidatesProduced).toBe(2);
     expect(kw.lastUsedAt).not.toBeNull();
+    expect(Date.now() - kw.lastUsedAt!.getTime()).toBeLessThan(5000);
   });
 
   it('logs a pipelineEvents row per keyword', async () => {
@@ -195,6 +201,20 @@ describe.runIf(sqlite3Available)('runKeywordSweep', () => {
     await runKeywordSweep({ runId, keywordCount: 2 }, db);
 
     expect(mockSearchChannels).toHaveBeenCalledTimes(2);
+  });
+
+  it('skips inactive keywords', async () => {
+    const db = makeDb();
+    const runId = seedRun(db);
+    seedKeyword(db, 'active-kw', null, true);
+    seedKeyword(db, 'inactive-kw', null, false);
+    mockSearchChannels.mockResolvedValue(makeSearchResult([]));
+
+    await runKeywordSweep({ runId, keywordCount: 5 }, db);
+
+    expect(mockSearchChannels).toHaveBeenCalledTimes(1);
+    const call = mockSearchChannels.mock.calls[0]![0] as { query: string };
+    expect(call.query).toBe('active-kw');
   });
 
   it('handles empty search results without error', async () => {
