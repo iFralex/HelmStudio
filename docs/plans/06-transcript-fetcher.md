@@ -149,10 +149,10 @@ export async function getOrFetchManyTranscripts(args: {
 
 ### Task 6: Smoke script
 
-- [ ] Create `scripts/transcript-smoke.ts`:
+- [x] Create `scripts/transcript-smoke.ts`:
   - argv[2] is a video ID (e.g. a known Italian news clip)
   - calls `fetchTranscript(videoId)` and prints first 200 chars + total length + language + first segment timing
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 7: Tests
 
