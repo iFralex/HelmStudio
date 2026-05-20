@@ -6,6 +6,7 @@ const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 function getSecret(): string {
   const secret = process.env.SESSION_SECRET;
   if (!secret) throw new Error('SESSION_SECRET env var is required');
+  if (secret.length < 32) throw new Error('SESSION_SECRET must be at least 32 characters');
   return secret;
 }
 
@@ -19,11 +20,7 @@ export function verifyPassword(plain: string): boolean {
   try {
     const a = Buffer.from(plain);
     const b = Buffer.from(expected);
-    if (a.length !== b.length) {
-      // Still run a comparison to avoid timing leak on length
-      timingSafeEqual(Buffer.alloc(1), Buffer.alloc(1));
-      return false;
-    }
+    if (a.length !== b.length) return false;
     return timingSafeEqual(a, b);
   } catch {
     return false;

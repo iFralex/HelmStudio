@@ -8,7 +8,7 @@ Plans within a wave can in principle be worked on in parallel; plans in a later 
 
 | #   | Title                                               | Wave | Depends on | Branch                          | Effort   | Status      |
 | --- | --------------------------------------------------- | ---- | ---------- | ------------------------------- | -------- | ----------- |
-| 01  | Project Bootstrap                                   | 1    | —          | `feat/01-project-bootstrap`     | 1–2 days | Not started |
+| 01  | Project Bootstrap                                   | 1    | —          | `feat/01-project-bootstrap`     | 1–2 days | Complete    |
 | 02  | Database Schema & Migrations                        | 1    | 01         | `feat/02-database-schema`       | 1–2 days | Not started |
 | 03  | Configuration, Env Validation & Raw Storage         | 1    | 01, 02     | `feat/03-config-storage`        | 1 day    | Not started |
 | 04  | YouTube Data API Client & Quota Tracker             | 2    | 01, 02, 03 | `feat/04-youtube-client`        | 2 days   | Not started |
