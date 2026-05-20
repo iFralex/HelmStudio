@@ -102,7 +102,7 @@ export async function deleteTranscriptsForChannel(channelId: string): Promise<vo
 
 ### Task 4: Polite throttling
 
-- [ ] Create `src/lib/transcripts/limiter.ts`:
+- [x] Create `src/lib/transcripts/limiter.ts`:
 
 ```typescript
 import pLimit from 'p-limit';
@@ -127,8 +127,8 @@ export async function withTranscriptLimit<T>(fn: () => Promise<T>): Promise<T> {
 }
 ```
 
-- [ ] Wrap `fetchTranscript` body inside this limiter
-- [ ] Mark completed
+- [x] Wrap `fetchTranscript` body inside this limiter
+- [x] Mark completed
 
 ### Task 5: Batch helper
 

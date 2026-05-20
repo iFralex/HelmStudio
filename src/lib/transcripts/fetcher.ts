@@ -6,6 +6,7 @@ import {
   YoutubeTranscriptTooManyRequestError,
   YoutubeTranscriptVideoUnavailableError,
 } from 'youtube-transcript';
+import { withTranscriptLimit } from './limiter';
 
 export type TranscriptSegment = {
   text: string;
@@ -59,6 +60,13 @@ function classifyError(err: unknown): Exclude<TranscriptFetchResult, { ok: true 
 }
 
 export async function fetchTranscript(
+  videoId: string,
+  opts?: { preferredLanguages?: string[] },
+): Promise<TranscriptFetchResult> {
+  return withTranscriptLimit(() => fetchTranscriptInner(videoId, opts));
+}
+
+async function fetchTranscriptInner(
   videoId: string,
   opts?: { preferredLanguages?: string[] },
 ): Promise<TranscriptFetchResult> {
