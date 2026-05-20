@@ -79,7 +79,7 @@ Behaviour:
 
 ### Task 3: Step 2 wiring
 
-- [ ] Create `src/lib/pipeline/qualification/transcripts-stage.ts`:
+- [x] Create `src/lib/pipeline/qualification/transcripts-stage.ts`:
 
 ```typescript
 export async function fetchSelectedTranscripts(args: {
@@ -88,8 +88,8 @@ export async function fetchSelectedTranscripts(args: {
 }): Promise<TranscriptFetchResult[]>;
 ```
 
-- [ ] Thin wrapper around `getOrFetchManyTranscripts` (plan 06) that preserves input order and logs a `pipelineEvents` summary row with how many succeeded
-- [ ] Mark completed
+- [x] Thin wrapper around `getOrFetchManyTranscripts` (plan 06) that preserves input order and logs a `pipelineEvents` summary row with how many succeeded
+- [x] Mark completed
 
 ### Task 4: Step 3 prompt and schema
 
