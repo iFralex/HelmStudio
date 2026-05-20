@@ -165,7 +165,7 @@ export function truncateMiddle(text: string, maxTokens: number): string;
 
 ### Task 9: Stats helpers
 
-- [ ] Create `src/lib/llm/dashboard.ts`:
+- [x] Create `src/lib/llm/dashboard.ts`:
 
 ```typescript
 export async function llmStatsForRun(runId: number): Promise<{
@@ -178,8 +178,8 @@ export async function llmStatsForRun(runId: number): Promise<{
 // joined by runId where applicable.
 ```
 
-- [ ] Will be consumed by the runs UI in plan 13
-- [ ] Mark completed
+- [x] Will be consumed by the runs UI in plan 13
+- [x] Mark completed
 
 ### Task 10: Definition of Done
 
