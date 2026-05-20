@@ -22,6 +22,9 @@ export const paths = {
   rawYoutubeSearch: (date: string, slug: string, ts: string) =>
     path.join('raw', 'youtube', 'search', date, `${slug}-${ts}.json`),
 
+  rawYoutubePopular: (categoryId: string, ts: string) =>
+    path.join('raw', 'youtube', 'popular', categoryId, `${ts}.json`),
+
   rawYoutubeChannelMeta: (channelId: string, ts: string) => {
     assertChannelId(channelId);
     return path.join('raw', 'youtube', 'channels', channelId, `meta-${ts}.json`);

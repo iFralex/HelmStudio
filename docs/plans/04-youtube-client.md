@@ -91,7 +91,7 @@ export function pacificDateString(d = new Date()): string;
 
 ### Task 4: Operation wrappers
 
-- [ ] Create `src/lib/youtube/operations.ts` with **typed** wrappers around each operation we use, each:
+- [x] Create `src/lib/youtube/operations.ts` with **typed** wrappers around each operation we use, each:
   - calling `assertHeadroom`
   - performing the SDK call
   - calling `recordQuotaUse`
@@ -135,10 +135,10 @@ export async function getVideos(params: {
 }): Promise<{ videos: VideoDetail[]; rawPath: string }>;
 ```
 
-- [ ] `ChannelDetail` and `VideoDetail` are concrete types defined in `src/lib/youtube/types.ts`, including the fields written into the `channels` and `videos` tables (spec §6.1)
-- [ ] `getChannels` MUST chunk inputs into batches of 50 transparently (caller can pass any count); each batch is one `channels.list` call and one quota unit
-- [ ] Same for `getVideos`
-- [ ] Mark completed
+- [x] `ChannelDetail` and `VideoDetail` are concrete types defined in `src/lib/youtube/types.ts`, including the fields written into the `channels` and `videos` tables (spec §6.1)
+- [x] `getChannels` MUST chunk inputs into batches of 50 transparently (caller can pass any count); each batch is one `channels.list` call and one quota unit
+- [x] Same for `getVideos`
+- [x] Mark completed
 
 ### Task 5: Concurrency limiter
 
