@@ -80,7 +80,7 @@ Behaviour:
 
 ### Task 4: Category exploration
 
-- [ ] Create `src/lib/pipeline/discovery/category-exploration.ts`:
+- [x] Create `src/lib/pipeline/discovery/category-exploration.ts`:
 
 ```typescript
 export async function runCategoryExploration(args: { runId: number }): Promise<{
@@ -97,7 +97,7 @@ Behaviour:
   - Insert new channels with `discoverySource='category:<id>'`
   - Log `pipelineEvents`: `event='discovery_category_complete'`, `details={ categoryId, newCount }`
 - On `QuotaExhausted`: same graceful stop as keyword sweep
-- Mark completed
+- [x] Mark completed
 
 ### Task 5: Channel enrichment
 
