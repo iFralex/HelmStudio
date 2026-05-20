@@ -78,6 +78,14 @@ export async function listChannels(
     .all();
 }
 
+const ALL_DISCOVERY_STATUSES: DiscoveryStatus[] = [
+  'candidate',
+  'enriched',
+  'rejected_pre_qual',
+  'qualified',
+  'rejected_post_qual',
+];
+
 export async function countChannelsByStatus(
   db: Db = getDb(),
 ): Promise<Record<DiscoveryStatus, number>> {
@@ -87,10 +95,12 @@ export async function countChannelsByStatus(
     .groupBy(channels.discoveryStatus)
     .all();
 
-  return Object.fromEntries(rows.map((r) => [r.status, r.count])) as Record<
+  const base = Object.fromEntries(ALL_DISCOVERY_STATUSES.map((s) => [s, 0])) as Record<
     DiscoveryStatus,
     number
   >;
+  for (const r of rows) base[r.status] = r.count;
+  return base;
 }
 
 export async function getLatestQualification(
@@ -133,7 +143,12 @@ export async function listTranscriptsForChannel(
   channelId: string,
   db: Db = getDb(),
 ): Promise<Transcript[]> {
-  return db.select().from(transcripts).where(eq(transcripts.channelId, channelId)).all();
+  return db
+    .select()
+    .from(transcripts)
+    .where(eq(transcripts.channelId, channelId))
+    .orderBy(desc(transcripts.fetchedAt))
+    .all();
 }
 
 export async function getCurrentDraft(

@@ -17,10 +17,19 @@ Open http://localhost:3000 — you will be redirected to `/login`. Enter your `A
 
 ## Environment variables
 
-| Variable         | Required | Description                                               |
-| ---------------- | -------- | --------------------------------------------------------- |
-| `ADMIN_PASSWORD` | Yes      | Single shared password for the operator UI                |
-| `SESSION_SECRET` | Yes      | At least 32 random characters; signs HMAC session cookies |
+| Variable                        | Required | Default              | Description                                               |
+| ------------------------------- | -------- | -------------------- | --------------------------------------------------------- |
+| `ADMIN_PASSWORD`                | Yes      | —                    | Single shared password for the operator UI                |
+| `SESSION_SECRET`                | Yes      | —                    | At least 32 random characters; signs HMAC session cookies |
+| `DATABASE_PATH`                 | No       | `./data/pipeline.db` | Path to the SQLite database file                          |
+| `FILTER_MIN_SUBSCRIBERS`        | No       | `1000`               | Minimum subscriber count for discovery filtering          |
+| `FILTER_MAX_SUBSCRIBERS`        | No       | `500000`             | Maximum subscriber count for discovery filtering          |
+| `FILTER_COUNTRY`                | No       | _(any)_              | ISO country code filter (e.g. `IT`)                       |
+| `FILTER_LANGUAGE`               | No       | _(any)_              | Language code filter (e.g. `it`)                          |
+| `FILTER_REQUALIFY_AFTER_DAYS`   | No       | `90`                 | Days before a channel is eligible for re-qualification    |
+| `FILTER_INACTIVE_DAYS`          | No       | `180`                | Channels inactive longer than this are skipped            |
+| `PIPELINE_KEYWORDS_PER_RUN`     | No       | `3`                  | Number of seed keywords searched per pipeline run         |
+| `PIPELINE_TARGET_QUALIFIED_PER_RUN` | No   | `10`                 | Target number of qualified channels per run               |
 
 Generate a secure secret:
 
@@ -65,7 +74,7 @@ This command:
 - Applies all pending Drizzle migrations
 - Upserts default rows in the `settings` table (filter thresholds, pipeline config)
 
-Re-running `pnpm db:init` is safe and idempotent — it only applies migrations that have not been applied yet and uses `INSERT OR REPLACE` for the settings rows.
+Re-running `pnpm db:init` is safe and idempotent — it only applies migrations that have not been applied yet and skips settings rows that already exist, so existing customizations are preserved.
 
 ### Schema evolution
 

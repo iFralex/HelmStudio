@@ -13,6 +13,10 @@ pnpm format        # prettier --write .
 pnpm format:check  # prettier --check .
 pnpm test          # vitest run (unit tests under src/)
 pnpm test:e2e      # playwright test (E2E tests under e2e/)
+pnpm db:init       # create data/ dir, run migrations, seed default settings (first run only)
+pnpm db:generate   # generate new migration from schema changes
+pnpm db:migrate    # apply pending migrations
+pnpm db:studio     # open Drizzle Studio browser UI
 ```
 
 ## Language convention
@@ -40,6 +44,17 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - shadcn/ui components are in `src/components/ui/`. Tailwind v4 is in use (not v3).
 - The `cn` utility (clsx + tailwind-merge) is exported from `src/lib/utils.ts`.
 - PostCSS config: `postcss.config.mjs`.
+
+## Database architecture
+
+- SQLite via `better-sqlite3`; WAL mode + foreign keys + busy_timeout set on every connection in `src/lib/db/client.ts`.
+- `getDb()` returns a lazy singleton stored on `globalThis` so Next.js hot-reloads in dev don't open multiple connections.
+- `DATABASE_PATH` env var overrides the default `./data/pipeline.db`; the parent directory is created automatically.
+- Schema is in `src/lib/db/schema.ts`; migrations live in `drizzle/`. Always commit `drizzle/` files alongside schema changes.
+- Query helpers in `src/lib/db/queries.ts` accept an optional `db` parameter for test injection (tests use `:memory:` databases).
+- Schema evolution: edit schema → `pnpm db:generate` → review generated SQL → `pnpm db:migrate`.
+- `pnpm db:init` seeds `filters` and `pipeline_config` settings using `onConflictDoNothing` — safe to re-run without overwriting user-customized values.
+- TypeScript scripts in `scripts/` are run with `tsx` (listed in devDependencies).
 
 ## Testing
 

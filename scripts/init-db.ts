@@ -36,18 +36,12 @@ const now = new Date();
 
 db.insert(schema.settings)
   .values({ key: 'filters', value: defaultFilters, updatedAt: now })
-  .onConflictDoUpdate({
-    target: schema.settings.key,
-    set: { value: defaultFilters, updatedAt: now },
-  })
+  .onConflictDoNothing()
   .run();
 
 db.insert(schema.settings)
   .values({ key: 'pipeline_config', value: defaultPipelineConfig, updatedAt: now })
-  .onConflictDoUpdate({
-    target: schema.settings.key,
-    set: { value: defaultPipelineConfig, updatedAt: now },
-  })
+  .onConflictDoNothing()
   .run();
 
 const settingRows = db.select().from(schema.settings).all();
