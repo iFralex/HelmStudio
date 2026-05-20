@@ -89,6 +89,20 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - On first read, if the DB row is absent, env defaults are persisted to the DB automatically.
 - Tests must call `_resetSettingsCache()` in `beforeEach` to avoid state leakage between test cases.
 
+## YouTube client
+
+- All YouTube Data API v3 calls go through typed wrappers in `src/lib/youtube/operations.ts` — never call the `googleapis` SDK directly from application code.
+- Every wrapper calls `checkAndRecordQuota` before the SDK call (atomically checks headroom and records usage in a single SQLite transaction), then dumps the raw response via `dumpRaw`.
+- The SDK singleton is a module-level lazy cache in `src/lib/youtube/client.ts` (`getYoutube()`), keyed on `YOUTUBE_API_KEY`.
+- All wrappers accept an optional trailing `db` parameter for test injection — pass an in-memory Drizzle DB in tests.
+- `withYoutubeLimit` (from `src/lib/youtube/limiter.ts`) caps concurrency at 2 simultaneous SDK calls; it wraps the inner SDK call, not the whole operation.
+- `withRetry` (from `src/lib/youtube/retry.ts`) retries on `ECONNRESET`, `ETIMEDOUT`, HTTP 5xx, and 429 with jittered exponential backoff (max 10 s); it does NOT retry on 400/401/403/404.
+- `getChannels` and `getVideos` transparently chunk their `ids` input into batches of 50; each batch is one API call and one quota debit. `getChannels` returns `rawPaths: Record<string, string>` (keyed by channelId); `getVideos` returns `rawPath: string | null` (last batch path, or null for empty input).
+- Quota is tracked in Pacific Time via `pacificDateString()` in `src/lib/youtube/quota.ts` — the daily budget resets when the Pacific date rolls over, not UTC midnight.
+- `checkAndRecordQuota(operation, runId?, db?)` throws `QuotaExhausted` (with `.spent` and `.cap` fields) if `spent + cost > PIPELINE_YOUTUBE_QUOTA_DAILY_LIMIT - PIPELINE_YOUTUBE_QUOTA_SAFETY_BUFFER`; otherwise inserts the ledger row atomically.
+- `quotaSummary()` in `src/lib/youtube/dashboard.ts` is the stable contract for dashboard UI — consume that rather than raw DB queries against `quotaLedger`.
+- YouTube quota and operations tests conditionally skip all DB-dependent cases when `better-sqlite3` native bindings cannot load (e.g. arm64/Node version mismatch). `pnpm test` will report these as skipped, not failed.
+
 ## Testing
 
 - Unit tests: vitest, environment `happy-dom`. Test files alongside source: `src/**/*.test.ts`.

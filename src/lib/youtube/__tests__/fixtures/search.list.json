@@ -1,0 +1,27 @@
+{
+  "kind": "youtube#searchListResponse",
+  "etag": "abc123etag",
+  "nextPageToken": "CAUQAA",
+  "regionCode": "IT",
+  "pageInfo": {
+    "totalResults": 42,
+    "resultsPerPage": 3
+  },
+  "items": [
+    {
+      "kind": "youtube#searchResult",
+      "etag": "etag1",
+      "id": { "kind": "youtube#channel", "channelId": "UCchannel1abc" }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "etag2",
+      "id": { "kind": "youtube#channel", "channelId": "UCchannel2def" }
+    },
+    {
+      "kind": "youtube#searchResult",
+      "etag": "etag3",
+      "id": { "kind": "youtube#channel", "channelId": "UCchannel3ghi" }
+    }
+  ]
+}
