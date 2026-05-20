@@ -1,0 +1,32 @@
+{
+  "kind": "youtube#channelListResponse",
+  "etag": "channelsetag",
+  "pageInfo": { "totalResults": 1, "resultsPerPage": 5 },
+  "items": [
+    {
+      "kind": "youtube#channel",
+      "etag": "chanletag1",
+      "id": "UCchannel1abc",
+      "snippet": {
+        "title": "Rassegna Stampa News",
+        "description": "Daily press review of Italian newspapers",
+        "publishedAt": "2018-03-15T09:00:00Z",
+        "country": "IT",
+        "defaultLanguage": "it",
+        "customUrl": "@rassegnastampanews",
+        "thumbnails": {
+          "default": { "url": "https://example.com/photo.jpg" }
+        }
+      },
+      "statistics": {
+        "viewCount": "5000000",
+        "subscriberCount": "120000",
+        "hiddenSubscriberCount": false,
+        "videoCount": "800"
+      },
+      "contentDetails": {
+        "relatedPlaylists": { "uploads": "UUchannel1abc" }
+      }
+    }
+  ]
+}

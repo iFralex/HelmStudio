@@ -1,0 +1,27 @@
+{
+  "kind": "youtube#videoListResponse",
+  "etag": "videosetag",
+  "pageInfo": { "totalResults": 1, "resultsPerPage": 5 },
+  "items": [
+    {
+      "kind": "youtube#video",
+      "etag": "videoetag1",
+      "id": "video123abc",
+      "snippet": {
+        "publishedAt": "2024-01-15T08:00:00Z",
+        "channelId": "UCchannel1abc",
+        "title": "Rassegna Stampa del 15 Gennaio",
+        "description": "La rassegna stampa dei principali quotidiani italiani",
+        "tags": ["rassegna stampa", "quotidiani", "notizie"],
+        "categoryId": "25",
+        "defaultLanguage": "it",
+        "defaultAudioLanguage": "it",
+        "thumbnails": {
+          "default": { "url": "https://example.com/video-thumb.jpg" }
+        }
+      },
+      "contentDetails": { "duration": "PT15M42S", "dimension": "2d", "definition": "hd" },
+      "statistics": { "viewCount": "25000", "likeCount": "1200", "commentCount": "85" }
+    }
+  ]
+}

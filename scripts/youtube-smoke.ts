@@ -1,12 +1,25 @@
 /**
  * Smoke test for the YouTube API client.
- * Usage: pnpm tsx scripts/youtube-smoke.ts
+ * Usage: pnpm tsx scripts/youtube-smoke.ts [--record]
  * Requires YOUTUBE_API_KEY in .env (validated by env.ts on import).
  * Writes raw API responses to data/raw/youtube/... as a side-effect.
+ * Pass --record to also save responses to src/lib/youtube/__tests__/fixtures/.
  */
 
+import fs from 'fs/promises';
+import path from 'path';
 import { searchChannels, getChannels } from '../src/lib/youtube/operations';
 import { todayUnitsSpent } from '../src/lib/youtube/quota';
+import { absolutePath } from '../src/lib/storage/paths';
+
+const RECORD = process.argv.includes('--record');
+const FIXTURES_DIR = path.resolve(import.meta.dirname, '../src/lib/youtube/__tests__/fixtures');
+
+async function saveFixture(name: string, data: unknown): Promise<void> {
+  await fs.mkdir(FIXTURES_DIR, { recursive: true });
+  await fs.writeFile(path.join(FIXTURES_DIR, name), JSON.stringify(data, null, 2), 'utf8');
+  console.log(`  Recorded fixture: ${name}`);
+}
 
 async function main() {
   const unitsBefore = await todayUnitsSpent();
@@ -14,6 +27,10 @@ async function main() {
 
   console.log('\nSearching channels for "rassegna stampa"...');
   const searchResult = await searchChannels({ query: 'rassegna stampa', maxResults: 10 });
+  if (RECORD) {
+    const raw = await fs.readFile(absolutePath(searchResult.rawPath), 'utf8');
+    await saveFixture('search.list.json', JSON.parse(raw));
+  }
 
   const topThree = searchResult.channelIds.slice(0, 3);
   console.log(`Found ${searchResult.channelIds.length} channel IDs; top 3:`);
@@ -29,6 +46,11 @@ async function main() {
 
   console.log('\nFetching channel details...');
   const channelsResult = await getChannels({ ids: topThree });
+  if (RECORD && Object.keys(channelsResult.rawPaths).length > 0) {
+    const firstPath = Object.values(channelsResult.rawPaths)[0]!;
+    const raw = await fs.readFile(absolutePath(firstPath), 'utf8');
+    await saveFixture('channels.list.json', JSON.parse(raw));
+  }
 
   for (const ch of channelsResult.channels) {
     const subs =

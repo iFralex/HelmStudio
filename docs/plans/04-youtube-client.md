@@ -174,15 +174,15 @@ export const withYoutubeLimit = <T>(fn: () => Promise<T>) => ytLimit(fn);
 
 ### Task 8: Unit tests with VCR-style fixtures
 
-- [ ] Install `nock` (or use Vitest's `vi.spyOn` directly)
-- [ ] Capture once: a real `search.list`, `channels.list`, `videos.list` response to a fixtures directory (run smoke script with a `--record` flag that writes responses to `src/lib/youtube/__tests__/fixtures/`)
-- [ ] Tests:
+- [x] Install `nock` (or use Vitest's `vi.spyOn` directly)
+- [x] Capture once: a real `search.list`, `channels.list`, `videos.list` response to a fixtures directory (run smoke script with a `--record` flag that writes responses to `src/lib/youtube/__tests__/fixtures/`)
+- [x] Tests:
   - "searchChannels parses channelIds and pageToken"
   - "getChannels batches >50 ids into multiple calls and aggregates results"
   - "operation throws QuotaExhausted when budget tight"
   - "recordQuotaUse persists a ledger row"
   - "raw blob path is stored and readable round-trip"
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 9: Quota dashboard helper
 
