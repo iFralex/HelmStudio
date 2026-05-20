@@ -23,10 +23,10 @@ The system is single-operator (spec §2 Non-Goals), so authentication is a singl
 
 ### Task 1: Initialise the project
 
-- [ ] `pnpm init` and set `"engines": { "node": ">=20" }`
-- [ ] Add `.nvmrc` pinning Node 20 LTS for contributors
-- [ ] Reserve script names (placeholder echo commands for now): `dev`, `build`, `start`, `typecheck`, `lint`, `format`, `format:check`, `test`, `test:e2e`
-- [ ] Mark completed
+- [x] `pnpm init` and set `"engines": { "node": ">=20" }`
+- [x] Add `.nvmrc` pinning Node 20 LTS for contributors
+- [x] Reserve script names (placeholder echo commands for now): `dev`, `build`, `start`, `typecheck`, `lint`, `format`, `format:check`, `test`, `test:e2e`
+- [x] Mark completed
 
 ### Task 2: Scaffold Next.js 15 + React 19
 

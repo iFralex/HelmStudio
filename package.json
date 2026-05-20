@@ -1,0 +1,19 @@
+{
+  "name": "creator-pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "echo 'dev server not yet configured'",
+    "build": "echo 'build not yet configured'",
+    "start": "echo 'start not yet configured'",
+    "typecheck": "echo 'typecheck not yet configured'",
+    "lint": "echo 'lint not yet configured'",
+    "format": "echo 'format not yet configured'",
+    "format:check": "echo 'format:check not yet configured'",
+    "test": "echo 'test not yet configured'",
+    "test:e2e": "echo 'test:e2e not yet configured'"
+  }
+}
