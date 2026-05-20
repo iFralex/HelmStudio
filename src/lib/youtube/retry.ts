@@ -32,16 +32,15 @@ export async function withRetry<T>(
 ): Promise<T> {
   const { attempts = 4, baseMs = 500 } = options;
 
-  let lastErr: unknown;
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
       return await fn();
     } catch (err) {
-      lastErr = err;
       if (!isRetryable(err) || attempt === attempts - 1) throw err;
       const backoff = Math.min(baseMs * Math.pow(2, attempt) + Math.random() * 250, MAX_DELAY_MS);
       await delay(backoff);
     }
   }
-  throw lastErr;
+  // unreachable: loop always exits by throwing
+  throw new Error('withRetry: exhausted attempts');
 }

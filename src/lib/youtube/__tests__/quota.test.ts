@@ -93,6 +93,10 @@ describe.runIf(sqlite3Available)('todayUnitsSpent', () => {
     db = makeDb();
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('returns 0 when no ledger rows exist', async () => {
     const spent = await todayUnitsSpent(db);
     expect(spent).toBe(0);
@@ -106,7 +110,6 @@ describe.runIf(sqlite3Available)('todayUnitsSpent', () => {
     db.insert(schema.quotaLedger).values({ date: today, operation: 'channels.list', units: 1 }).run();
     const spent = await todayUnitsSpent(db);
     expect(spent).toBe(101);
-    vi.useRealTimers();
   });
 
   it('ignores rows from other dates', async () => {
@@ -117,7 +120,6 @@ describe.runIf(sqlite3Available)('todayUnitsSpent', () => {
     db.insert(schema.quotaLedger).values({ date: '2024-03-14', operation: 'search.list', units: 999 }).run();
     const spent = await todayUnitsSpent(db);
     expect(spent).toBe(100);
-    vi.useRealTimers();
   });
 });
 

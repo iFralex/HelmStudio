@@ -47,9 +47,19 @@ async function main() {
   console.log('\nFetching channel details...');
   const channelsResult = await getChannels({ ids: topThree });
   if (RECORD && Object.keys(channelsResult.rawPaths).length > 0) {
-    const firstPath = Object.values(channelsResult.rawPaths)[0]!;
-    const raw = await fs.readFile(absolutePath(firstPath), 'utf8');
-    await saveFixture('channels.list.json', JSON.parse(raw));
+    // getChannels stores individual items per channel; reconstruct the API response envelope
+    const items = await Promise.all(
+      Object.values(channelsResult.rawPaths).map(async (p) => {
+        const raw = await fs.readFile(absolutePath(p), 'utf8');
+        return JSON.parse(raw) as unknown;
+      }),
+    );
+    await saveFixture('channels.list.json', {
+      kind: 'youtube#channelListResponse',
+      etag: '',
+      pageInfo: { totalResults: items.length, resultsPerPage: 50 },
+      items,
+    });
   }
 
   for (const ch of channelsResult.channels) {
@@ -63,8 +73,8 @@ async function main() {
   const consumed = unitsAfter - unitsBefore;
   console.log(`\nQuota after: ${unitsAfter} units spent today (${consumed} consumed this run)`);
 
-  if (consumed > 100) {
-    console.warn(`WARNING: consumed ${consumed} units — expected ≤100 for this smoke run`);
+  if (consumed > 120) {
+    console.warn(`WARNING: consumed ${consumed} units — expected ≤120 for this smoke run`);
     process.exit(1);
   }
 

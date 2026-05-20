@@ -63,7 +63,13 @@ vi.mock('../../storage/raw', () => ({
   loadRaw: vi.fn(),
 }));
 
-import { searchChannels, getChannels, getVideos } from '../operations';
+import {
+  searchChannels,
+  getChannels,
+  getVideos,
+  getMostPopularByCategory,
+  getUploadsPlaylistItems,
+} from '../operations';
 import { QuotaExhausted, recordQuotaUse, pacificDateString } from '../quota';
 import { dumpRaw } from '../../storage/raw';
 
@@ -238,6 +244,98 @@ describe('getVideos', () => {
     const db = makeDb();
     const result = await getVideos({ ids: ['vid1'], channelIdForStorage: 'UCchannel1' }, db);
     expect(result.videos[0]!.durationSeconds).toBe(630);
+  });
+
+  it.runIf(sqlite3Available)('throws QuotaExhausted when budget is tight', async () => {
+    const db = makeDb();
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2024-03-15T15:00:00Z'));
+    const today = pacificDateString();
+    // videos.list costs 1; cap = 9500; 9500 already spent
+    db.insert(schema.quotaLedger).values({ date: today, operation: 'videos.list', units: 9500 }).run();
+    await expect(
+      getVideos({ ids: ['vid1'], channelIdForStorage: 'UCchannel1' }, db),
+    ).rejects.toThrow(QuotaExhausted);
+    expect(mockVideosList).not.toHaveBeenCalled();
+  });
+});
+
+describe('getMostPopularByCategory', () => {
+  it.runIf(sqlite3Available)('returns deduplicated channelIds from video items', async () => {
+    mockVideosList.mockResolvedValue({
+      data: {
+        kind: 'youtube#videoListResponse',
+        items: [
+          { snippet: { channelId: 'UCaaa' } },
+          { snippet: { channelId: 'UCbbb' } },
+          { snippet: { channelId: 'UCaaa' } }, // duplicate
+        ],
+      },
+    });
+    const db = makeDb();
+    const result = await getMostPopularByCategory({ categoryId: '25' }, db);
+    expect(result.channelIds).toEqual(['UCaaa', 'UCbbb']);
+  });
+
+  it.runIf(sqlite3Available)('rawPath contains the categoryId', async () => {
+    mockVideosList.mockResolvedValue({ data: { items: [] } });
+    const db = makeDb();
+    const result = await getMostPopularByCategory({ categoryId: '25' }, db);
+    expect(result.rawPath).toContain('25');
+  });
+
+  it.runIf(sqlite3Available)('throws QuotaExhausted when budget is tight', async () => {
+    const db = makeDb();
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2024-03-15T15:00:00Z'));
+    const today = pacificDateString();
+    // videos.list costs 1; cap = 9500; 9500 already spent
+    db.insert(schema.quotaLedger).values({ date: today, operation: 'videos.list', units: 9500 }).run();
+    await expect(getMostPopularByCategory({ categoryId: '25' }, db)).rejects.toThrow(QuotaExhausted);
+    expect(mockVideosList).not.toHaveBeenCalled();
+  });
+});
+
+describe('getUploadsPlaylistItems', () => {
+  it.runIf(sqlite3Available)('extracts videoIds from playlist items', async () => {
+    mockPlaylistItemsList.mockResolvedValue({
+      data: {
+        kind: 'youtube#playlistItemListResponse',
+        items: [
+          { contentDetails: { videoId: 'vid1abc' } },
+          { contentDetails: { videoId: 'vid2def' } },
+        ],
+      },
+    });
+    const db = makeDb();
+    const result = await getUploadsPlaylistItems({ playlistId: 'UUchannel1abc' }, db);
+    expect(result.videoIds).toEqual(['vid1abc', 'vid2def']);
+  });
+
+  it.runIf(sqlite3Available)('derives channelId from UU-prefixed playlistId for rawPath', async () => {
+    mockPlaylistItemsList.mockResolvedValue({ data: { items: [] } });
+    const db = makeDb();
+    const result = await getUploadsPlaylistItems({ playlistId: 'UUchannel1abc' }, db);
+    expect(result.rawPath).toContain('UCchannel1abc');
+  });
+
+  it.runIf(sqlite3Available)('uses playlistId directly for rawPath when not UU-prefixed', async () => {
+    mockPlaylistItemsList.mockResolvedValue({ data: { items: [] } });
+    const db = makeDb();
+    // Non-UU playlist ID used as-is for path (must pass assertChannelId validation)
+    const result = await getUploadsPlaylistItems({ playlistId: 'UCcustom123' }, db);
+    expect(result.rawPath).toContain('UCcustom123');
+  });
+
+  it.runIf(sqlite3Available)('throws QuotaExhausted when budget is tight', async () => {
+    const db = makeDb();
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2024-03-15T15:00:00Z'));
+    const today = pacificDateString();
+    // playlistItems.list costs 1; cap = 9500; 9500 already spent
+    db.insert(schema.quotaLedger).values({ date: today, operation: 'playlistItems.list', units: 9500 }).run();
+    await expect(getUploadsPlaylistItems({ playlistId: 'UUchannel1abc' }, db)).rejects.toThrow(QuotaExhausted);
+    expect(mockPlaylistItemsList).not.toHaveBeenCalled();
   });
 });
 
