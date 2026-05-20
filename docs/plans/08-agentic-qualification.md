@@ -21,12 +21,12 @@ Per spec §9, both step 1 and step 3 use `LLM_MODEL_THINK` via plan 05's `callLL
 
 ### Task 1: Step 1 prompt and schema
 
-- [ ] Create `src/lib/llm/prompts/select.ts`:
+- [x] Create `src/lib/llm/prompts/select.ts`:
   - export `version = 'select-v1'`
   - export `system` — the exact text from spec §9.5
   - export `userTemplate(input: SelectInput): string` building the XML-tagged user message per spec §9.5
 
-- [ ] Create `src/lib/llm/schemas.ts` (or extend it) with the zod schema for step 1 output:
+- [x] Create `src/lib/llm/schemas.ts` (or extend it) with the zod schema for step 1 output:
 
 ```typescript
 export const VideoClassificationSchema = z.object({
@@ -46,8 +46,8 @@ export const SelectOutputSchema = z.object({
 export type SelectOutput = z.infer<typeof SelectOutputSchema>;
 ```
 
-- [ ] Validation: confirm every `selectedVideoIds` entry appears in `videoClassifications` (post-parse business check in a separate function `validateSelectOutput`)
-- [ ] Mark completed
+- [x] Validation: confirm every `selectedVideoIds` entry appears in `videoClassifications` (post-parse business check in a separate function `validateSelectOutput`)
+- [x] Mark completed
 
 ### Task 2: Step 1 caller
 
