@@ -87,10 +87,10 @@ export function verifySessionCookie(token: string | undefined): boolean;
 
 ### Task 7: Project hygiene
 
-- [ ] `.gitignore` entries: `.env`, `data/`, `node_modules/`, `.next/`, `dist/`, `*.log`, `.DS_Store`, `playwright-report/`, `test-results/`
-- [ ] Create `README.md` skeleton: quickstart (clone → `pnpm install` → copy `.env.example` to `.env` → fill required vars → `pnpm dev`), env table, scripts, top-level directory layout (from spec §5)
-- [ ] `git init`, `.gitattributes` (LF line endings), first commit on `main`, branch off to `feat/01-project-bootstrap`
-- [ ] Mark completed
+- [x] `.gitignore` entries: `.env`, `data/`, `node_modules/`, `.next/`, `dist/`, `*.log`, `.DS_Store`, `playwright-report/`, `test-results/`
+- [x] Create `README.md` skeleton: quickstart (clone → `pnpm install` → copy `.env.example` to `.env` → fill required vars → `pnpm dev`), env table, scripts, top-level directory layout (from spec §5)
+- [x] `git init`, `.gitattributes` (LF line endings), first commit on `main`, branch off to `feat/01-project-bootstrap`
+- [x] Mark completed
 
 ### Task 8: E2E smoke test
 

@@ -1,0 +1,32 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Data (SQLite + raw blobs + logs)
+data/
+
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+dist/
+out/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test output
+playwright-report/
+test-results/
+
+# TypeScript
+tsconfig.tsbuildinfo
+
+# pnpm
+.pnpm-store/

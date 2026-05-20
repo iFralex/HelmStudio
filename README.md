@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Creator Pipeline
 
-## Getting Started
+A single-operator system that discovers Italian YouTube channels, qualifies each one with an LLM, and prepares per-channel outreach drafts.
 
-First, run the development server:
+## Quickstart
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+git clone <repo-url>
+cd creator-pipeline
+pnpm install
+cp .env.example .env
+# Fill in required variables in .env (see table below)
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 — you will be redirected to `/login`. Enter your `ADMIN_PASSWORD` to access the dashboard.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable         | Required | Description                                               |
+| ---------------- | -------- | --------------------------------------------------------- |
+| `ADMIN_PASSWORD` | Yes      | Single shared password for the operator UI                |
+| `SESSION_SECRET` | Yes      | At least 32 random characters; signs HMAC session cookies |
 
-## Learn More
+Generate a secure secret:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Command             | Description                           |
+| ------------------- | ------------------------------------- |
+| `pnpm dev`          | Start Next.js dev server on port 3000 |
+| `pnpm build`        | Production build                      |
+| `pnpm start`        | Start production server               |
+| `pnpm typecheck`    | TypeScript type-check (no emit)       |
+| `pnpm lint`         | ESLint                                |
+| `pnpm format`       | Prettier (write)                      |
+| `pnpm format:check` | Prettier (check only, for CI)         |
+| `pnpm test`         | Vitest unit tests                     |
+| `pnpm test:e2e`     | Playwright end-to-end tests           |
 
-## Deploy on Vercel
+## Directory layout
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  app/                  Next.js App Router
+    (app)/              Protected route group (requires auth)
+      layout.tsx        App shell with top nav
+      page.tsx          Dashboard
+      channels/         Channel list + detail pages
+      runs/             Pipeline run history
+      settings/         Keywords, filters, model config
+    login/              Public login page
+    api/                API routes (auth, pipeline, channels)
+  components/           shadcn/ui + custom components
+  lib/
+    auth.ts             Single-password session helpers
+    db/                 Drizzle schema, client, queries
+    youtube/            YouTube Data API v3 client
+    llm/                OpenAI-compatible LLM client + prompts
+    storage/            Raw blob persistence (disk)
+    pipeline/           Orchestrator + pipeline stages
+    seeds/              Italian keyword pool + category IDs
+  worker/
+    run.ts              Batch worker entry point
+data/                   SQLite + raw blobs + logs (gitignored)
+drizzle/                Generated migrations
+scripts/                DB init, keyword seed, launchd install
+e2e/                    Playwright tests
+```
