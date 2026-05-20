@@ -28,7 +28,7 @@ Database engine is **SQLite via better-sqlite3** (spec §4) running locally. **W
 
 ### Task 2: Database client singleton
 
-- [ ] Create `src/lib/db/client.ts`:
+- [x] Create `src/lib/db/client.ts`:
 
 ```typescript
 import Database from 'better-sqlite3';
@@ -48,8 +48,8 @@ export function getDb() {
 }
 ```
 
-- [ ] Ensure the parent directory of `DATABASE_PATH` is created if missing
-- [ ] Mark completed
+- [x] Ensure the parent directory of `DATABASE_PATH` is created if missing
+- [x] Mark completed
 
 ### Task 3: Schema definition
 
