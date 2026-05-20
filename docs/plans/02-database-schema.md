@@ -22,9 +22,9 @@ Database engine is **SQLite via better-sqlite3** (spec §4) running locally. **W
 
 ### Task 1: Install dependencies
 
-- [ ] Install runtime: `better-sqlite3`, `drizzle-orm`
-- [ ] Install dev: `drizzle-kit`, `@types/better-sqlite3`
-- [ ] Mark completed
+- [x] Install runtime: `better-sqlite3`, `drizzle-orm`
+- [x] Install dev: `drizzle-kit`, `@types/better-sqlite3`
+- [x] Mark completed
 
 ### Task 2: Database client singleton
 
