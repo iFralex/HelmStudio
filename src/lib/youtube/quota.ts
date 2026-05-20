@@ -41,7 +41,7 @@ export function pacificDateString(d = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
-export async function todayUnitsSpent(db: Db = getDb()): Promise<number> {
+export function todayUnitsSpent(db: Db = getDb()): number {
   const today = pacificDateString();
   const row = db
     .select({ total: sql<number>`coalesce(sum(${quotaLedger.units}), 0)` })
@@ -56,7 +56,7 @@ export async function assertHeadroom(
   runId?: number,
   db: Db = getDb(),
 ): Promise<void> {
-  const spent = await todayUnitsSpent(db);
+  const spent = todayUnitsSpent(db);
   const cost = OPERATION_COSTS[operation];
   const cap = env.PIPELINE_YOUTUBE_QUOTA_DAILY_LIMIT - env.PIPELINE_YOUTUBE_QUOTA_SAFETY_BUFFER;
   if (spent + cost > cap) {
@@ -64,11 +64,11 @@ export async function assertHeadroom(
   }
 }
 
-export async function recordQuotaUse(
+export function recordQuotaUse(
   operation: YoutubeOperation,
   runId?: number,
   db: Db = getDb(),
-): Promise<void> {
+): void {
   const today = pacificDateString();
   db.insert(quotaLedger)
     .values({
