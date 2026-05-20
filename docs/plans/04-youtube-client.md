@@ -45,7 +45,7 @@ export function getYoutube(): youtube_v3.Youtube {
 
 ### Task 3: Quota ledger
 
-- [ ] Create `src/lib/youtube/quota.ts`:
+- [x] Create `src/lib/youtube/quota.ts`:
 
 ```typescript
 export type YoutubeOperation =
@@ -85,9 +85,9 @@ export function pacificDateString(d = new Date()): string;
 // returns YYYY-MM-DD in America/Los_Angeles
 ```
 
-- [ ] Use `Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles', ... })` for the Pacific date string
-- [ ] Unit tests for `pacificDateString` boundary (UTC 06:00 = previous Pacific day, etc.)
-- [ ] Mark completed
+- [x] Use `Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles', ... })` for the Pacific date string
+- [x] Unit tests for `pacificDateString` boundary (UTC 06:00 = previous Pacific day, etc.)
+- [x] Mark completed
 
 ### Task 4: Operation wrappers
 
