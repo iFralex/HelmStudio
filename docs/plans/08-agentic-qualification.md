@@ -93,12 +93,12 @@ export async function fetchSelectedTranscripts(args: {
 
 ### Task 4: Step 3 prompt and schema
 
-- [ ] Create `src/lib/llm/prompts/qualify.ts`:
+- [x] Create `src/lib/llm/prompts/qualify.ts`:
   - export `version = 'qualify-v2'`
   - export `system` — the exact text from spec §9.7
   - export `userTemplate(input: QualifyInput): string` per spec §9.7, including `<your_earlier_classification>` and `<transcripts>` blocks
 
-- [ ] Extend `src/lib/llm/schemas.ts` with the final assessment schema (spec §9.7 task block):
+- [x] Extend `src/lib/llm/schemas.ts` with the final assessment schema (spec §9.7 task block):
 
 ```typescript
 export const AutomatableWorkflowSchema = z.object({
@@ -131,7 +131,7 @@ export const QualifyOutputSchema = z.object({
 export type QualifyOutput = z.infer<typeof QualifyOutputSchema>;
 ```
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 5: Step 3 caller
 

@@ -29,3 +29,32 @@ export function validateSelectOutput(
   }
   return { valid: true };
 }
+
+export const AutomatableWorkflowSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  automationApproach: z.string(),
+  estimatedTimeSavedPerVideoMinutes: z.number().int().nonnegative(),
+});
+
+export const SignalSchema = z.object({
+  type: z.enum(['positive', 'negative']),
+  evidence: z.string(),
+  videoId: z.string().nullable(),
+});
+
+export const QualifyOutputSchema = z.object({
+  nicheClassification: z.string(),
+  formatType: z.string(),
+  automationPotentialScore: z.number().int().min(0).max(100),
+  automatableWorkflows: z.array(AutomatableWorkflowSchema).max(5),
+  suggestedSolution: z.string(),
+  pitchAngle: z.string(),
+  pitchLanguage: z.enum(['it', 'en']),
+  signals: z.array(SignalSchema).min(2).max(8),
+  disqualifiers: z.array(z.string()),
+  confidence: z.number().min(0).max(1),
+  rationale: z.string(),
+});
+
+export type QualifyOutput = z.infer<typeof QualifyOutputSchema>;
