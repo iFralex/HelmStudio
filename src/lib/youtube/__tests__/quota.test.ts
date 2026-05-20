@@ -37,6 +37,7 @@ import {
   todayUnitsSpent,
   assertHeadroom,
   recordQuotaUse,
+  checkAndRecordQuota,
   QuotaExhausted,
   OPERATION_COSTS,
 } from '../quota';
@@ -224,5 +225,67 @@ describe.runIf(sqlite3Available)('recordQuotaUse', () => {
     await recordQuotaUse('channels.list', undefined, db);
     const spent = await todayUnitsSpent(db);
     expect(spent).toBe(102); // 100 + 1 + 1
+  });
+});
+
+describe.runIf(sqlite3Available)('checkAndRecordQuota', () => {
+  let db: Db;
+
+  beforeEach(() => {
+    db = makeDb();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('inserts a quota row when headroom is available', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2024-03-15T15:00:00Z'));
+    checkAndRecordQuota('channels.list', undefined, db);
+    const rows = db.select().from(schema.quotaLedger).all();
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.units).toBe(OPERATION_COSTS['channels.list']);
+    expect(rows[0]!.date).toBe('2024-03-15');
+  });
+
+  it('throws QuotaExhausted and rolls back when quota is exhausted', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2024-03-15T15:00:00Z'));
+    const today = pacificDateString();
+    db.insert(schema.quotaLedger).values({ date: today, operation: 'search.list', units: 9500 }).run();
+    expect(() => checkAndRecordQuota('channels.list', undefined, db)).toThrow(QuotaExhausted);
+    const rows = db.select().from(schema.quotaLedger).all();
+    expect(rows).toHaveLength(1); // only the pre-inserted row, no new record added
+  });
+
+  it('allows call at the exact cap boundary', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2024-03-15T15:00:00Z'));
+    const today = pacificDateString();
+    db.insert(schema.quotaLedger).values({ date: today, operation: 'channels.list', units: 9499 }).run();
+    checkAndRecordQuota('channels.list', undefined, db);
+    const spent = db
+      .select({ total: schema.quotaLedger.units })
+      .from(schema.quotaLedger)
+      .all()
+      .reduce((s, r) => s + r.total, 0);
+    expect(spent).toBe(9500);
+  });
+
+  it('QuotaExhausted carries spent and cap values', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2024-03-15T15:00:00Z'));
+    const today = pacificDateString();
+    db.insert(schema.quotaLedger).values({ date: today, operation: 'search.list', units: 9500 }).run();
+    let err: QuotaExhausted | undefined;
+    try {
+      checkAndRecordQuota('search.list', undefined, db);
+    } catch (e) {
+      err = e as QuotaExhausted;
+    }
+    expect(err).toBeInstanceOf(QuotaExhausted);
+    expect(err?.spent).toBe(9500);
+    expect(err?.cap).toBe(9500);
   });
 });

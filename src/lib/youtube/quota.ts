@@ -79,3 +79,25 @@ export async function recordQuotaUse(
     })
     .run();
 }
+
+export function checkAndRecordQuota(
+  operation: YoutubeOperation,
+  runId?: number,
+  db: Db = getDb(),
+): void {
+  const today = pacificDateString();
+  const cost = OPERATION_COSTS[operation];
+  const cap = env.PIPELINE_YOUTUBE_QUOTA_DAILY_LIMIT - env.PIPELINE_YOUTUBE_QUOTA_SAFETY_BUFFER;
+  db.transaction((tx) => {
+    const row = tx
+      .select({ total: sql<number>`coalesce(sum(${quotaLedger.units}), 0)` })
+      .from(quotaLedger)
+      .where(eq(quotaLedger.date, today))
+      .get();
+    const spent = row?.total ?? 0;
+    if (spent + cost > cap) throw new QuotaExhausted(spent, cap);
+    tx.insert(quotaLedger)
+      .values({ date: today, operation, units: cost, runId: runId ?? null })
+      .run();
+  });
+}

@@ -1,6 +1,6 @@
 import { youtube_v3 } from 'googleapis';
 import { getYoutube } from './client';
-import { assertHeadroom, recordQuotaUse, pacificDateString } from './quota';
+import { checkAndRecordQuota, pacificDateString } from './quota';
 import { dumpRaw } from '../storage/raw';
 import { paths, tsForFilename, slugify } from '../storage/paths';
 import { env } from '../env';
@@ -8,7 +8,7 @@ import { withYoutubeLimit } from './limiter';
 import { withRetry } from './retry';
 import type { ChannelDetail, VideoDetail } from './types';
 
-type Db = Parameters<typeof assertHeadroom>[2];
+type Db = Parameters<typeof checkAndRecordQuota>[2];
 
 function chunk<T>(arr: T[], size: number): T[][] {
   const result: T[][] = [];
@@ -26,12 +26,13 @@ function parseIntOrNull(s: string | null | undefined): number | null {
 
 function parseDurationSeconds(iso: string | null | undefined): number | null {
   if (!iso) return null;
-  const match = iso.match(/^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/);
+  const match = iso.match(/^P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/);
   if (!match) return null;
-  const h = Number(match[1] ?? 0);
-  const m = Number(match[2] ?? 0);
-  const s = Number(match[3] ?? 0);
-  return h * 3600 + m * 60 + s;
+  const d = Number(match[1] ?? 0);
+  const h = Number(match[2] ?? 0);
+  const m = Number(match[3] ?? 0);
+  const s = Number(match[4] ?? 0);
+  return d * 86400 + h * 3600 + m * 60 + s;
 }
 
 function mapChannel(item: youtube_v3.Schema$Channel): ChannelDetail {
@@ -83,7 +84,7 @@ export async function searchChannels(
   },
   db?: Db,
 ): Promise<{ channelIds: string[]; nextPageToken: string | null; rawPath: string }> {
-  await assertHeadroom('search.list', params.runId, db);
+  checkAndRecordQuota('search.list', params.runId, db);
 
   const yt = getYoutube();
   const res = await withRetry(() =>
@@ -99,8 +100,6 @@ export async function searchChannels(
       }),
     ),
   );
-
-  await recordQuotaUse('search.list', params.runId, db);
 
   const date = pacificDateString();
   const ts = tsForFilename();
@@ -130,7 +129,7 @@ export async function getChannels(
   const rawPaths: Record<string, string> = {};
 
   for (const batch of batches) {
-    await assertHeadroom('channels.list', params.runId, db);
+    checkAndRecordQuota('channels.list', params.runId, db);
 
     const yt = getYoutube();
     const res = await withRetry(() =>
@@ -142,8 +141,6 @@ export async function getChannels(
         }),
       ),
     );
-
-    await recordQuotaUse('channels.list', params.runId, db);
 
     const ts = tsForFilename();
     for (const item of res.data.items ?? []) {
@@ -168,7 +165,7 @@ export async function getMostPopularByCategory(
   },
   db?: Db,
 ): Promise<{ channelIds: string[]; rawPath: string }> {
-  await assertHeadroom('videos.list', params.runId, db);
+  checkAndRecordQuota('videos.list', params.runId, db);
 
   const yt = getYoutube();
   const res = await withRetry(() =>
@@ -182,8 +179,6 @@ export async function getMostPopularByCategory(
       }),
     ),
   );
-
-  await recordQuotaUse('videos.list', params.runId, db);
 
   const ts = tsForFilename();
   const rawPath = await dumpRaw(paths.rawYoutubePopular(params.categoryId, ts), res.data);
@@ -209,7 +204,7 @@ export async function getUploadsPlaylistItems(
   },
   db?: Db,
 ): Promise<{ videoIds: string[]; rawPath: string }> {
-  await assertHeadroom('playlistItems.list', params.runId, db);
+  checkAndRecordQuota('playlistItems.list', params.runId, db);
 
   const yt = getYoutube();
   const res = await withRetry(() =>
@@ -221,8 +216,6 @@ export async function getUploadsPlaylistItems(
       }),
     ),
   );
-
-  await recordQuotaUse('playlistItems.list', params.runId, db);
 
   // Derive channel ID from uploads playlist ID (UU... → UC...)
   const channelIdForPath = params.playlistId.startsWith('UU')
@@ -246,13 +239,13 @@ export async function getVideos(
     runId?: number;
   },
   db?: Db,
-): Promise<{ videos: VideoDetail[]; rawPath: string }> {
+): Promise<{ videos: VideoDetail[]; rawPath: string | null }> {
   const batches = chunk(params.ids, 50);
   const allVideos: VideoDetail[] = [];
-  let lastRawPath = '';
+  let lastRawPath: string | null = null;
 
   for (const batch of batches) {
-    await assertHeadroom('videos.list', params.runId, db);
+    checkAndRecordQuota('videos.list', params.runId, db);
 
     const yt = getYoutube();
     const res = await withRetry(() =>
@@ -264,8 +257,6 @@ export async function getVideos(
         }),
       ),
     );
-
-    await recordQuotaUse('videos.list', params.runId, db);
 
     const ts = tsForFilename();
     const rawPath = await dumpRaw(

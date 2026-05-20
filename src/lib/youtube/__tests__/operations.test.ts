@@ -246,6 +246,15 @@ describe('getVideos', () => {
     expect(result.videos[0]!.durationSeconds).toBe(630);
   });
 
+  it.runIf(sqlite3Available)('parses duration P1DT2H3M4S (>24 h) to correct seconds', async () => {
+    const item = makeVideoItem('vlong', 'UCchannel1');
+    item.contentDetails = { duration: 'P1DT2H3M4S' };
+    mockVideosList.mockResolvedValue({ data: { items: [item] } });
+    const db = makeDb();
+    const result = await getVideos({ ids: ['vlong'], channelIdForStorage: 'UCchannel1' }, db);
+    expect(result.videos[0]!.durationSeconds).toBe(86400 + 2 * 3600 + 3 * 60 + 4);
+  });
+
   it.runIf(sqlite3Available)('throws QuotaExhausted when budget is tight', async () => {
     const db = makeDb();
     vi.useFakeTimers();
