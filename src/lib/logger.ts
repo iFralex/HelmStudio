@@ -27,6 +27,10 @@ export const logger =
       ? pino(baseOptions, makeProdStreams())
       : pino(baseOptions);
 
+if (env.NODE_ENV === 'production') {
+  process.on('exit', () => logger.flush());
+}
+
 export function childLogger(bindings: Record<string, unknown>) {
   return logger.child(bindings);
 }

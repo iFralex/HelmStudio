@@ -56,7 +56,7 @@ const EnvSchemaRefined = EnvSchema.refine(
 
 export type Env = z.infer<typeof EnvSchema>;
 
-export { EnvSchema };
+export { EnvSchema, EnvSchemaRefined };
 
 const parsed = EnvSchemaRefined.safeParse(process.env);
 if (!parsed.success) {

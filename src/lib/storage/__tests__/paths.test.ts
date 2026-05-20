@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 vi.mock('../../env', () => ({
   env: {
     DATA_DIR: '/test/data',
+    DATABASE_PATH: '/test/data/pipeline.db',
     LOG_LEVEL: 'info',
     NODE_ENV: 'test',
   },
@@ -17,7 +18,7 @@ describe('dataDir', () => {
 });
 
 describe('paths', () => {
-  it('db path is under DATA_DIR', () => {
+  it('db path matches DATABASE_PATH', () => {
     expect(paths.db()).toBe('/test/data/pipeline.db');
   });
 
@@ -116,10 +117,38 @@ describe('slugify', () => {
   });
 });
 
+describe('paths channelId validation', () => {
+  it('throws for channelId with path traversal characters', () => {
+    expect(() => paths.rawYoutubeChannelMeta('../etc', 'ts')).toThrow('Invalid channelId');
+    expect(() => paths.rawYoutubeChannelUploads('../etc', 'ts')).toThrow('Invalid channelId');
+    expect(() => paths.rawYoutubeVideosBatch('../etc', 'ts')).toThrow('Invalid channelId');
+    expect(() => paths.rawTranscript('../etc', 'vid')).toThrow('Invalid channelId');
+    expect(() => paths.rawLlmVideoSelection('../etc', 1, 'ts')).toThrow('Invalid channelId');
+    expect(() => paths.rawLlmQualification('../etc', 1, 'ts')).toThrow('Invalid channelId');
+    expect(() => paths.rawLlmDraft('../etc', 'ts')).toThrow('Invalid channelId');
+  });
+
+  it('throws for channelId with spaces or special chars', () => {
+    expect(() => paths.rawTranscript('bad id!', 'vid')).toThrow('Invalid channelId');
+  });
+
+  it('accepts valid channelId with alphanumeric, dash, underscore', () => {
+    expect(() => paths.rawTranscript('UC-abc_123', 'vid')).not.toThrow();
+  });
+});
+
 describe('absolutePath', () => {
   it('prepends DATA_DIR to a relative path', () => {
     expect(absolutePath('raw/youtube/search/2024/foo.json')).toBe(
       '/test/data/raw/youtube/search/2024/foo.json',
     );
+  });
+
+  it('throws when path traversal escapes DATA_DIR', () => {
+    expect(() => absolutePath('../etc/passwd')).toThrow('Path escapes DATA_DIR');
+  });
+
+  it('throws for absolute path outside DATA_DIR', () => {
+    expect(() => absolutePath('/etc/passwd')).toThrow('Path escapes DATA_DIR');
   });
 });

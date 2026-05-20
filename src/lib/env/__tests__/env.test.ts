@@ -66,6 +66,40 @@ describe('env module', () => {
   });
 });
 
+describe('EnvSchemaRefined cross-field validation', () => {
+  const validBase = {
+    ADMIN_PASSWORD: 'securepassword123',
+    SESSION_SECRET: 'a'.repeat(32),
+    YOUTUBE_API_KEY: 'a'.repeat(20),
+    LLM_BASE_URL: 'http://localhost:11434',
+    LLM_MODEL_THINK: 'deepseek-r1',
+    LLM_MODEL_FAST: 'llama3',
+  };
+
+  it('fails when PIPELINE_MIN_SUBSCRIBERS >= PIPELINE_MAX_SUBSCRIBERS', async () => {
+    const { EnvSchemaRefined } = await import('../../env');
+    const result = EnvSchemaRefined.safeParse({
+      ...validBase,
+      PIPELINE_MIN_SUBSCRIBERS: '1000000',
+      PIPELINE_MAX_SUBSCRIBERS: '80000',
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.PIPELINE_MIN_SUBSCRIBERS).toBeDefined();
+    }
+  });
+
+  it('passes when PIPELINE_MIN_SUBSCRIBERS < PIPELINE_MAX_SUBSCRIBERS', async () => {
+    const { EnvSchemaRefined } = await import('../../env');
+    const result = EnvSchemaRefined.safeParse({
+      ...validBase,
+      PIPELINE_MIN_SUBSCRIBERS: '80000',
+      PIPELINE_MAX_SUBSCRIBERS: '1000000',
+    });
+    expect(result.success).toBe(true);
+  });
+});
+
 describe('EnvSchema direct validation', () => {
   it('fails when required vars are missing', async () => {
     const { EnvSchema } = await import('../../env');

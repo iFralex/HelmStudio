@@ -3,33 +3,53 @@ import { env } from '../env';
 
 export const dataDir = () => env.DATA_DIR;
 
+function assertChannelId(channelId: string): void {
+  if (!/^[A-Za-z0-9_-]+$/.test(channelId)) {
+    throw new Error(`Invalid channelId: ${channelId}`);
+  }
+}
+
 export const paths = {
-  db: () => path.join(env.DATA_DIR, 'pipeline.db'),
+  db: () => path.resolve(env.DATABASE_PATH),
   logsDir: () => path.join(env.DATA_DIR, 'logs'),
 
   rawYoutubeSearch: (date: string, slug: string, ts: string) =>
     path.join('raw', 'youtube', 'search', date, `${slug}-${ts}.json`),
 
-  rawYoutubeChannelMeta: (channelId: string, ts: string) =>
-    path.join('raw', 'youtube', 'channels', channelId, `meta-${ts}.json`),
+  rawYoutubeChannelMeta: (channelId: string, ts: string) => {
+    assertChannelId(channelId);
+    return path.join('raw', 'youtube', 'channels', channelId, `meta-${ts}.json`);
+  },
 
-  rawYoutubeChannelUploads: (channelId: string, ts: string) =>
-    path.join('raw', 'youtube', 'channels', channelId, `uploads-${ts}.json`),
+  rawYoutubeChannelUploads: (channelId: string, ts: string) => {
+    assertChannelId(channelId);
+    return path.join('raw', 'youtube', 'channels', channelId, `uploads-${ts}.json`);
+  },
 
-  rawYoutubeVideosBatch: (channelId: string, ts: string) =>
-    path.join('raw', 'youtube', 'videos', channelId, `batch-${ts}.json`),
+  rawYoutubeVideosBatch: (channelId: string, ts: string) => {
+    assertChannelId(channelId);
+    return path.join('raw', 'youtube', 'videos', channelId, `batch-${ts}.json`);
+  },
 
-  rawTranscript: (channelId: string, videoId: string) =>
-    path.join('raw', 'transcripts', channelId, `${videoId}.json`),
+  rawTranscript: (channelId: string, videoId: string) => {
+    assertChannelId(channelId);
+    return path.join('raw', 'transcripts', channelId, `${videoId}.json`);
+  },
 
-  rawLlmVideoSelection: (channelId: string, runId: number, ts: string) =>
-    path.join('raw', 'llm', 'video_selections', channelId, `run-${runId}-${ts}.json`),
+  rawLlmVideoSelection: (channelId: string, runId: number, ts: string) => {
+    assertChannelId(channelId);
+    return path.join('raw', 'llm', 'video_selections', channelId, `run-${runId}-${ts}.json`);
+  },
 
-  rawLlmQualification: (channelId: string, runId: number, ts: string) =>
-    path.join('raw', 'llm', 'qualifications', channelId, `run-${runId}-${ts}.json`),
+  rawLlmQualification: (channelId: string, runId: number, ts: string) => {
+    assertChannelId(channelId);
+    return path.join('raw', 'llm', 'qualifications', channelId, `run-${runId}-${ts}.json`);
+  },
 
-  rawLlmDraft: (channelId: string, ts: string) =>
-    path.join('raw', 'llm', 'drafts', channelId, `${ts}.json`),
+  rawLlmDraft: (channelId: string, ts: string) => {
+    assertChannelId(channelId);
+    return path.join('raw', 'llm', 'drafts', channelId, `${ts}.json`);
+  },
 };
 
 export function tsForFilename(d = new Date()): string {
@@ -45,5 +65,10 @@ export function slugify(s: string): string {
 }
 
 export function absolutePath(relativePath: string): string {
-  return path.join(env.DATA_DIR, relativePath);
+  const base = path.resolve(env.DATA_DIR);
+  const abs = path.resolve(base, relativePath);
+  if (abs !== base && !abs.startsWith(base + path.sep)) {
+    throw new Error(`Path escapes DATA_DIR: ${relativePath}`);
+  }
+  return abs;
 }
