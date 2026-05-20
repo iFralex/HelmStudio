@@ -3,8 +3,12 @@ import { dirname, resolve } from 'path';
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
-import { eq } from 'drizzle-orm';
 import * as schema from '../src/lib/db/schema';
+
+function envInt(key: string, def: number): number {
+  const v = Number(process.env[key]);
+  return Number.isFinite(v) ? v : def;
+}
 
 const dbPath = resolve(process.env.DATABASE_PATH ?? './data/pipeline.db');
 mkdirSync(dirname(dbPath), { recursive: true });
@@ -19,17 +23,17 @@ const db = drizzle(sqlite, { schema });
 migrate(db, { migrationsFolder: './drizzle' });
 
 const defaultFilters = {
-  minSubscribers: Number(process.env.PIPELINE_MIN_SUBSCRIBERS ?? 80000),
-  maxSubscribers: Number(process.env.PIPELINE_MAX_SUBSCRIBERS ?? 1000000),
+  minSubscribers: envInt('PIPELINE_MIN_SUBSCRIBERS', 80000),
+  maxSubscribers: envInt('PIPELINE_MAX_SUBSCRIBERS', 1000000),
   country: process.env.PIPELINE_TARGET_COUNTRY ?? 'IT',
   language: process.env.PIPELINE_TARGET_LANGUAGE ?? 'it',
-  requalifyAfterDays: Number(process.env.PIPELINE_REQUALIFY_AFTER_DAYS ?? 90),
-  inactiveDays: Number(process.env.PIPELINE_INACTIVE_DAYS ?? 60),
+  requalifyAfterDays: envInt('PIPELINE_REQUALIFY_AFTER_DAYS', 90),
+  inactiveDays: envInt('PIPELINE_INACTIVE_DAYS', 60),
 };
 
 const defaultPipelineConfig = {
-  keywordsPerRun: Number(process.env.PIPELINE_KEYWORDS_PER_RUN ?? 30),
-  targetQualifiedPerRun: Number(process.env.PIPELINE_TARGET_QUALIFIED_PER_RUN ?? 50),
+  keywordsPerRun: envInt('PIPELINE_KEYWORDS_PER_RUN', 30),
+  targetQualifiedPerRun: envInt('PIPELINE_TARGET_QUALIFIED_PER_RUN', 50),
 };
 
 const now = new Date();

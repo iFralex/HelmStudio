@@ -5,9 +5,17 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { eq } from 'drizzle-orm';
 import { describe, it, expect, beforeEach } from 'vitest';
 import * as schema from '../schema';
-import { channels, videos, qualifications, outreachDrafts, settings } from '../schema';
+import {
+  channels,
+  videos,
+  videoSelections,
+  transcripts,
+  qualifications,
+  outreachDrafts,
+  settings,
+} from '../schema';
 
-const MIGRATIONS_FOLDER = path.resolve('./drizzle');
+const MIGRATIONS_FOLDER = path.resolve(import.meta.dirname, '../../../../drizzle');
 
 type Db = ReturnType<typeof drizzle<typeof schema>>;
 
@@ -41,6 +49,23 @@ describe('database schema', () => {
     db.insert(videos)
       .values({ id: 'vid1', channelId: 'UCcasc', title: 'Test Video', publishedAt: new Date(2024, 0, 1) })
       .run();
+    db.insert(transcripts)
+      .values({
+        videoId: 'vid1',
+        channelId: 'UCcasc',
+        source: 'youtube_transcript',
+      })
+      .run();
+    db.insert(videoSelections)
+      .values({
+        channelId: 'UCcasc',
+        videoClassifications: [],
+        selectedVideoIds: [],
+        modelUsed: 'gpt-4o',
+        promptVersion: 'v1',
+        rawResponsePath: '/tmp/vsel.json',
+      })
+      .run();
     db.insert(qualifications)
       .values({
         channelId: 'UCcasc',
@@ -65,10 +90,14 @@ describe('database schema', () => {
     db.delete(channels).where(eq(channels.id, 'UCcasc')).run();
 
     const vids = db.select().from(videos).where(eq(videos.channelId, 'UCcasc')).all();
+    const txs = db.select().from(transcripts).where(eq(transcripts.channelId, 'UCcasc')).all();
+    const vsels = db.select().from(videoSelections).where(eq(videoSelections.channelId, 'UCcasc')).all();
     const quals = db.select().from(qualifications).where(eq(qualifications.channelId, 'UCcasc')).all();
     const drafts = db.select().from(outreachDrafts).where(eq(outreachDrafts.channelId, 'UCcasc')).all();
 
     expect(vids).toHaveLength(0);
+    expect(txs).toHaveLength(0);
+    expect(vsels).toHaveLength(0);
     expect(quals).toHaveLength(0);
     expect(drafts).toHaveLength(0);
   });
