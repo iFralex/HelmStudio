@@ -26,7 +26,7 @@ Per spec §7 every external API response is dumped to disk and the DB stores onl
 
 ### Task 2: Typed env module
 
-- [ ] Create `src/lib/env.ts`:
+- [x] Create `src/lib/env.ts`:
 
 ```typescript
 import { z } from 'zod';
@@ -84,9 +84,9 @@ if (!parsed.success) {
 export const env: Env = parsed.data;
 ```
 
-- [ ] Make sure `dotenv/config` import is conditional in production where env is provided by the OS, not a `.env` file
-- [ ] Update `.env.example` to include EVERY var with a sensible placeholder and an inline comment
-- [ ] Mark completed
+- [x] Make sure `dotenv/config` import is conditional in production where env is provided by the OS, not a `.env` file
+- [x] Update `.env.example` to include EVERY var with a sensible placeholder and an inline comment
+- [x] Mark completed
 
 ### Task 3: Path conventions
 
