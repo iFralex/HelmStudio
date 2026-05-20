@@ -26,7 +26,7 @@ function parseIntOrNull(s: string | null | undefined): number | null {
 
 function parseDurationSeconds(iso: string | null | undefined): number | null {
   if (!iso) return null;
-  const match = iso.match(/^P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/);
+  const match = iso.match(/^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/);
   if (!match) return null;
   const d = Number(match[1] ?? 0);
   const h = Number(match[2] ?? 0);
@@ -38,7 +38,7 @@ function parseDurationSeconds(iso: string | null | undefined): number | null {
 function mapChannel(item: youtube_v3.Schema$Channel): ChannelDetail {
   return {
     id: item.id ?? '',
-    handle: item.snippet?.customUrl ?? null,
+    handle: item.snippet?.customUrl?.replace(/^@/, '') ?? null,
     title: item.snippet?.title ?? '',
     description: item.snippet?.description ?? null,
     country: item.snippet?.country ?? null,
