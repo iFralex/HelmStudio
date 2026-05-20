@@ -143,7 +143,7 @@ export function slugify(s: string): string {
 
 ### Task 4: Raw dump / load API
 
-- [ ] Create `src/lib/storage/raw.ts`:
+- [x] Create `src/lib/storage/raw.ts`:
 
 ```typescript
 export async function dumpRaw(relativePath: string, payload: unknown): Promise<string>;
@@ -157,10 +157,10 @@ export async function deleteRawForChannel(channelId: string): Promise<void>;
 // llm/video_selections,llm/drafts}/<channelId>/ — used by GDPR deletion in plan 12
 ```
 
-- [ ] All writes are atomic: write to `<path>.tmp` then `fs.rename`
-- [ ] All reads use `fs.readFile` + `JSON.parse`; errors are surfaced, not swallowed
-- [ ] Unit tests covering round-trip and `deleteRawForChannel`
-- [ ] Mark completed
+- [x] All writes are atomic: write to `<path>.tmp` then `fs.rename`
+- [x] All reads use `fs.readFile` + `JSON.parse`; errors are surfaced, not swallowed
+- [x] Unit tests covering round-trip and `deleteRawForChannel`
+- [x] Mark completed
 
 ### Task 5: Logger
 
