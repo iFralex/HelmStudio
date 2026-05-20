@@ -34,10 +34,6 @@ export async function runDiscovery(
       if (err instanceof QuotaExhausted) {
         log.warn({ step: name, spent: err.spent, cap: err.cap }, 'quota exhausted, cancelling run');
         cancelled = true;
-        db.update(pipelineRuns)
-          .set({ status: 'cancelled' })
-          .where(eq(pipelineRuns.id, runId))
-          .run();
         return null;
       }
       throw err;
