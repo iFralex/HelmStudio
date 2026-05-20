@@ -101,7 +101,7 @@ Behaviour:
 
 ### Task 5: Channel enrichment
 
-- [ ] Create `src/lib/pipeline/discovery/enrichment.ts`:
+- [x] Create `src/lib/pipeline/discovery/enrichment.ts`:
 
 ```typescript
 export async function enrichCandidateChannels(args: {
@@ -119,7 +119,7 @@ Behaviour:
 - For channel IDs that come back missing from the API response (deleted/terminated): set `discoveryStatus='rejected_pre_qual'`, `rejectionReason='not_found'`
 - Update `pipelineRuns.channelsEnriched`
 - Log per-batch summary events
-- Mark completed
+- [x] Mark completed
 
 ### Task 6: Pre-qualification filter
 
