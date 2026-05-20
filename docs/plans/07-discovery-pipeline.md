@@ -247,11 +247,11 @@ Sequence:
 
 ### Task 12: Smoke script
 
-- [ ] Create `scripts/run-discovery.ts`:
+- [x] Create `scripts/run-discovery.ts`:
   - opens a new `pipelineRuns` row
   - calls `runDiscovery(runId)`
   - prints the summary and the quota used
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 13: Definition of Done
 
