@@ -30,17 +30,52 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 ## Scripts
 
-| Command             | Description                           |
-| ------------------- | ------------------------------------- |
-| `pnpm dev`          | Start Next.js dev server on port 3000 |
-| `pnpm build`        | Production build                      |
-| `pnpm start`        | Start production server               |
-| `pnpm typecheck`    | TypeScript type-check (no emit)       |
-| `pnpm lint`         | ESLint                                |
-| `pnpm format`       | Prettier (write)                      |
-| `pnpm format:check` | Prettier (check only, for CI)         |
-| `pnpm test`         | Vitest unit tests                     |
-| `pnpm test:e2e`     | Playwright end-to-end tests           |
+| Command             | Description                                            |
+| ------------------- | ------------------------------------------------------ |
+| `pnpm dev`          | Start Next.js dev server on port 3000                  |
+| `pnpm build`        | Production build                                       |
+| `pnpm start`        | Start production server                                |
+| `pnpm typecheck`    | TypeScript type-check (no emit)                        |
+| `pnpm lint`         | ESLint                                                 |
+| `pnpm format`       | Prettier (write)                                       |
+| `pnpm format:check` | Prettier (check only, for CI)                          |
+| `pnpm test`         | Vitest unit tests                                      |
+| `pnpm test:e2e`     | Playwright end-to-end tests                            |
+| `pnpm db:init`      | Initialize database, run migrations, seed settings     |
+| `pnpm db:generate`  | Generate a new migration from schema changes           |
+| `pnpm db:migrate`   | Apply pending migrations to the database               |
+| `pnpm db:studio`    | Open Drizzle Studio to browse the database interactively |
+
+## Database
+
+The app uses SQLite via `better-sqlite3` with WAL mode enabled so the background worker and the Next.js UI can read and write concurrently.
+
+The database file lives at `data/pipeline.db` by default (override with the `DATABASE_PATH` env var).
+
+### Initialization
+
+Run once before starting the app for the first time:
+
+```bash
+pnpm db:init
+```
+
+This command:
+- Creates the `data/` directory if it does not exist
+- Applies all pending Drizzle migrations
+- Upserts default rows in the `settings` table (filter thresholds, pipeline config)
+
+Re-running `pnpm db:init` is safe and idempotent — it only applies migrations that have not been applied yet and uses `INSERT OR REPLACE` for the settings rows.
+
+### Schema evolution
+
+When you change `src/lib/db/schema.ts`, follow these steps to keep migrations in sync:
+
+1. Edit `src/lib/db/schema.ts` with your changes.
+2. Run `pnpm db:generate` — Drizzle Kit compares the current schema against the last migration snapshot and writes a new SQL file under `drizzle/`.
+3. Review the generated SQL to confirm the changes are correct (no unintended column drops, etc.).
+4. Run `pnpm db:migrate` (or `pnpm db:init`) to apply the new migration to your local database.
+5. Commit both `src/lib/db/schema.ts` and the new `drizzle/` files together.
 
 ## Directory layout
 

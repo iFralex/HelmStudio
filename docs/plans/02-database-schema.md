@@ -146,9 +146,9 @@ export async function setSetting(key: string, value: unknown): Promise<void>;
 
 ### Task 9: Documentation
 
-- [ ] Update README: "Database" section with `pnpm db:init` instructions and explanation that re-running it is idempotent
-- [ ] Document the schema-evolution flow: edit `schema.ts` → `pnpm db:generate` → review SQL → `pnpm db:migrate`
-- [ ] Mark completed
+- [x] Update README: "Database" section with `pnpm db:init` instructions and explanation that re-running it is idempotent
+- [x] Document the schema-evolution flow: edit `schema.ts` → `pnpm db:generate` → review SQL → `pnpm db:migrate`
+- [x] Mark completed
 
 ### Task 10: Definition of Done
 
