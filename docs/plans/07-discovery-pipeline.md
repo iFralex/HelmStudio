@@ -123,7 +123,7 @@ Behaviour:
 
 ### Task 6: Pre-qualification filter
 
-- [ ] Create `src/lib/pipeline/discovery/filter.ts`:
+- [x] Create `src/lib/pipeline/discovery/filter.ts`:
 
 ```typescript
 export async function applyPreQualificationFilter(args: {
@@ -144,7 +144,7 @@ Logic (spec §8.5), applied to channels WHERE `discoveryStatus='enriched'` AND n
 - Read filters from settings via plan 03's `getFilters()` service
 - Update `pipelineRuns.channelsPreRejected`
 - One `pipelineEvents` row per rejected channel: `event='channel_pre_rejected'`, `details={ reason }`
-- Mark completed
+- [x] Mark completed
 
 ### Task 7: Video enrichment
 
