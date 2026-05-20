@@ -34,10 +34,10 @@ function stddev(values: number[]): number {
   return Math.sqrt(variance);
 }
 
-export function computeChannelAggregates(
+export async function computeChannelAggregates(
   channelId: string,
   db: Db = getDb(),
-): ChannelAggregates {
+): Promise<ChannelAggregates> {
   const rows = db
     .select({
       title: videos.title,

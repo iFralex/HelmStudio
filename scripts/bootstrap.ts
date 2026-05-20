@@ -33,7 +33,7 @@ for (const dir of dirs) {
 
 console.log('\nRunning db:init...');
 try {
-  execSync('npm run db:init', { stdio: 'inherit', cwd: ROOT });
+  execSync('pnpm run db:init', { stdio: 'inherit', cwd: ROOT });
 } catch {
   console.error('❌ db:init failed');
   process.exit(1);
@@ -41,7 +41,7 @@ try {
 
 console.log('\nRunning seed:keywords...');
 try {
-  execSync('npm run seed:keywords', { stdio: 'inherit', cwd: ROOT });
+  execSync('pnpm run seed:keywords', { stdio: 'inherit', cwd: ROOT });
 } catch {
   console.error('❌ seed:keywords failed');
   process.exit(1);
