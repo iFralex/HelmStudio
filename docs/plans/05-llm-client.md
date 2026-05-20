@@ -145,12 +145,12 @@ export function truncateMiddle(text: string, maxTokens: number): string;
 
 ### Task 7: Smoke script
 
-- [ ] Create `scripts/llm-smoke.ts`:
+- [x] Create `scripts/llm-smoke.ts`:
   - assert env present, local proxy reachable
   - issues a single `callLLM` with a trivial echo prompt (system: "Reply with exactly `{\"ok\": true}`") and the `placeholder` kind
   - asserts the parsed result matches `{ ok: true }`
   - prints model used, latency, tokens, raw path
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 8: Tests with a mock proxy
 
