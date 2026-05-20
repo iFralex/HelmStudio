@@ -127,7 +127,7 @@ Behaviour:
 
 ### Task 6: Token estimation utility
 
-- [ ] Create `src/lib/llm/tokens.ts`:
+- [x] Create `src/lib/llm/tokens.ts`:
 
 ```typescript
 export function estimateTokens(text: string): number;
@@ -140,8 +140,8 @@ export function truncateMiddle(text: string, maxTokens: number): string;
 // marker, per spec §9.8.
 ```
 
-- [ ] Unit tests covering: short input untouched, long input truncated to within budget, marker present
-- [ ] Mark completed
+- [x] Unit tests covering: short input untouched, long input truncated to within budget, marker present
+- [x] Mark completed
 
 ### Task 7: Smoke script
 
