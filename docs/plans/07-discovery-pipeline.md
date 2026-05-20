@@ -210,7 +210,7 @@ export async function computeChannelAggregates(channelId: string): Promise<Chann
 
 ### Task 10: Orchestrator
 
-- [ ] Create `src/lib/pipeline/discovery/run.ts`:
+- [x] Create `src/lib/pipeline/discovery/run.ts`:
 
 ```typescript
 export async function runDiscovery(runId: number): Promise<{
@@ -232,8 +232,8 @@ Sequence:
 6. Re-run `applyPreQualificationFilter`? No — `'inactive'` is already applied in step 5
 7. Return summary; the worker (plan 10) hands off to plan 08's qualification stage
 
-- [ ] Each step catches `QuotaExhausted` and short-circuits the whole orchestrator with a partial result + run status `'cancelled'`
-- [ ] Mark completed
+- [x] Each step catches `QuotaExhausted` and short-circuits the whole orchestrator with a partial result + run status `'cancelled'`
+- [x] Mark completed
 
 ### Task 11: Integration test
 
