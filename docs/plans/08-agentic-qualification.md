@@ -242,14 +242,14 @@ Behaviour:
 
 ### Task 10: Integration test with mocked LLM and transcripts
 
-- [ ] Create `src/lib/pipeline/qualification/__tests__/qualify-channel.integration.test.ts`:
+- [x] Create `src/lib/pipeline/qualification/__tests__/qualify-channel.integration.test.ts`:
   - in-memory DB + a test seam swapping `callLLM` for a deterministic mock that returns fixture JSON for step 1 and step 3
   - mock transcript fetcher: 3 of 5 succeed
   - seed: 1 channel + 20 videos
   - assert: 1 row in `video_selections`, 5 in `transcripts` (3 ok + 2 failed), 1 in `qualifications`, channel status updated, denormalised fields populated
-- [ ] Add a second test where step 1 returns malformed JSON twice → channel rejected with `'llm_format_failure'`
-- [ ] Add a third test where `selectedVideoIds` includes an ID not in `videoClassifications` → `LlmBusinessRuleError` → rejected
-- [ ] Mark completed
+- [x] Add a second test where step 1 returns malformed JSON twice → channel rejected with `'llm_format_failure'`
+- [x] Add a third test where `selectedVideoIds` includes an ID not in `videoClassifications` → `LlmBusinessRuleError` → rejected
+- [x] Mark completed
 
 ### Task 11: Smoke script
 
