@@ -56,7 +56,7 @@ export type ModelTier = keyof typeof MODELS;
 
 ### Task 3: Prompt versioning
 
-- [ ] Create `src/lib/llm/prompts/` directory; each prompt is a TypeScript module exporting `system`, `userTemplate`, and `version`:
+- [x] Create `src/lib/llm/prompts/` directory; each prompt is a TypeScript module exporting `system`, `userTemplate`, and `version`:
 
 ```typescript
 // src/lib/llm/prompts/select.ts (real content delivered in plan 08)
@@ -65,8 +65,8 @@ export const system = `...`;
 export function userTemplate(args: SelectInput): string { ... }
 ```
 
-- [ ] Establish the convention now with a placeholder prompt module `src/lib/llm/prompts/placeholder.ts` exporting `version='placeholder-v0'` and a trivial template — used only by tests
-- [ ] Mark completed
+- [x] Establish the convention now with a placeholder prompt module `src/lib/llm/prompts/placeholder.ts` exporting `version='placeholder-v0'` and a trivial template — used only by tests
+- [x] Mark completed
 
 ### Task 4: Concurrency limiter
 
