@@ -53,7 +53,7 @@ export function getDb() {
 
 ### Task 3: Schema definition
 
-- [ ] Create `src/lib/db/schema.ts` with the FULL table set from spec §6.1, in this order:
+- [x] Create `src/lib/db/schema.ts` with the FULL table set from spec §6.1, in this order:
   - `channels`
   - `videos`
   - `videoSelections`
@@ -65,11 +65,11 @@ export function getDb() {
   - `quotaLedger`
   - `seedKeywords`
   - `settings`
-- [ ] Use `sqliteTable`, `text`, `integer`, `real`, `index` from `drizzle-orm/sqlite-core`
-- [ ] Use `references()` with the callback form (`() => otherTable.id`) so forward references work
-- [ ] Indexes per spec §6.1: status fields, score, country, channel FKs, dates
-- [ ] All cascading deletes per spec §6.2
-- [ ] Mark completed
+- [x] Use `sqliteTable`, `text`, `integer`, `real`, `index` from `drizzle-orm/sqlite-core`
+- [x] Use `references()` with the callback form (`() => otherTable.id`) so forward references work
+- [x] Indexes per spec §6.1: status fields, score, country, channel FKs, dates
+- [x] All cascading deletes per spec §6.2
+- [x] Mark completed
 
 ### Task 4: drizzle-kit configuration
 
