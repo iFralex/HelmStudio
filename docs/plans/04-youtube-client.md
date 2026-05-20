@@ -142,7 +142,7 @@ export async function getVideos(params: {
 
 ### Task 5: Concurrency limiter
 
-- [ ] Create `src/lib/youtube/limiter.ts`:
+- [x] Create `src/lib/youtube/limiter.ts`:
 
 ```typescript
 import pLimit from 'p-limit';
@@ -150,8 +150,8 @@ const ytLimit = pLimit(2);
 export const withYoutubeLimit = <T>(fn: () => Promise<T>) => ytLimit(fn);
 ```
 
-- [ ] Wrap every SDK call inside `withYoutubeLimit` in `operations.ts`
-- [ ] Mark completed
+- [x] Wrap every SDK call inside `withYoutubeLimit` in `operations.ts`
+- [x] Mark completed
 
 ### Task 6: Retry policy
 
