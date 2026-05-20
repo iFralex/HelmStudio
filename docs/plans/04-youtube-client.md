@@ -186,7 +186,7 @@ export const withYoutubeLimit = <T>(fn: () => Promise<T>) => ytLimit(fn);
 
 ### Task 9: Quota dashboard helper
 
-- [ ] Create `src/lib/youtube/dashboard.ts`:
+- [x] Create `src/lib/youtube/dashboard.ts`:
 
 ```typescript
 export async function quotaSummary(): Promise<{
@@ -199,8 +199,8 @@ export async function quotaSummary(): Promise<{
 }>;
 ```
 
-- [ ] Will be consumed by the dashboard UI in plan 11 — define it now so the contract is stable
-- [ ] Mark completed
+- [x] Will be consumed by the dashboard UI in plan 11 — define it now so the contract is stable
+- [x] Mark completed
 
 ### Task 10: Definition of Done
 
