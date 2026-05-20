@@ -46,8 +46,8 @@ The system is single-operator (spec §2 Non-Goals), so authentication is a singl
 
 ### Task 4: Single-password authentication
 
-- [ ] Add to `.env.example`: `ADMIN_PASSWORD=` and `SESSION_SECRET=` (note: at least 32 characters of randomness)
-- [ ] Create `src/lib/auth.ts` exposing:
+- [x] Add to `.env.example`: `ADMIN_PASSWORD=` and `SESSION_SECRET=` (note: at least 32 characters of randomness)
+- [x] Create `src/lib/auth.ts` exposing:
 
 ```typescript
 export function verifyPassword(plain: string): boolean;
@@ -60,12 +60,12 @@ export function verifySessionCookie(token: string | undefined): boolean;
 // validates HMAC and `exp` field
 ```
 
-- [ ] Create `src/middleware.ts` reading the `session` cookie and redirecting to `/login` for any path under `(app)` if invalid; allow `/login`, `/api/auth`, and Next assets
-- [ ] Create `src/app/login/page.tsx` — Italian copy ("Accedi", "Password", "Entra"), a single `<form>` posting to `/api/auth`
-- [ ] Create `src/app/api/auth/route.ts` POST handler — verify password, set HTTP-only `session` cookie, return 200; redirect handled client-side
-- [ ] Create `src/app/api/auth/logout/route.ts` POST handler — clear cookie
-- [ ] Show Italian error toast on failed login attempt ("Password errata")
-- [ ] Mark completed
+- [x] Create `src/middleware.ts` reading the `session` cookie and redirecting to `/login` for any path under `(app)` if invalid; allow `/login`, `/api/auth`, and Next assets
+- [x] Create `src/app/login/page.tsx` — Italian copy ("Accedi", "Password", "Entra"), a single `<form>` posting to `/api/auth`
+- [x] Create `src/app/api/auth/route.ts` POST handler — verify password, set HTTP-only `session` cookie, return 200; redirect handled client-side
+- [x] Create `src/app/api/auth/logout/route.ts` POST handler — clear cookie
+- [x] Show Italian error toast on failed login attempt ("Password errata")
+- [x] Mark completed
 
 ### Task 5: App shell layout
 
