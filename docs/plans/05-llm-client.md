@@ -154,14 +154,14 @@ export function truncateMiddle(text: string, maxTokens: number): string;
 
 ### Task 8: Tests with a mock proxy
 
-- [ ] Create `src/lib/llm/__tests__/call.test.ts`:
+- [x] Create `src/lib/llm/__tests__/call.test.ts`:
   - mocks the OpenAI client (replace `getLlm()` via a `__setLlmForTest(fakeClient)` test seam)
   - test "happy path: parses, validates, persists raw, returns parsed"
   - test "retries once on JSON parse failure and succeeds on retry"
   - test "throws LlmFormatError after two consecutive format failures"
   - test "validation error triggers retry"
   - test "raw path is created and contents include both attempts in case of retry"
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 9: Stats helpers
 
