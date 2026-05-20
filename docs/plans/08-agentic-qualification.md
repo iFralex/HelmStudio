@@ -135,7 +135,7 @@ export type QualifyOutput = z.infer<typeof QualifyOutputSchema>;
 
 ### Task 5: Step 3 caller
 
-- [ ] Create `src/lib/llm/qualify.ts`:
+- [x] Create `src/lib/llm/qualify.ts`:
 
 ```typescript
 export type QualifyInput = SelectInput & {
@@ -159,7 +159,7 @@ Behaviour:
 - calls `callLLM` with `tier: 'think'`, `promptVersion: 'qualify-v2'`, `schema: QualifyOutputSchema`, `context: { channelId, runId, kind: 'qualification' }`
 - on success: insert a `qualifications` row populating every parsed field + `videoSelectionId` + token/latency/raw-path fields
 - returns `{ qualificationId, output, usage }`
-- Mark completed
+- [x] Mark completed
 
 ### Task 6: Re-qualification policy
 
