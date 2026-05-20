@@ -98,7 +98,7 @@ export default {
 
 ### Task 6: Init script
 
-- [ ] Create `scripts/init-db.ts`:
+- [x] Create `scripts/init-db.ts`:
   - resolve `DATABASE_PATH` from env (default `./data/pipeline.db`)
   - create the parent directory if missing
   - run all pending migrations via `migrate(db, { migrationsFolder: './drizzle' })`
@@ -106,8 +106,8 @@ export default {
     - `filters` → `{ minSubscribers, maxSubscribers, country, language, requalifyAfterDays, inactiveDays }` from env defaults (spec §14)
     - `pipeline_config` → `{ keywordsPerRun, targetQualifiedPerRun }`
   - log a one-line summary
-- [ ] Add script: `db:init` → `tsx scripts/init-db.ts`
-- [ ] Mark completed
+- [x] Add script: `db:init` → `tsx scripts/init-db.ts`
+- [x] Mark completed
 
 ### Task 7: Typed query helpers
 

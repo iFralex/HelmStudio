@@ -18,7 +18,8 @@
     "postinstall": "node scripts/postinstall.cjs || true",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:init": "tsx scripts/init-db.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
