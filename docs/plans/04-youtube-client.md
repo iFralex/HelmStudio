@@ -26,7 +26,7 @@ The YouTube Data API v3 free tier is 10,000 units/day, resetting at midnight Pac
 
 ### Task 2: Client singleton
 
-- [ ] Create `src/lib/youtube/client.ts`:
+- [x] Create `src/lib/youtube/client.ts`:
 
 ```typescript
 import { google, youtube_v3 } from 'googleapis';
@@ -41,7 +41,7 @@ export function getYoutube(): youtube_v3.Youtube {
 }
 ```
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 3: Quota ledger
 
