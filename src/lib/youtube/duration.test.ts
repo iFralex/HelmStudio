@@ -22,6 +22,18 @@ describe('parseIso8601Duration', () => {
     expect(parseIso8601Duration('PT0S')).toBe(0);
   });
 
+  it('parses day component', () => {
+    expect(parseIso8601Duration('P1DT2H')).toBe(86400 + 7200);
+  });
+
+  it('parses week component', () => {
+    expect(parseIso8601Duration('P1W')).toBe(604800);
+  });
+
+  it('parses week with day and time', () => {
+    expect(parseIso8601Duration('P1W2DT3H')).toBe(604800 + 172800 + 10800);
+  });
+
   it('throws on unparseable input', () => {
     expect(() => parseIso8601Duration('invalid')).toThrow('Unparseable ISO 8601 duration: invalid');
   });

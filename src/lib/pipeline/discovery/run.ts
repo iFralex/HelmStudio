@@ -72,7 +72,7 @@ export async function runDiscovery(
 
   const finishedAt = new Date();
   db.update(pipelineRuns)
-    .set(cancelled ? { finishedAt } : { status: 'completed', finishedAt })
+    .set(cancelled ? { status: 'cancelled', finishedAt } : { status: 'completed', finishedAt })
     .where(eq(pipelineRuns.id, runId))
     .run();
 

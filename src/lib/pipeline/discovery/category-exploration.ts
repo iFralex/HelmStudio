@@ -1,5 +1,4 @@
-import { inArray, sql } from 'drizzle-orm';
-import { eq } from 'drizzle-orm';
+import { inArray, sql, eq } from 'drizzle-orm';
 import { getDb } from '../../db/client';
 import { channels, pipelineRuns, pipelineEvents } from '../../db/schema';
 import { getMostPopularByCategory } from '../../youtube/operations';
