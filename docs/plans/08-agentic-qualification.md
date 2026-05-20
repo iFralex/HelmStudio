@@ -253,11 +253,11 @@ Behaviour:
 
 ### Task 11: Smoke script
 
-- [ ] Create `scripts/qualify-one.ts`:
+- [x] Create `scripts/qualify-one.ts`:
   - argv[2] is a channelId already present in the DB (run after plan 07's smoke)
   - calls `qualifyChannel({ channelId, runId, force: true })`
   - prints the resulting `QualifyOutput` and the latency/tokens for each step
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 12: Definition of Done
 
