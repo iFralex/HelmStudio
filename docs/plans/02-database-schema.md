@@ -111,7 +111,7 @@ export default {
 
 ### Task 7: Typed query helpers
 
-- [ ] Create `src/lib/db/queries.ts` with small, reusable typed queries used across the codebase:
+- [x] Create `src/lib/db/queries.ts` with small, reusable typed queries used across the codebase:
 
 ```typescript
 export async function getChannelById(id: string): Promise<Channel | null>;
@@ -129,9 +129,9 @@ export async function getSetting<T = unknown>(key: string): Promise<T | null>;
 export async function setSetting(key: string, value: unknown): Promise<void>;
 ```
 
-- [ ] Each helper accepts a `db = getDb()` injected param for testability
-- [ ] Export inferred row types: `export type Channel = typeof channels.$inferSelect;` etc.
-- [ ] Mark completed
+- [x] Each helper accepts a `db = getDb()` injected param for testability
+- [x] Export inferred row types: `export type Channel = typeof channels.$inferSelect;` etc.
+- [x] Mark completed
 
 ### Task 8: Unit tests
 
