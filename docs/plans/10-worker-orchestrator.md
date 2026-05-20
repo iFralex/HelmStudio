@@ -50,7 +50,10 @@ export async function isRunActive(): Promise<{ active: boolean; runId?: number }
 
 ```typescript
 export class InsufficientQuotaHeadroom extends Error {
-  constructor(public readonly spent: number, public readonly required: number) {
+  constructor(
+    public readonly spent: number,
+    public readonly required: number,
+  ) {
     super(`Need ~${required} units, only ${10000 - spent} headroom remaining today`);
   }
 }
@@ -84,6 +87,7 @@ export async function runPipeline(opts: RunPipelineOptions): Promise<{
 ```
 
 Behaviour:
+
 1. `preflightChecks()` — `InsufficientQuotaHeadroom` → return `cancelled`
 2. `openRun(triggeredBy)` → `runId`
 3. Try:
@@ -166,9 +170,9 @@ export async function POST() {
 export async function GET() {
   return NextResponse.json({
     active: await isRunActive(),
-    latestRun: await getLatestRun(),                // typed query from plan 02
-    quota: await quotaSummary(),                    // from plan 04
-    queues: await countChannelsByStatus(),          // from plan 02
+    latestRun: await getLatestRun(), // typed query from plan 02
+    quota: await quotaSummary(), // from plan 04
+    queues: await countChannelsByStatus(), // from plan 02
   });
 }
 ```

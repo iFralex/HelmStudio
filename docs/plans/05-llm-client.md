@@ -82,12 +82,12 @@ import { z, ZodSchema } from 'zod';
 
 export type CallLlmArgs<T> = {
   tier: ModelTier;
-  promptVersion: string;            // e.g. 'select-v1'
+  promptVersion: string; // e.g. 'select-v1'
   system: string;
   user: string;
-  schema: ZodSchema<T>;             // validates the parsed JSON response
-  temperature?: number;             // default 0.3
-  maxTokens?: number;               // default 4096
+  schema: ZodSchema<T>; // validates the parsed JSON response
+  temperature?: number; // default 0.3
+  maxTokens?: number; // default 4096
   // For raw-blob persistence; the caller knows the channel and run context.
   context: {
     channelId: string;
@@ -108,6 +108,7 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
 ```
 
 Behaviour:
+
 - runs inside `withLlmLimit`
 - builds the OpenAI `chat.completions.create({ model, messages, temperature, max_tokens, response_format: { type: 'json_object' } if the proxy supports it; otherwise rely on prompt discipline })`
 - measures latency with `performance.now()`

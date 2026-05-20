@@ -68,6 +68,7 @@ export async function runVideoSelection(args: {
 ```
 
 Behaviour:
+
 - builds user message via `userTemplate`
 - calls `callLLM` with `tier: 'think'`, `promptVersion: 'select-v1'`, `schema: SelectOutputSchema`, `context: { channelId, runId, kind: 'video_selection' }`
 - on success: insert a `video_selections` row with `videoClassifications`, `selectedVideoIds`, `formatConsistencySummary`, `selectionRationale`, `modelUsed`, `promptVersion`, `inputTokens`, `outputTokens`, `latencyMs`, `rawResponsePath`
@@ -152,6 +153,7 @@ export async function runFinalQualification(args: {
 ```
 
 Behaviour:
+
 - builds the user message via `userTemplate`, applying `truncateMiddle(transcript.text, 4000)` per transcript per spec §9.8
 - if fewer than 5 transcripts succeeded, RELAX the cap proportionally (e.g. `Math.floor(20000 / successfulCount)`)
 - calls `callLLM` with `tier: 'think'`, `promptVersion: 'qualify-v2'`, `schema: QualifyOutputSchema`, `context: { channelId, runId, kind: 'qualification' }`
@@ -168,7 +170,10 @@ export type RequalifyDecision =
   | { skip: true; reason: 'within_window' | 'no_videos' | 'wrong_status' }
   | { skip: false };
 
-export async function shouldQualify(channelId: string, opts?: { force?: boolean }): Promise<RequalifyDecision>;
+export async function shouldQualify(
+  channelId: string,
+  opts?: { force?: boolean },
+): Promise<RequalifyDecision>;
 ```
 
 - [ ] Logic: skip if `force=false` AND `lastQualifiedAt` is within `filters.requalifyAfterDays`; skip if `discoveryStatus != 'enriched' && != 'qualified'`; skip if there are no rows in `videos` for the channel
@@ -191,6 +196,7 @@ export async function qualifyChannel(args: {
 ```
 
 Sequence:
+
 1. `shouldQualify({ force })` → if skip, return `'skipped'`
 2. Load channel (`getChannelById`) + last 20 videos (typed query helper) + `computeChannelAggregates`
 3. **Step 1**: `runVideoSelection`
@@ -201,6 +207,7 @@ Sequence:
 8. Return `{ status: 'qualified', qualificationId }`
 
 Error handling:
+
 - `LlmFormatError` (after retry) at step 1 OR step 3 → mark `discoveryStatus='rejected_post_qual'`, `rejectionReason='llm_format_failure'`, log `event='channel_qualification_failed'`, return `'rejected_post_qual'`
 - `LlmBusinessRuleError` from step 1 → same treatment
 - Transient errors (network, proxy down) bubble up to the worker (plan 10) which decides whether to retry the whole run
@@ -212,9 +219,7 @@ Error handling:
 - [ ] Create `src/lib/pipeline/qualification/run.ts`:
 
 ```typescript
-export async function runQualification(args: {
-  runId: number;
-}): Promise<{
+export async function runQualification(args: { runId: number }): Promise<{
   qualified: number;
   skipped: number;
   rejected: number;
@@ -222,6 +227,7 @@ export async function runQualification(args: {
 ```
 
 Behaviour:
+
 - Selects channels WHERE `discoveryStatus='enriched'` ORDER BY `discoveredAt DESC` (caller already capped via `fetchVideosForSurvivingChannels`)
 - Uses `pLimit(3)` to run up to 3 `qualifyChannel` calls concurrently
 - Aggregates results; updates `pipelineRuns` counters: `channelsQualified`, `channelsPostRejected`, `llmCallsCount`, `llmTokensInput`, `llmTokensOutput`

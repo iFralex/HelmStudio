@@ -118,7 +118,9 @@ export async function getChannelById(id: string): Promise<Channel | null>;
 export async function listChannels(opts: ListChannelsOpts): Promise<Channel[]>;
 export async function countChannelsByStatus(): Promise<Record<DiscoveryStatus, number>>;
 export async function getLatestQualification(channelId: string): Promise<Qualification | null>;
-export async function getVideoSelectionByQualificationId(qualificationId: number): Promise<VideoSelection | null>;
+export async function getVideoSelectionByQualificationId(
+  qualificationId: number,
+): Promise<VideoSelection | null>;
 export async function listTranscriptsForChannel(channelId: string): Promise<Transcript[]>;
 export async function getCurrentDraft(channelId: string): Promise<OutreachDraft | null>;
 export async function getLatestRun(): Promise<PipelineRun | null>;

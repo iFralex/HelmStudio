@@ -11,10 +11,10 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
-    "format": "echo 'format not yet configured'",
-    "format:check": "echo 'format:check not yet configured'",
-    "test": "echo 'test not yet configured'",
-    "test:e2e": "echo 'test:e2e not yet configured'"
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:e2e": "PLAYWRIGHT_BROWSERS_PATH=/workspace/.playwright-browsers playwright test"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
@@ -32,13 +32,18 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/ui": "^4.1.6",
     "eslint": "^9",
     "eslint-config-next": "15.5.18",
+    "happy-dom": "^20.9.0",
+    "prettier": "^3.8.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.6"
   }
 }

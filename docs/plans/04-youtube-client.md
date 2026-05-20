@@ -7,11 +7,11 @@
 
 ## Overview
 
-Wrap the official `googleapis` SDK with typed, quota-aware functions for the four operations the pipeline uses: `search.list`, `channels.list`, `playlistItems.list`, `videos.list`. Add a strict quota ledger that refuses calls once the daily budget is exhausted (spec §13), persists every raw response to disk per spec §7, and applies a polite concurrency limit. This plan does not yet *use* the client for the pipeline — that's plan 07; here we deliver the building blocks plus a CLI smoke script.
+Wrap the official `googleapis` SDK with typed, quota-aware functions for the four operations the pipeline uses: `search.list`, `channels.list`, `playlistItems.list`, `videos.list`. Add a strict quota ledger that refuses calls once the daily budget is exhausted (spec §13), persists every raw response to disk per spec §7, and applies a polite concurrency limit. This plan does not yet _use_ the client for the pipeline — that's plan 07; here we deliver the building blocks plus a CLI smoke script.
 
 ## Context
 
-The YouTube Data API v3 free tier is 10,000 units/day, resetting at midnight Pacific Time. Unit costs per operation are fixed (spec §13.1, §8.7). The quota ledger is persisted in the `quota_ledger` table (plan 02) and every API wrapper consults it transactionally: any call that would push spent units over `DAILY_LIMIT - SAFETY_BUFFER` throws `QuotaExhausted`. We hardcode no business logic about *what* to search or fetch — the pipeline plans drive that. We also do not enforce a per-call retry policy beyond exponential backoff for transient 5xx and 429.
+The YouTube Data API v3 free tier is 10,000 units/day, resetting at midnight Pacific Time. Unit costs per operation are fixed (spec §13.1, §8.7). The quota ledger is persisted in the `quota_ledger` table (plan 02) and every API wrapper consults it transactionally: any call that would push spent units over `DAILY_LIMIT - SAFETY_BUFFER` throws `QuotaExhausted`. We hardcode no business logic about _what_ to search or fetch — the pipeline plans drive that. We also do not enforce a per-call retry policy beyond exponential backoff for transient 5xx and 429.
 
 ## Validation Commands
 
@@ -62,23 +62,20 @@ export const OPERATION_COSTS: Record<YoutubeOperation, number> = {
 };
 
 export class QuotaExhausted extends Error {
-  constructor(public readonly spent: number, public readonly cap: number) {
+  constructor(
+    public readonly spent: number,
+    public readonly cap: number,
+  ) {
     super(`YouTube quota exhausted: ${spent}/${cap} units used today`);
     this.name = 'QuotaExhausted';
   }
 }
 
-export async function assertHeadroom(
-  operation: YoutubeOperation,
-  runId?: number,
-): Promise<void>;
+export async function assertHeadroom(operation: YoutubeOperation, runId?: number): Promise<void>;
 // reads today's spent units (Pacific-Time date) and throws QuotaExhausted if
 // spent + cost > DAILY_LIMIT - SAFETY_BUFFER
 
-export async function recordQuotaUse(
-  operation: YoutubeOperation,
-  runId?: number,
-): Promise<void>;
+export async function recordQuotaUse(operation: YoutubeOperation, runId?: number): Promise<void>;
 // inserts a row in quota_ledger
 
 export async function todayUnitsSpent(): Promise<number>;
@@ -105,14 +102,14 @@ export function pacificDateString(d = new Date()): string;
 export async function searchChannels(params: {
   query: string;
   pageToken?: string;
-  maxResults?: number;        // default 50
-  regionCode?: string;        // default env.PIPELINE_TARGET_COUNTRY
+  maxResults?: number; // default 50
+  regionCode?: string; // default env.PIPELINE_TARGET_COUNTRY
   relevanceLanguage?: string; // default env.PIPELINE_TARGET_LANGUAGE
   runId?: number;
 }): Promise<{ channelIds: string[]; nextPageToken: string | null; rawPath: string }>;
 
 export async function getChannels(params: {
-  ids: string[];          // up to 50
+  ids: string[]; // up to 50
   runId?: number;
 }): Promise<{ channels: ChannelDetail[]; rawPaths: Record<string, string> }>;
 // rawPaths is { channelId -> relative path to a per-channel slice of the response }
@@ -127,12 +124,12 @@ export async function getMostPopularByCategory(params: {
 
 export async function getUploadsPlaylistItems(params: {
   playlistId: string;
-  maxResults?: number;    // default 20
+  maxResults?: number; // default 20
   runId?: number;
 }): Promise<{ videoIds: string[]; rawPath: string }>;
 
 export async function getVideos(params: {
-  ids: string[];          // up to 50
+  ids: string[]; // up to 50
   channelIdForStorage: string; // for the raw blob path
   runId?: number;
 }): Promise<{ videos: VideoDetail[]; rawPath: string }>;

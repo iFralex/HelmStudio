@@ -30,8 +30,8 @@ Per spec §10.2, the draft prompt operates on the latest `qualifications` row's 
 
 ```typescript
 export const DraftOutputSchema = z.object({
-  subject: z.string().min(5).max(80),     // hard cap > 60 to allow minor overruns
-  body: z.string().min(200).max(3000),    // ~120-180 words ≈ 800-1200 chars
+  subject: z.string().min(5).max(80), // hard cap > 60 to allow minor overruns
+  body: z.string().min(200).max(3000), // ~120-180 words ≈ 800-1200 chars
 });
 
 export type DraftOutput = z.infer<typeof DraftOutputSchema>;
@@ -50,7 +50,7 @@ export type DraftOutput = z.infer<typeof DraftOutputSchema>;
 export type DraftInput = {
   channel: ChannelDetail;
   qualification: QualifyOutput;
-  recentVideos: VideoDetail[];      // 5 most recent
+  recentVideos: VideoDetail[]; // 5 most recent
   language: 'it' | 'en';
 };
 
@@ -62,6 +62,7 @@ export async function runDraftGeneration(args: {
 ```
 
 Behaviour:
+
 - builds user message via `userTemplate`
 - calls `callLLM` with `tier: 'fast'`, `promptVersion: 'draft-v1'`, `schema: DraftOutputSchema`, `context: { channelId, kind: 'draft' }`
 - runs `validateDraftOutput`; on a length-band failure triggers ONE retry with appended user message: `"The body was too short/long. Aim for 120-180 words. Reply with the JSON only."`

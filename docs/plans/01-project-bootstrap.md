@@ -77,13 +77,13 @@ export function verifySessionCookie(token: string | undefined): boolean;
 
 ### Task 6: Tooling
 
-- [ ] Install and configure Prettier: `semi: true`, `singleQuote: true`, `trailingComma: 'all'`, `printWidth: 100`
-- [ ] Add `.prettierrc.json` and `.prettierignore` (ignore `data/`, `.next/`, generated migrations)
-- [ ] Install `vitest`, `@vitest/ui`, `happy-dom`; create `vitest.config.ts` with path alias `@/*` matching tsconfig
-- [ ] Install `@playwright/test`; run `pnpm exec playwright install --with-deps chromium`
-- [ ] Create `playwright.config.ts` with `baseURL: http://localhost:3000` and a `webServer` block to boot `pnpm dev`
-- [ ] Wire scripts: `test` → `vitest run`, `test:e2e` → `playwright test`, `format` → `prettier --write .`, `format:check` → `prettier --check .`
-- [ ] Mark completed
+- [x] Install and configure Prettier: `semi: true`, `singleQuote: true`, `trailingComma: 'all'`, `printWidth: 100`
+- [x] Add `.prettierrc.json` and `.prettierignore` (ignore `data/`, `.next/`, generated migrations)
+- [x] Install `vitest`, `@vitest/ui`, `happy-dom`; create `vitest.config.ts` with path alias `@/*` matching tsconfig
+- [x] Install `@playwright/test`; run `pnpm exec playwright install --with-deps chromium`
+- [x] Create `playwright.config.ts` with `baseURL: http://localhost:3000` and a `webServer` block to boot `pnpm dev`
+- [x] Wire scripts: `test` → `vitest run`, `test:e2e` → `playwright test`, `format` → `prettier --write .`, `format:check` → `prettier --check .`
+- [x] Mark completed
 
 ### Task 7: Project hygiene
 

@@ -34,10 +34,10 @@ export type ListChannelsFilters = {
   nicheContains?: string;
   formatContains?: string;
   pitchLanguage?: 'it' | 'en';
-  search?: string;          // matches title / handle / description
+  search?: string; // matches title / handle / description
   sort?: 'score_desc' | 'subs_desc' | 'qualified_at_desc' | 'discovered_at_desc';
-  page?: number;            // 1-indexed
-  pageSize?: number;        // default 50
+  page?: number; // 1-indexed
+  pageSize?: number; // default 50
 };
 
 export async function listChannelsForUi(filters: ListChannelsFilters): Promise<{
@@ -84,7 +84,8 @@ export const copy = {
     runInProgress: 'Pipeline in corso…',
     runCooldown: 'Pipeline non avviata oggi',
     quotaToday: 'Quota YouTube oggi',
-    unitsUsed: (n: number, cap: number) => `${n.toLocaleString('it-IT')} / ${cap.toLocaleString('it-IT')} unità`,
+    unitsUsed: (n: number, cap: number) =>
+      `${n.toLocaleString('it-IT')} / ${cap.toLocaleString('it-IT')} unità`,
     queueCandidates: 'Nuovi candidati',
     queueEnriched: 'In attesa di qualifica',
     queueQualifiedNoEmail: 'Qualificati senza email',
@@ -231,8 +232,8 @@ export const copy = {
 ```typescript
 export function formatCompact(n: number, locale = 'it-IT'): string;
 export function formatNumber(n: number, locale = 'it-IT'): string;
-export function formatDate(d: Date | number, locale = 'it-IT'): string;        // 20 mag 2026
-export function formatRelative(d: Date | number, locale = 'it-IT'): string;    // 3 ore fa
+export function formatDate(d: Date | number, locale = 'it-IT'): string; // 20 mag 2026
+export function formatRelative(d: Date | number, locale = 'it-IT'): string; // 3 ore fa
 export function scoreColor(score: number | null): 'green' | 'yellow' | 'gray';
 ```
 

@@ -32,17 +32,17 @@ The official `captions` Data API would cost 250 quota units per transcript (spec
 ```typescript
 export type TranscriptSegment = {
   text: string;
-  start: number;     // seconds
-  duration: number;  // seconds
+  start: number; // seconds
+  duration: number; // seconds
 };
 
 export type TranscriptFetchResult =
   | {
       ok: true;
       videoId: string;
-      language: string;          // resolved code, e.g. 'it', 'en', 'it-IT'
+      language: string; // resolved code, e.g. 'it', 'en', 'it-IT'
       segments: TranscriptSegment[];
-      text: string;              // segments joined with spaces
+      text: string; // segments joined with spaces
       characterCount: number;
     }
   | {
@@ -107,7 +107,7 @@ export async function deleteTranscriptsForChannel(channelId: string): Promise<vo
 ```typescript
 import pLimit from 'p-limit';
 
-const limit = pLimit(2);          // max 2 concurrent timedtext fetches
+const limit = pLimit(2); // max 2 concurrent timedtext fetches
 const DELAY_BETWEEN_MS = 200;
 
 let lastFinishedAt = 0;
@@ -116,7 +116,7 @@ export async function withTranscriptLimit<T>(fn: () => Promise<T>): Promise<T> {
   return limit(async () => {
     const elapsed = Date.now() - lastFinishedAt;
     if (elapsed < DELAY_BETWEEN_MS) {
-      await new Promise(r => setTimeout(r, DELAY_BETWEEN_MS - elapsed));
+      await new Promise((r) => setTimeout(r, DELAY_BETWEEN_MS - elapsed));
     }
     try {
       return await fn();
