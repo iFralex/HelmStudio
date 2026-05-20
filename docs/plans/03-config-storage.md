@@ -90,7 +90,7 @@ export const env: Env = parsed.data;
 
 ### Task 3: Path conventions
 
-- [ ] Create `src/lib/storage/paths.ts` exposing pure functions that build relative paths under `DATA_DIR`:
+- [x] Create `src/lib/storage/paths.ts` exposing pure functions that build relative paths under `DATA_DIR`:
 
 ```typescript
 export const dataDir = () => env.DATA_DIR;
@@ -138,8 +138,8 @@ export function slugify(s: string): string {
 }
 ```
 
-- [ ] All raw paths are relative; absolute path = `path.join(env.DATA_DIR, relative)`. Stored in DB as the relative path only (spec §7).
-- [ ] Mark completed
+- [x] All raw paths are relative; absolute path = `path.join(env.DATA_DIR, relative)`. Stored in DB as the relative path only (spec §7).
+- [x] Mark completed
 
 ### Task 4: Raw dump / load API
 
