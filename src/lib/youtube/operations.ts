@@ -7,10 +7,11 @@ import { env } from '../env';
 import { withYoutubeLimit } from './limiter';
 import { withRetry } from './retry';
 import type { ChannelDetail, VideoDetail } from './types';
+import { parseIso8601Duration } from './duration';
 
 type Db = Parameters<typeof checkAndRecordQuota>[2];
 
-function chunk<T>(arr: T[], size: number): T[][] {
+export function chunk<T>(arr: T[], size: number): T[][] {
   const result: T[][] = [];
   for (let i = 0; i < arr.length; i += size) {
     result.push(arr.slice(i, i + size));
@@ -26,13 +27,11 @@ function parseIntOrNull(s: string | null | undefined): number | null {
 
 function parseDurationSeconds(iso: string | null | undefined): number | null {
   if (!iso) return null;
-  const match = iso.match(/^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/);
-  if (!match) return null;
-  const d = Number(match[1] ?? 0);
-  const h = Number(match[2] ?? 0);
-  const m = Number(match[3] ?? 0);
-  const s = Number(match[4] ?? 0);
-  return d * 86400 + h * 3600 + m * 60 + s;
+  try {
+    return parseIso8601Duration(iso);
+  } catch {
+    return null;
+  }
 }
 
 function mapChannel(item: youtube_v3.Schema$Channel): ChannelDetail {
@@ -266,6 +265,7 @@ export async function getVideos(
     lastRawPath = rawPath;
 
     for (const item of res.data.items ?? []) {
+      if (!item.id || !item.snippet?.publishedAt) continue;
       allVideos.push(mapVideo(item));
     }
   }

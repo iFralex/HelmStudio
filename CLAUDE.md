@@ -20,6 +20,8 @@ pnpm db:migrate    # apply pending migrations
 pnpm db:studio     # open Drizzle Studio browser UI
 pnpm tsx scripts/llm-smoke.ts  # manual LLM connectivity smoke test (requires local proxy)
 pnpm tsx scripts/transcript-smoke.ts <videoId>  # manual transcript fetch smoke test (no API key required)
+pnpm seed:keywords             # upsert ~70 curated Italian keywords into seed_keywords (idempotent)
+pnpm tsx scripts/run-discovery.ts  # manual discovery pipeline smoke run (~3,200 quota units consumed)
 ```
 
 ## Language convention
@@ -131,6 +133,21 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `getOrFetchManyTranscripts` in `src/lib/transcripts/batch.ts` is the batch entry point for plan 08. Runs all fetches through the concurrency throttle, preserves input order, and never throws.
 - `deleteTranscriptsForChannel(channelId)` in `src/lib/transcripts/store.ts` is the GDPR deletion hook for transcripts: removes DB rows and the `data/raw/transcripts/<channelId>/` directory.
 - Transcript store tests conditionally skip DB-dependent cases when `better-sqlite3` native bindings cannot load — same pattern as YouTube/quota tests.
+
+## Discovery pipeline
+
+- Entry point is `runDiscovery(runId, db?)` in `src/lib/pipeline/discovery/run.ts`. The run row must be pre-created in `pipeline_runs` by the caller.
+- Five-step sequence: keyword sweep → category exploration → channel enrichment → pre-qualification filter → video enrichment.
+- `QuotaExhausted` propagation: each inner step catches it, flushes partial DB counters, then re-throws. `runStep` in `run.ts` catches the re-throw, sets `pipelineRuns.status='cancelled'`, and skips all remaining steps via the `cancelled` flag.
+- On normal completion `runDiscovery` sets `status='completed'` and `finishedAt`. On an unhandled exception it sets `status='failed'` with `errorMessage` before re-throwing.
+- `runKeywordSweep` selects active keywords ordered by `lastUsedAt ASC NULLS FIRST` — never-used keywords are always processed first (SQLite puts NULLs first in ASC order).
+- `enrichCandidateChannels` skips channels where `lastFetchedAt IS NOT NULL` — already-enriched channels are never re-fetched even if re-queued as candidates.
+- `applyPreQualificationFilter` only processes channels with `discoveryStatus='enriched'` AND `latestQualificationId IS NULL` — previously qualified channels skip re-filtering. Channels with `null` subscriberCount are rejected as `unknown_subscriber_count`.
+- `fetchVideosForSurvivingChannels` marks channels with empty playlists or most-recent video older than `filters.inactiveDays` as `rejected_pre_qual` with reason `inactive`.
+- `pipelineRuns.channelsEnriched` is incremented by both the enrichment step (channels that got metadata) and the video-enrichment step (channels that got video sets).
+- Seed data lives in `src/lib/seeds/` — `keywords.ts` exports `SEED_KEYWORDS`, `categories.ts` exports `IN_SCOPE_CATEGORY_IDS`.
+- `computeChannelAggregates(channelId, db?)` in `src/lib/pipeline/aggregates.ts` is the stable contract for plan 08's LLM prompt building. Returns `ZERO_AGGREGATES` when fewer than 3 videos are present. Uses population stddev (not sample). Reads the 20 most recent videos.
+- `parseIso8601Duration(iso)` in `src/lib/youtube/duration.ts` parses ISO 8601 duration strings (including P1DT… day component); throws on unparseable input. Used by `operations.ts` internally.
 
 ## Testing
 
