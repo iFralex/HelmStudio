@@ -21,8 +21,8 @@ Per spec §7 every external API response is dumped to disk and the DB stores onl
 
 ### Task 1: Install dependencies
 
-- [ ] Install runtime: `zod`, `pino`, `pino-pretty` (dev), `nanoid`
-- [ ] Mark completed
+- [x] Install runtime: `zod`, `pino`, `pino-pretty` (dev), `nanoid`
+- [x] Mark completed
 
 ### Task 2: Typed env module
 
