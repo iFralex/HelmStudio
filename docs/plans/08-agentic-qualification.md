@@ -51,7 +51,7 @@ export type SelectOutput = z.infer<typeof SelectOutputSchema>;
 
 ### Task 2: Step 1 caller
 
-- [ ] Create `src/lib/llm/select.ts`:
+- [x] Create `src/lib/llm/select.ts`:
 
 ```typescript
 export type SelectInput = {
@@ -75,7 +75,7 @@ Behaviour:
 - run the business check `validateSelectOutput` (selectedIds ⊂ classifiedIds); on failure, throw `LlmBusinessRuleError` (handled upstream as a format failure)
 - return `{ selectionId, output, usage }`
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 3: Step 2 wiring
 

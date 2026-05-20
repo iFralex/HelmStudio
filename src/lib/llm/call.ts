@@ -24,6 +24,18 @@ export class LlmCallError extends Error {
   }
 }
 
+export class LlmBusinessRuleError extends Error {
+  constructor(
+    message: string,
+    public readonly rawPath: string,
+  ) {
+    super(message);
+    this.name = 'LlmBusinessRuleError';
+  }
+}
+
+export type TokenUsage = { inputTokens: number; outputTokens: number };
+
 export type CallLlmArgs<T> = {
   tier: ModelTier;
   promptVersion: string;
