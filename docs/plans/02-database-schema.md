@@ -73,7 +73,7 @@ export function getDb() {
 
 ### Task 4: drizzle-kit configuration
 
-- [ ] Create `drizzle.config.ts`:
+- [x] Create `drizzle.config.ts`:
 
 ```typescript
 import type { Config } from 'drizzle-kit';
@@ -86,8 +86,8 @@ export default {
 } satisfies Config;
 ```
 
-- [ ] Add scripts: `db:generate` → `drizzle-kit generate`, `db:migrate` → `drizzle-kit migrate`, `db:studio` → `drizzle-kit studio`
-- [ ] Mark completed
+- [x] Add scripts: `db:generate` → `drizzle-kit generate`, `db:migrate` → `drizzle-kit migrate`, `db:studio` → `drizzle-kit studio`
+- [x] Mark completed
 
 ### Task 5: Initial migration
 
