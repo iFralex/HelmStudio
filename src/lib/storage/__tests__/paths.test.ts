@@ -67,6 +67,11 @@ describe('paths', () => {
     const p = paths.rawLlmDraft('UCabc123', '2024-01-01T00-00-00.000Z');
     expect(p).toBe('raw/llm/drafts/UCabc123/2024-01-01T00-00-00.000Z.json');
   });
+
+  it('rawLlmPlaceholder returns relative path', () => {
+    const p = paths.rawLlmPlaceholder('UCabc123', '2024-01-01T00-00-00.000Z');
+    expect(p).toBe('raw/llm/placeholder/UCabc123/2024-01-01T00-00-00.000Z.json');
+  });
 });
 
 describe('tsForFilename', () => {
@@ -126,6 +131,7 @@ describe('paths channelId validation', () => {
     expect(() => paths.rawLlmVideoSelection('../etc', 1, 'ts')).toThrow('Invalid channelId');
     expect(() => paths.rawLlmQualification('../etc', 1, 'ts')).toThrow('Invalid channelId');
     expect(() => paths.rawLlmDraft('../etc', 'ts')).toThrow('Invalid channelId');
+    expect(() => paths.rawLlmPlaceholder('../etc', 'ts')).toThrow('Invalid channelId');
   });
 
   it('throws for channelId with spaces or special chars', () => {

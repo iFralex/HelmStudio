@@ -18,6 +18,7 @@ pnpm db:init       # create data/ dir, run migrations, seed default settings (fi
 pnpm db:generate   # generate new migration from schema changes
 pnpm db:migrate    # apply pending migrations
 pnpm db:studio     # open Drizzle Studio browser UI
+pnpm tsx scripts/llm-smoke.ts  # manual LLM connectivity smoke test (requires local proxy)
 ```
 
 ## Language convention
@@ -71,6 +72,7 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - All writes are atomic: written to `<path>.tmp` then renamed to the final path.
 - `deleteRawForChannel(channelId)` removes all per-channel raw data (transcripts, youtube/channels, youtube/videos, llm/*). It does NOT delete `raw/youtube/search/` (keyed by date/keyword, not channelId). This is the GDPR deletion hook.
 - `channelId` passed to storage functions must be alphanumeric/dash/underscore only — validated at the storage layer.
+- LLM raw envelopes are stored under `raw/llm/<kind>/<channelId>/`. Path helpers: `paths.rawLlmVideoSelection(channelId, runId, ts)`, `paths.rawLlmQualification(channelId, runId, ts)`, `paths.rawLlmDraft(channelId, ts)`, `paths.rawLlmPlaceholder(channelId, ts)`. `runId` is required for the first two.
 
 ## Logging
 
@@ -102,6 +104,21 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `checkAndRecordQuota(operation, runId?, db?)` throws `QuotaExhausted` (with `.spent` and `.cap` fields) if `spent + cost > PIPELINE_YOUTUBE_QUOTA_DAILY_LIMIT - PIPELINE_YOUTUBE_QUOTA_SAFETY_BUFFER`; otherwise inserts the ledger row atomically.
 - `quotaSummary()` in `src/lib/youtube/dashboard.ts` is the stable contract for dashboard UI — consume that rather than raw DB queries against `quotaLedger`.
 - YouTube quota and operations tests conditionally skip all DB-dependent cases when `better-sqlite3` native bindings cannot load (e.g. arm64/Node version mismatch). `pnpm test` will report these as skipped, not failed.
+
+## LLM client
+
+- All LLM calls go through `callLLM` in `src/lib/llm/call.ts` — never call the OpenAI SDK directly from application code.
+- The SDK singleton is a module-level lazy cache in `src/lib/llm/client.ts` (`getLlm()`). Two model tiers: `MODELS.think` (→ `LLM_MODEL_THINK`) and `MODELS.fast` (→ `LLM_MODEL_FAST`).
+- `withLlmLimit` (from `src/lib/llm/limiter.ts`) caps concurrency at 3 simultaneous LLM calls.
+- `callLLM` enforces JSON-only output (`response_format: { type: 'json_object' }`), validates against a Zod schema, and retries once on parse or validation failure by echoing the bad response back as an assistant turn and appending a correction prompt. After two consecutive failures it throws `LlmFormatError`.
+- Every call dumps the full envelope (system, user, all attempt texts, parsed result or error, usage, latency, timestamp, prompt version, model) to `data/raw/llm/...` via `dumpRaw`. Path shape is determined by `context.kind`.
+- `LlmFormatError` and `LlmCallError` both carry a `.rawPath` field so callers can log the failure location.
+- `callLLM` accumulates token usage across retry attempts — the returned `usage` reflects all tokens consumed, including any failed first attempt.
+- `runId` is required in `context` when `kind` is `video_selection` or `qualification`; omitting it throws immediately.
+- Prompt modules live in `src/lib/llm/prompts/`; each exports `version` (string), `system` (string), and `userTemplate(args)` (function returning string).
+- `llmStatsForRun(runId, db?)` in `src/lib/llm/dashboard.ts` is the stable contract for per-run LLM stats in the dashboard UI.
+- `estimateTokens` and `truncateMiddle` in `src/lib/llm/tokens.ts` are used for prompt budgeting; `truncateMiddle` keeps head 60% / tail 40% with a marker.
+- Test seams: `__setLlmForTest(fakeClient)` and `__resetLlmForTest()` in `src/lib/llm/client.ts`; call both in `beforeEach`/`afterEach`.
 
 ## Testing
 
