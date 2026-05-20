@@ -27,7 +27,7 @@ The LLM is reached via the operator's existing local proxy (e.g. `http://localho
 
 ### Task 2: LLM client singleton
 
-- [ ] Create `src/lib/llm/client.ts`:
+- [x] Create `src/lib/llm/client.ts`:
 
 ```typescript
 import OpenAI from 'openai';
@@ -52,7 +52,7 @@ export const MODELS = {
 export type ModelTier = keyof typeof MODELS;
 ```
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 3: Prompt versioning
 
