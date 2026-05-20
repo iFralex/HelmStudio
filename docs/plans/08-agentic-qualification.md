@@ -216,7 +216,7 @@ Error handling:
 
 ### Task 8: Batch orchestrator
 
-- [ ] Create `src/lib/pipeline/qualification/run.ts`:
+- [x] Create `src/lib/pipeline/qualification/run.ts`:
 
 ```typescript
 export async function runQualification(args: { runId: number }): Promise<{
@@ -232,7 +232,7 @@ Behaviour:
 - Uses `pLimit(3)` to run up to 3 `qualifyChannel` calls concurrently
 - Aggregates results; updates `pipelineRuns` counters: `channelsQualified`, `channelsPostRejected`, `llmCallsCount`, `llmTokensInput`, `llmTokensOutput`
 - A single channel's failure does not abort the batch
-- Mark completed
+- [x] Mark completed
 
 ### Task 9: Force re-qualify hook
 
