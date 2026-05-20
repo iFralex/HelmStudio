@@ -30,3 +30,7 @@ tsconfig.tsbuildinfo
 
 # pnpm
 .pnpm-store/
+.pnpm-bin/
+
+# Playwright browsers
+.playwright-browsers/
