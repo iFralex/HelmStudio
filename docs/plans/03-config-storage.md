@@ -187,7 +187,7 @@ export function childLogger(bindings: Record<string, unknown>) {
 
 ### Task 6: Settings service
 
-- [ ] Create `src/lib/services/settings.ts`:
+- [x] Create `src/lib/services/settings.ts`:
 
 ```typescript
 type FiltersSetting = {
@@ -213,11 +213,11 @@ export async function updatePipelineConfig(
 ): Promise<PipelineConfigSetting>;
 ```
 
-- [ ] Backed by the `settings` table (plan 02); reads cache for 30 seconds in-process to reduce DB hits in hot paths
-- [ ] On read miss, fall back to the env defaults from `env.ts` and persist them
-- [ ] Used by the UI Settings page (plan 13) and the worker (plan 10)
-- [ ] Unit tests: round-trip read/write, partial update merges with stored value
-- [ ] Mark completed
+- [x] Backed by the `settings` table (plan 02); reads cache for 30 seconds in-process to reduce DB hits in hot paths
+- [x] On read miss, fall back to the env defaults from `env.ts` and persist them
+- [x] Used by the UI Settings page (plan 13) and the worker (plan 10)
+- [x] Unit tests: round-trip read/write, partial update merges with stored value
+- [x] Mark completed
 
 ### Task 7: Tests
 
