@@ -164,7 +164,7 @@ export async function deleteRawForChannel(channelId: string): Promise<void>;
 
 ### Task 5: Logger
 
-- [ ] Create `src/lib/logger.ts`:
+- [x] Create `src/lib/logger.ts`:
 
 ```typescript
 import pino from 'pino';
@@ -182,8 +182,8 @@ export function childLogger(bindings: Record<string, unknown>) {
 }
 ```
 
-- [ ] In production, additionally write to `data/logs/worker-<date>.log` via `pino.multistream` with daily rotation (use a small rotation helper or `pino/file`)
-- [ ] Mark completed
+- [x] In production, additionally write to `data/logs/worker-<date>.log` via `pino.multistream` with daily rotation (use a small rotation helper or `pino/file`)
+- [x] Mark completed
 
 ### Task 6: Settings service
 
