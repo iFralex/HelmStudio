@@ -21,9 +21,9 @@ The LLM is reached via the operator's existing local proxy (e.g. `http://localho
 
 ### Task 1: Install dependencies
 
-- [ ] Install `openai`, `p-limit`
-- [ ] Already installed in plan 03: `zod`
-- [ ] Mark completed
+- [x] Install `openai`, `p-limit`
+- [x] Already installed in plan 03: `zod`
+- [x] Mark completed
 
 ### Task 2: LLM client singleton
 
