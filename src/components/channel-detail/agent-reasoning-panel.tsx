@@ -4,14 +4,6 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { BrainIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -21,6 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { copy } from '@/lib/ui/copy';
+import { TranscriptModal } from './transcript-modal';
 import type { VideoSelection, Video, Transcript } from '@/lib/db/queries';
 
 type VideoClassification = {
@@ -39,74 +32,6 @@ const CLASSIFICATION_VARIANT: Record<
   extemporaneous: 'outline',
   outlier: 'destructive',
 };
-
-interface TranscriptDialogProps {
-  videoTitle: string;
-  transcript: Transcript | null;
-}
-
-function TranscriptDialog({ videoTitle, transcript }: TranscriptDialogProps) {
-  const title = copy.channelDetail.transcriptModalTitle(videoTitle);
-
-  const renderBody = () => {
-    if (!transcript || !transcript.fetchSucceeded) {
-      return (
-        <div className="space-y-2 text-sm">
-          <p className="text-muted-foreground">{copy.channelDetail.transcriptUnavailable}</p>
-          {transcript?.fetchError && (
-            <p className="text-xs text-destructive font-mono">{transcript.fetchError}</p>
-          )}
-        </div>
-      );
-    }
-
-    const text = transcript.text ?? '';
-    const sentences = text.split(/(?<=[.!?])\s+/);
-    const paragraphs: string[] = [];
-    for (let i = 0; i < sentences.length; i += 6) {
-      paragraphs.push(sentences.slice(i, i + 6).join(' '));
-    }
-
-    const lang = transcript.language ?? null;
-    const charCount = transcript.characterCount ?? text.length;
-
-    return (
-      <div className="space-y-3">
-        <div
-          className="max-h-[60vh] overflow-y-auto text-sm leading-relaxed space-y-3 pr-1"
-          role="document"
-        >
-          {paragraphs.map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
-        </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground border-t pt-2">
-          {lang && <span>{lang}</span>}
-          <span>{charCount.toLocaleString('it-IT')} caratteri</span>
-          <span>via youtube-transcript</span>
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <Dialog>
-      <DialogTrigger
-        render={
-          <Button variant="outline" size="sm" className="text-xs">
-            {copy.channelDetail.viewTranscript}
-          </Button>
-        }
-      />
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle className="text-sm leading-snug">{title}</DialogTitle>
-        </DialogHeader>
-        {renderBody()}
-      </DialogContent>
-    </Dialog>
-  );
-}
 
 interface AgentReasoningPanelProps {
   videoSelection: VideoSelection | null;
@@ -247,7 +172,8 @@ export function AgentReasoningPanel({
                     </TableCell>
                     <TableCell className="p-1 w-8">
                       {isSelected && (
-                        <TranscriptDialog
+                        <TranscriptModal
+                          videoId={c.videoId}
                           videoTitle={video?.title ?? c.videoId}
                           transcript={transcript}
                         />

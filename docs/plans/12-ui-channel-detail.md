@@ -277,12 +277,12 @@ export async function deleteChannel(input: { channelId: string }): Promise<void>
 
 ### Task 10: Transcript viewer modal
 
-- [ ] Create `src/components/channel-detail/transcript-modal.tsx`:
+- [x] Create `src/components/channel-detail/transcript-modal.tsx`:
   - props: `videoId`, `videoTitle`, `transcript: Transcript | null`
   - if `transcript` is null OR `fetchSucceeded=false`: render `copy.channelDetail.transcriptUnavailable` + the error
   - else: a max-height-80vh scroll area with the transcript text rendered as paragraphs split on every 6th sentence (rough readability)
   - footer: language tag (e.g. "🇮🇹 it"), character count, source ("via youtube-transcript")
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 11: Raw JSON download endpoint
 
