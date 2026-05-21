@@ -22,7 +22,7 @@ Per spec §11.1 the UI is a single Next.js 15 App Router app with shadcn/ui comp
 
 ### Task 1: Page-level data loaders
 
-- [ ] Extend `src/lib/db/queries.ts` from plan 02 with:
+- [x] Extend `src/lib/db/queries.ts` from plan 02 with:
 
 ```typescript
 export type ListChannelsFilters = {
@@ -62,8 +62,8 @@ export async function dashboardSnapshot(): Promise<{
 }>;
 ```
 
-- [ ] All filters compose into a single SQL query; the SQL builds use Drizzle's typed query API
-- [ ] Mark completed
+- [x] All filters compose into a single SQL query; the SQL builds use Drizzle's typed query API
+- [x] Mark completed
 
 ### Task 2: Italian copy module
 

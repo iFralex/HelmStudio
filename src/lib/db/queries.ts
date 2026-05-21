@@ -1,4 +1,4 @@
-import { eq, and, desc, asc, sql } from 'drizzle-orm';
+import { eq, and, desc, asc, sql, gte, lte, like, inArray, or } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
 import {
   channels,
@@ -14,6 +14,7 @@ import {
   settings,
 } from './schema';
 import { getDb } from './client';
+import { quotaSummary } from '../youtube/dashboard';
 
 export type Channel = typeof channels.$inferSelect;
 export type Video = typeof videos.$inferSelect;
@@ -207,4 +208,187 @@ export async function setSetting(
       set: { value, updatedAt: sql`(unixepoch())` },
     })
     .run();
+}
+
+export type ListChannelsFilters = {
+  outreachStatus?: OutreachStatus[];
+  minScore?: number;
+  maxScore?: number;
+  minSubs?: number;
+  maxSubs?: number;
+  nicheContains?: string;
+  formatContains?: string;
+  pitchLanguage?: 'it' | 'en';
+  search?: string;
+  sort?: 'score_desc' | 'subs_desc' | 'qualified_at_desc' | 'discovered_at_desc';
+  page?: number;
+  pageSize?: number;
+};
+
+export async function listChannelsForUi(
+  filters: ListChannelsFilters = {},
+  db: Db = getDb(),
+): Promise<{
+  rows: Array<Channel & { latestQualification: Qualification | null }>;
+  totalCount: number;
+  page: number;
+  pageSize: number;
+}> {
+  const {
+    outreachStatus: outreachStatusFilter,
+    minScore,
+    maxScore,
+    minSubs,
+    maxSubs,
+    nicheContains,
+    formatContains,
+    pitchLanguage,
+    search,
+    sort = 'score_desc',
+    page = 1,
+    pageSize = 50,
+  } = filters;
+
+  const conditions: SQL<unknown>[] = [];
+
+  if (outreachStatusFilter && outreachStatusFilter.length > 0) {
+    conditions.push(inArray(channels.outreachStatus, outreachStatusFilter));
+  }
+  if (minScore !== undefined) {
+    conditions.push(gte(channels.latestAutomationScore, minScore));
+  }
+  if (maxScore !== undefined) {
+    conditions.push(lte(channels.latestAutomationScore, maxScore));
+  }
+  if (minSubs !== undefined) {
+    conditions.push(gte(channels.subscriberCount, minSubs));
+  }
+  if (maxSubs !== undefined) {
+    conditions.push(lte(channels.subscriberCount, maxSubs));
+  }
+  if (nicheContains) {
+    conditions.push(like(qualifications.nicheClassification, `%${nicheContains}%`));
+  }
+  if (formatContains) {
+    conditions.push(like(qualifications.formatType, `%${formatContains}%`));
+  }
+  if (pitchLanguage) {
+    conditions.push(eq(qualifications.pitchLanguage, pitchLanguage));
+  }
+  if (search) {
+    const pat = `%${search}%`;
+    conditions.push(
+      or(like(channels.title, pat), like(channels.handle, pat), like(channels.description, pat))!,
+    );
+  }
+
+  const orderByCol =
+    sort === 'score_desc'
+      ? desc(channels.latestAutomationScore)
+      : sort === 'subs_desc'
+        ? desc(channels.subscriberCount)
+        : sort === 'qualified_at_desc'
+          ? desc(channels.lastQualifiedAt)
+          : desc(channels.discoveredAt);
+
+  const offset = (page - 1) * pageSize;
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const [rows, countRow] = await Promise.all([
+    db
+      .select()
+      .from(channels)
+      .leftJoin(qualifications, eq(channels.latestQualificationId, qualifications.id))
+      .where(whereClause)
+      .orderBy(orderByCol)
+      .limit(pageSize)
+      .offset(offset)
+      .all(),
+    db
+      .select({ count: sql<number>`count(*)` })
+      .from(channels)
+      .leftJoin(qualifications, eq(channels.latestQualificationId, qualifications.id))
+      .where(whereClause)
+      .get(),
+  ]);
+
+  return {
+    rows: rows.map((r) => ({ ...r.channels, latestQualification: r.qualifications ?? null })),
+    totalCount: countRow?.count ?? 0,
+    page,
+    pageSize,
+  };
+}
+
+const ALL_OUTREACH_STATUSES: OutreachStatus[] = [
+  'none',
+  'email_added',
+  'drafted',
+  'sent',
+  'replied',
+  'no_reply',
+  'ignored',
+];
+
+export async function dashboardSnapshot(db: Db = getDb()): Promise<{
+  latestRun: PipelineRun | null;
+  queues: Record<DiscoveryStatus | OutreachStatus, number>;
+  topRecent: Array<{
+    channelId: string;
+    title: string;
+    handle: string | null;
+    thumbnailUrl: string | null;
+    score: number;
+    nicheClassification: string;
+  }>;
+  quota: Awaited<ReturnType<typeof quotaSummary>>;
+}> {
+  const [latestRun, discoveryRows, outreachRows, topRecentRows, quota] = await Promise.all([
+    getLatestRun(db),
+    db
+      .select({ status: channels.discoveryStatus, count: sql<number>`count(*)` })
+      .from(channels)
+      .groupBy(channels.discoveryStatus)
+      .all(),
+    db
+      .select({ status: channels.outreachStatus, count: sql<number>`count(*)` })
+      .from(channels)
+      .groupBy(channels.outreachStatus)
+      .all(),
+    db
+      .select({
+        channelId: channels.id,
+        title: channels.title,
+        handle: channels.handle,
+        thumbnailUrl: channels.thumbnailUrl,
+        score: channels.latestAutomationScore,
+        nicheClassification: qualifications.nicheClassification,
+      })
+      .from(channels)
+      .leftJoin(qualifications, eq(channels.latestQualificationId, qualifications.id))
+      .where(eq(channels.discoveryStatus, 'qualified'))
+      .orderBy(desc(channels.lastQualifiedAt))
+      .limit(10)
+      .all(),
+    quotaSummary(db),
+  ]);
+
+  const queues = Object.fromEntries([
+    ...ALL_DISCOVERY_STATUSES.map((s) => [s, 0]),
+    ...ALL_OUTREACH_STATUSES.map((s) => [s, 0]),
+  ]) as Record<DiscoveryStatus | OutreachStatus, number>;
+
+  for (const r of discoveryRows) queues[r.status as DiscoveryStatus] = r.count;
+  for (const r of outreachRows) queues[r.status as OutreachStatus] = r.count;
+
+  const topRecent = topRecentRows.map((r) => ({
+    channelId: r.channelId,
+    title: r.title,
+    handle: r.handle,
+    thumbnailUrl: r.thumbnailUrl,
+    score: r.score ?? 0,
+    nicheClassification: r.nicheClassification ?? '',
+  }));
+
+  return { latestRun, queues, topRecent, quota };
 }
