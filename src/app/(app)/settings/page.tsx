@@ -9,6 +9,8 @@ import { version as draftVersion } from '@/lib/llm/prompts/draft';
 import { FiltersForm } from '@/components/settings/filters-form';
 import { PipelineConfigForm } from '@/components/settings/pipeline-config-form';
 import { KeywordsSection } from '@/components/settings/keywords-section';
+import { ModelsSection } from '@/components/settings/models-section';
+import { PromptsSection } from '@/components/settings/prompts-section';
 
 export default async function SettingsPage() {
   const [filters, pipelineConfig, keywords] = await Promise.all([
@@ -50,47 +52,22 @@ export default async function SettingsPage() {
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">{copy.settings.modelsTitle}</h2>
-        <dl className="space-y-2 text-sm">
-          {(
-            [
-              [copy.settings.modelThink, env.LLM_MODEL_THINK],
-              [copy.settings.modelFast, env.LLM_MODEL_FAST],
-              [copy.settings.llmBaseUrl, env.LLM_BASE_URL],
-            ] as [string, string][]
-          ).map(([label, value]) => (
-            <div key={label} className="flex gap-3">
-              <dt className="w-52 shrink-0 text-muted-foreground">{label}</dt>
-              <dd className="font-mono break-all">{value}</dd>
-            </div>
-          ))}
-        </dl>
-        <p className="text-xs text-muted-foreground">
-          Modificare nel file <code className="font-mono">.env</code> e riavviare il worker.
-        </p>
+        <ModelsSection
+          modelThink={env.LLM_MODEL_THINK}
+          modelFast={env.LLM_MODEL_FAST}
+          llmBaseUrl={env.LLM_BASE_URL}
+        />
       </section>
 
       <Separator />
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">{copy.settings.promptsTitle}</h2>
-        <dl className="space-y-2 text-sm">
-          {(
-            [
-              [copy.settings.promptSelect, selectVersion],
-              [copy.settings.promptQualify, qualifyVersion],
-              [copy.settings.promptDraft, draftVersion],
-            ] as [string, string][]
-          ).map(([label, value]) => (
-            <div key={label} className="flex gap-3">
-              <dt className="w-52 shrink-0 text-muted-foreground">{label}</dt>
-              <dd className="font-mono">{value}</dd>
-            </div>
-          ))}
-        </dl>
-        <p className="text-xs text-muted-foreground">
-          I prompt sono versionati nel codice (
-          <code className="font-mono">src/lib/llm/prompts/</code>).
-        </p>
+        <PromptsSection
+          selectVersion={selectVersion}
+          qualifyVersion={qualifyVersion}
+          draftVersion={draftVersion}
+        />
       </section>
 
       <Separator />

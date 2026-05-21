@@ -276,16 +276,16 @@ export async function deleteKeywordAction(input: { id: number }): Promise<void>;
 
 ### Task 9: Read-only models and prompts sections
 
-- [ ] Create `src/components/settings/models-section.tsx`:
+- [x] Create `src/components/settings/models-section.tsx`:
   - displays `env.LLM_MODEL_THINK`, `env.LLM_MODEL_FAST`, `env.LLM_BASE_URL` in a small definition list
   - a one-liner note: "Modificare nel file `.env` e riavviare il worker."
-- [ ] Create `src/components/settings/prompts-section.tsx`:
+- [x] Create `src/components/settings/prompts-section.tsx`:
   - displays the current prompt versions imported from plan 08/09's prompt modules:
     - `select.version` (e.g. `select-v1`)
     - `qualify.version` (e.g. `qualify-v2`)
     - `draft.version` (e.g. `draft-v1`)
   - a one-liner note: "I prompt sono versionati nel codice (`src/lib/llm/prompts/`)."
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 10: CSV export endpoint
 
