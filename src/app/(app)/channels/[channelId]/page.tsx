@@ -1,11 +1,19 @@
 import { notFound } from 'next/navigation';
 import { getChannelDetail } from '@/lib/db/queries';
-import { copy } from '@/lib/ui/copy';
 import { ChannelInfo } from '@/components/channel-detail/channel-info';
 import { SampleVideosList } from '@/components/channel-detail/sample-videos-list';
 import { AssessmentCard } from '@/components/channel-detail/assessment-card';
 import { AgentReasoningPanel } from '@/components/channel-detail/agent-reasoning-panel';
-import { requalifyChannel } from './actions';
+import { OutreachWidget } from '@/components/channel-detail/outreach-widget';
+import {
+  requalifyChannel,
+  saveEmailAndDraft,
+  regenerateDraft,
+  updateDraftSubject,
+  updateDraftBody,
+  markOutreachStatus,
+  updateOutreachNotes,
+} from './actions';
 
 interface PageProps {
   params: Promise<{ channelId: string }>;
@@ -45,7 +53,17 @@ export default async function ChannelDetailPage({ params }: PageProps) {
 
         {/* Right column: outreach widget */}
         <div className="space-y-4">
-          <div className="text-muted-foreground text-sm">{copy.channelDetail.outreachTitle}</div>
+          <OutreachWidget
+            channel={detail.channel}
+            currentDraft={detail.currentDraft}
+            draftHistory={detail.draftHistory}
+            saveEmailAndDraftAction={saveEmailAndDraft}
+            regenerateDraftAction={regenerateDraft}
+            updateDraftSubjectAction={updateDraftSubject}
+            updateDraftBodyAction={updateDraftBody}
+            markOutreachStatusAction={markOutreachStatus}
+            updateOutreachNotesAction={updateOutreachNotes}
+          />
         </div>
       </div>
     </div>

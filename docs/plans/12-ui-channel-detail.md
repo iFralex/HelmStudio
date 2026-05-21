@@ -193,7 +193,7 @@ channelDetail: {
 
 ### Task 7: Right column — outreach widget (state machine)
 
-- [ ] Create `src/components/channel-detail/outreach-widget.tsx`:
+- [x] Create `src/components/channel-detail/outreach-widget.tsx`:
   - dispatches on `channel.outreachStatus`
 
   **`'none'` state**
@@ -226,8 +226,8 @@ channelDetail: {
   - read-only subject/body + notes
   - `Riapri` button → server action setting `outreachStatus='drafted'`
 
-- [ ] All buttons use shadcn variants and respect a `disabled` state during transitions
-- [ ] Mark completed
+- [x] All buttons use shadcn variants and respect a `disabled` state during transitions
+- [x] Mark completed
 
 ### Task 8: Server actions
 
