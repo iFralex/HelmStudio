@@ -23,7 +23,6 @@ export async function runDraftGeneration(
 ): Promise<{ draftId: number; output: DraftOutput; usage: TokenUsage }> {
   const { channelId, qualificationId, input } = args;
   const { language } = input;
-
   const user = userTemplate(input);
 
   const result = await callLLM({
@@ -41,7 +40,7 @@ export async function runDraftGeneration(
     logger.warn({ channelId, subjectLength: output.subject.length }, 'draft subject exceeds 60 chars');
   }
 
-  const validation = validateDraftOutput(output, language);
+  const validation = validateDraftOutput(output);
   if (!validation.valid) {
     const retryResult = await callLLM({
       tier: 'fast',
@@ -64,7 +63,7 @@ export async function runDraftGeneration(
       logger.warn({ channelId, subjectLength: retryResult.parsed.subject.length }, 'draft subject exceeds 60 chars on retry');
     }
 
-    const retryValidation = validateDraftOutput(retryResult.parsed, language);
+    const retryValidation = validateDraftOutput(retryResult.parsed);
     if (!retryValidation.valid) {
       throw new LlmFormatError(
         `Draft body word count out of band after retry: ${retryValidation.reason}`,

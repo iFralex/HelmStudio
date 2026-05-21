@@ -56,9 +56,12 @@ function makeValidBody(): string {
   return Array.from({ length: 100 }, (_, i) => `word${i}`).join(' ');
 }
 
-// 30 words, each long enough so total chars > 200 (passes DraftOutputSchema min(200))
 function makeShortBody(): string {
-  return Array.from({ length: 30 }, (_, i) => `verylongword${i}`).join(' ');
+  return Array.from({ length: 30 }, (_, i) => `word${i}`).join(' ');
+}
+
+function makeOverlyLongBody(): string {
+  return Array.from({ length: 300 }, (_, i) => `word${i}`).join(' ');
 }
 
 function makeDraftCallResult(body = makeValidBody(), subject = 'Test subject line here') {
@@ -205,9 +208,34 @@ describe.skipIf(!sqlite3Available)('generateDraftForChannel', () => {
 
   it('retries once when body word count is too short and succeeds on retry', async () => {
     insertFixtures(db);
+    const retryBody = makeValidBody();
+    const retryRawPath = `raw/llm/drafts/${CHANNEL_ID}/2024-01-02T00-00-00-000Z.json`;
 
     mockCallLLM
       .mockResolvedValueOnce(makeDraftCallResult(makeShortBody()))
+      .mockResolvedValueOnce({ ...makeDraftCallResult(retryBody), rawPath: retryRawPath });
+
+    const { draftId } = await generateDraftForChannel(CHANNEL_ID, db);
+
+    expect(draftId).toBeGreaterThan(0);
+    expect(mockCallLLM).toHaveBeenCalledTimes(2);
+    expect(mockCallLLM).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ user: expect.stringContaining('Aim for 120-180 words') }),
+    );
+
+    const row = db.select().from(schema.outreachDrafts).where(eq(schema.outreachDrafts.id, draftId)).get();
+    expect(row!.body).toBe(retryBody);
+    expect(row!.rawResponsePath).toBe(retryRawPath);
+    expect(row!.inputTokens).toBe(200);
+    expect(row!.outputTokens).toBe(100);
+  });
+
+  it('retries once when body word count is too long and succeeds on retry', async () => {
+    insertFixtures(db);
+
+    mockCallLLM
+      .mockResolvedValueOnce(makeDraftCallResult(makeOverlyLongBody()))
       .mockResolvedValueOnce(makeDraftCallResult(makeValidBody()));
 
     const { draftId } = await generateDraftForChannel(CHANNEL_ID, db);
@@ -223,6 +251,9 @@ describe.skipIf(!sqlite3Available)('generateDraftForChannel', () => {
 
     await expect(generateDraftForChannel(CHANNEL_ID, db)).rejects.toThrow(LlmFormatError);
     expect(mockCallLLM).toHaveBeenCalledTimes(2);
+
+    const rows = db.select().from(schema.outreachDrafts).all();
+    expect(rows).toHaveLength(0);
   });
 
   it('uses pitchLanguage=en from qualification and returns correct language', async () => {
@@ -247,5 +278,25 @@ describe.skipIf(!sqlite3Available)('generateDraftForChannel', () => {
     expect(current).not.toBeNull();
     expect(current!.id).toBe(draftId);
     expect(current!.isCurrent).toBe(true);
+  });
+
+  it('getCurrentDraft returns null when no draft has been generated', async () => {
+    insertFixtures(db);
+
+    const current = await getCurrentDraft(CHANNEL_ID, db);
+
+    expect(current).toBeNull();
+  });
+
+  it('listDraftsForChannel returns drafts newest first', async () => {
+    insertFixtures(db);
+    mockCallLLM.mockResolvedValue(makeDraftCallResult());
+
+    const { draftId: firstId } = await generateDraftForChannel(CHANNEL_ID, db);
+    const { draftId: secondId } = await generateDraftForChannel(CHANNEL_ID, db);
+
+    const rows = await listDraftsForChannel(CHANNEL_ID, db);
+    expect(rows[0]!.id).toBe(secondId);
+    expect(rows[1]!.id).toBe(firstId);
   });
 });
