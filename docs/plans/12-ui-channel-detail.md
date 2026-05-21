@@ -296,9 +296,9 @@ export async function deleteChannel(input: { channelId: string }): Promise<void>
 
 ### Task 12: Loading and error states
 
-- [ ] Create `src/app/(app)/channels/[channelId]/loading.tsx` with shadcn skeletons matching the 3-column layout
-- [ ] Create `src/app/(app)/channels/[channelId]/error.tsx` with a friendly Italian error message and a "Torna ai canali" link
-- [ ] Mark completed
+- [x] Create `src/app/(app)/channels/[channelId]/loading.tsx` with shadcn skeletons matching the 3-column layout
+- [x] Create `src/app/(app)/channels/[channelId]/error.tsx` with a friendly Italian error message and a "Torna ai canali" link
+- [x] Mark completed
 
 ### Task 13: E2E test
 
