@@ -74,12 +74,25 @@ export async function forceRequalifyChannel(
 
     return { ...result, runId };
   } catch (err) {
+    const selectionStats = db
+      .select({ calls: count(), tokensIn: sum(videoSelections.inputTokens), tokensOut: sum(videoSelections.outputTokens) })
+      .from(videoSelections)
+      .where(eq(videoSelections.runId, runId))
+      .get();
+    const qualStats = db
+      .select({ calls: count(), tokensIn: sum(qualifications.inputTokens), tokensOut: sum(qualifications.outputTokens) })
+      .from(qualifications)
+      .where(eq(qualifications.runId, runId))
+      .get();
     db.update(pipelineRuns)
       .set({
         status: 'failed',
         finishedAt: new Date(),
         errorMessage: err instanceof Error ? err.message : String(err),
         errorStack: err instanceof Error ? err.stack : undefined,
+        llmCallsCount: (selectionStats?.calls ?? 0) + (qualStats?.calls ?? 0),
+        llmTokensInput: Number(selectionStats?.tokensIn ?? 0) + Number(qualStats?.tokensIn ?? 0),
+        llmTokensOutput: Number(selectionStats?.tokensOut ?? 0) + Number(qualStats?.tokensOut ?? 0),
       })
       .where(eq(pipelineRuns.id, runId))
       .run();

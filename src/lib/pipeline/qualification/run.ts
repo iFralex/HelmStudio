@@ -1,4 +1,4 @@
-import { eq, sum, count, desc } from 'drizzle-orm';
+import { eq, or, sum, count, desc } from 'drizzle-orm';
 import pLimit from 'p-limit';
 import { getDb } from '@/lib/db/client';
 import { channels, pipelineRuns, qualifications, videoSelections } from '@/lib/db/schema';
@@ -17,7 +17,7 @@ export async function runQualification(
   const enrichedChannels = db
     .select({ id: channels.id })
     .from(channels)
-    .where(eq(channels.discoveryStatus, 'enriched'))
+    .where(or(eq(channels.discoveryStatus, 'enriched'), eq(channels.discoveryStatus, 'qualified')))
     .orderBy(desc(channels.discoveredAt))
     .all();
 
@@ -88,12 +88,25 @@ export async function runQualification(
 
     return { qualified, skipped, rejected };
   } catch (err) {
+    const selectionStats = db
+      .select({ calls: count(), tokensIn: sum(videoSelections.inputTokens), tokensOut: sum(videoSelections.outputTokens) })
+      .from(videoSelections)
+      .where(eq(videoSelections.runId, runId))
+      .get();
+    const qualStats = db
+      .select({ calls: count(), tokensIn: sum(qualifications.inputTokens), tokensOut: sum(qualifications.outputTokens) })
+      .from(qualifications)
+      .where(eq(qualifications.runId, runId))
+      .get();
     db.update(pipelineRuns)
       .set({
         status: 'failed',
         finishedAt: new Date(),
         errorMessage: err instanceof Error ? err.message : String(err),
         errorStack: err instanceof Error ? err.stack : undefined,
+        llmCallsCount: (selectionStats?.calls ?? 0) + (qualStats?.calls ?? 0),
+        llmTokensInput: Number(selectionStats?.tokensIn ?? 0) + Number(qualStats?.tokensIn ?? 0),
+        llmTokensOutput: Number(selectionStats?.tokensOut ?? 0) + Number(qualStats?.tokensOut ?? 0),
       })
       .where(eq(pipelineRuns.id, runId))
       .run();
