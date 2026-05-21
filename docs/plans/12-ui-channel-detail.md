@@ -286,13 +286,13 @@ export async function deleteChannel(input: { channelId: string }): Promise<void>
 
 ### Task 11: Raw JSON download endpoint
 
-- [ ] Create `src/app/api/raw/route.ts`:
+- [x] Create `src/app/api/raw/route.ts`:
   - `GET /api/raw?path=<relativePath>`
   - validates the path is within `data/raw/...` (prevents traversal)
   - streams the file with `Content-Type: application/json` and `Content-Disposition: attachment`
   - 404 if missing
-- [ ] Linked from the assessment card footer and (optionally) the transcript modal
-- [ ] Mark completed
+- [x] Linked from the assessment card footer and (optionally) the transcript modal
+- [x] Mark completed
 
 ### Task 12: Loading and error states
 
