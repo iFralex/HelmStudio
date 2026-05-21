@@ -101,11 +101,11 @@ export async function getCurrentDraft(channelId: string): Promise<OutreachDraft 
 
 ### Task 4: Smoke script
 
-- [ ] Create `scripts/draft-one.ts`:
+- [x] Create `scripts/draft-one.ts`:
   - argv[2] is a channel ID that has been qualified
   - calls `generateDraftForChannel(channelId)`
   - prints the subject and body to stdout, plus latency and tokens
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 5: Tests
 
