@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { copy } from '@/lib/ui/copy';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -17,16 +18,14 @@ export default function ChannelDetailError({ error, reset }: ErrorProps) {
 
   return (
     <div className="container mx-auto px-4 py-16 flex flex-col items-center gap-6 text-center">
-      <h2 className="text-xl font-semibold">Si è verificato un errore</h2>
-      <p className="text-muted-foreground max-w-sm">
-        Impossibile caricare i dettagli del canale. Riprova o torna alla lista dei canali.
-      </p>
+      <h2 className="text-xl font-semibold">{copy.channelDetail.errorTitle}</h2>
+      <p className="text-muted-foreground max-w-sm">{copy.channelDetail.errorBody}</p>
       <div className="flex gap-3">
         <Button variant="outline" onClick={reset}>
-          Riprova
+          {copy.channelDetail.errorRetry}
         </Button>
         <Link href="/channels" className={cn(buttonVariants({ variant: 'default' }))}>
-          Torna ai canali
+          {copy.channelDetail.errorBackToChannels}
         </Link>
       </div>
     </div>

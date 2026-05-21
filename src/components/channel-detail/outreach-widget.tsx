@@ -111,8 +111,8 @@ function NoneView({
         fd.set('channelId', channelId);
         fd.set('email', email.trim());
         await saveEmailAndDraftAction(fd);
-      } catch {
-        toast.error(copy.channelDetail.draftGenerationError);
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : copy.channelDetail.draftGenerationError);
       }
     });
   };
@@ -353,12 +353,14 @@ function SentView({
   };
 
   const handleNotesBlur = () => {
-    startTransition(async () => {
-      const fd = new FormData();
-      fd.set('channelId', channelId);
-      fd.set('notes', notes);
-      await updateOutreachNotesAction(fd);
-    });
+    if (notes !== (channel.outreachNotes ?? '')) {
+      startTransition(async () => {
+        const fd = new FormData();
+        fd.set('channelId', channelId);
+        fd.set('notes', notes);
+        await updateOutreachNotesAction(fd);
+      });
+    }
   };
 
   return (

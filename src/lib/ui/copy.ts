@@ -179,6 +179,12 @@ export const copy = {
     transcriptCharCount: (n: number) => `${n.toLocaleString('it-IT')} caratteri`,
     transcriptSource: 'via youtube-transcript',
 
+    // Error page
+    errorTitle: 'Si è verificato un errore',
+    errorBody: 'Impossibile caricare i dettagli del canale. Riprova o torna alla lista dei canali.',
+    errorRetry: 'Riprova',
+    errorBackToChannels: 'Torna ai canali',
+
     // GDPR
     deleteChannel: 'Elimina canale',
     deleteChannelConfirmTitle: 'Eliminare definitivamente questo canale?',
