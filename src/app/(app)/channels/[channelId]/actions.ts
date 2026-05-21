@@ -81,6 +81,7 @@ export async function saveEmailAndDraft(formData: FormData): Promise<void> {
     });
   } catch (err) {
     logger.error({ channelId, err }, 'draft generation failed');
+    revalidatePath(`/channels/${channelId}`);
     throw err;
   }
 
@@ -116,10 +117,18 @@ export async function updateDraftSubject(formData: FormData): Promise<void> {
 
   const { draftId, subject } = parsed.data;
   const db = getDb();
-  db.update(outreachDrafts).set({ subject }).where(eq(outreachDrafts.id, draftId)).run();
-
-  const draft = db.select().from(outreachDrafts).where(eq(outreachDrafts.id, draftId)).get();
-  if (draft) revalidatePath(`/channels/${draft.channelId}`);
+  let channelId: string | null = null;
+  db.transaction((tx) => {
+    tx.update(outreachDrafts).set({ subject }).where(eq(outreachDrafts.id, draftId)).run();
+    const draft = tx.select().from(outreachDrafts).where(eq(outreachDrafts.id, draftId)).get();
+    if (draft) {
+      channelId = draft.channelId;
+      tx.insert(pipelineEvents)
+        .values({ channelId: draft.channelId, stage: 'meta', level: 'info', event: 'draft_subject_updated' })
+        .run();
+    }
+  });
+  if (channelId) revalidatePath(`/channels/${channelId}`);
 }
 
 export async function updateDraftBody(formData: FormData): Promise<void> {
@@ -131,10 +140,18 @@ export async function updateDraftBody(formData: FormData): Promise<void> {
 
   const { draftId, body } = parsed.data;
   const db = getDb();
-  db.update(outreachDrafts).set({ body }).where(eq(outreachDrafts.id, draftId)).run();
-
-  const draft = db.select().from(outreachDrafts).where(eq(outreachDrafts.id, draftId)).get();
-  if (draft) revalidatePath(`/channels/${draft.channelId}`);
+  let channelId: string | null = null;
+  db.transaction((tx) => {
+    tx.update(outreachDrafts).set({ body }).where(eq(outreachDrafts.id, draftId)).run();
+    const draft = tx.select().from(outreachDrafts).where(eq(outreachDrafts.id, draftId)).get();
+    if (draft) {
+      channelId = draft.channelId;
+      tx.insert(pipelineEvents)
+        .values({ channelId: draft.channelId, stage: 'meta', level: 'info', event: 'draft_body_updated' })
+        .run();
+    }
+  });
+  if (channelId) revalidatePath(`/channels/${channelId}`);
 }
 
 export async function markOutreachStatus(formData: FormData): Promise<void> {
@@ -179,7 +196,12 @@ export async function updateOutreachNotes(formData: FormData): Promise<void> {
 
   const { channelId, notes } = parsed.data;
   const db = getDb();
-  db.update(channels).set({ outreachNotes: notes }).where(eq(channels.id, channelId)).run();
+  db.transaction((tx) => {
+    tx.update(channels).set({ outreachNotes: notes }).where(eq(channels.id, channelId)).run();
+    tx.insert(pipelineEvents)
+      .values({ channelId, stage: 'meta', level: 'info', event: 'outreach_notes_updated' })
+      .run();
+  });
   revalidatePath(`/channels/${channelId}`);
 }
 
@@ -197,17 +219,19 @@ export async function deleteChannel(formData: FormData): Promise<void> {
     deleteRawForChannel(channelId),
   ]);
 
-  db.delete(channels).where(eq(channels.id, channelId)).run();
   // channelId is stored in details since the FK field would be null after the delete
-  db.insert(pipelineEvents)
-    .values({
-      channelId: null,
-      stage: 'meta',
-      level: 'info',
-      event: 'channel_deleted',
-      details: { deletedChannelId: channelId },
-    })
-    .run();
+  db.transaction((tx) => {
+    tx.delete(channels).where(eq(channels.id, channelId)).run();
+    tx.insert(pipelineEvents)
+      .values({
+        channelId: null,
+        stage: 'meta',
+        level: 'info',
+        event: 'channel_deleted',
+        details: { deletedChannelId: channelId },
+      })
+      .run();
+  });
 
   logger.info({ channelId }, 'channel deleted');
   revalidatePath('/channels');

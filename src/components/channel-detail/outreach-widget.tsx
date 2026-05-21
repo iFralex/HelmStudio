@@ -69,6 +69,9 @@ export function OutreachWidget({
           markOutreachStatusAction={markOutreachStatusAction}
         />
       )}
+      {status === 'drafted' && !currentDraft && (
+        <EmailAddedView channelId={channel.id} regenerateDraftAction={regenerateDraftAction} />
+      )}
       {status === 'sent' && currentDraft && (
         <SentView
           channelId={channel.id}
@@ -253,9 +256,13 @@ function DraftedView({
 
   const handleRegenerate = () => {
     startTransition(async () => {
-      const fd = new FormData();
-      fd.set('channelId', channelId);
-      await regenerateDraftAction(fd);
+      try {
+        const fd = new FormData();
+        fd.set('channelId', channelId);
+        await regenerateDraftAction(fd);
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : copy.channelDetail.draftGenerationError);
+      }
     });
   };
 
