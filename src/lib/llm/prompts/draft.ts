@@ -40,7 +40,7 @@ export function userTemplate(input: DraftInput): string {
   const topWorkflow = qualification.automatableWorkflows[0];
 
   const channelXml = `<channel>
-  <id>${channel.id}</id>
+  <id>${escapeXml(channel.id)}</id>
   <title>${escapeXml(channel.title)}</title>
   <description>${escapeXml(channel.description ?? '')}</description>
   <country>${channel.country ?? 'unknown'}</country>
@@ -51,7 +51,7 @@ export function userTemplate(input: DraftInput): string {
   const videosXml = recentVideos
     .map(
       (v, i) => `  <video index="${i + 1}">
-    <id>${v.id}</id>
+    <id>${escapeXml(v.id)}</id>
     <title>${escapeXml(v.title)}</title>
     <published_at>${v.publishedAt}</published_at>
     <duration_seconds>${v.durationSeconds ?? 'unknown'}</duration_seconds>

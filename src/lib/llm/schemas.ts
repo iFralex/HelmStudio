@@ -69,7 +69,8 @@ export type DraftOutput = z.infer<typeof DraftOutputSchema>;
 export function validateDraftOutput(
   d: DraftOutput,
 ): { valid: true } | { valid: false; reason: string } {
-  const wordCount = d.body.trim().split(/\s+/).length;
+  const trimmed = d.body.trim();
+  const wordCount = trimmed.length === 0 ? 0 : trimmed.split(/\s+/).length;
   if (wordCount < 80 || wordCount > 250) {
     return {
       valid: false,

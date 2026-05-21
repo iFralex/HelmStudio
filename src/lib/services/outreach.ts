@@ -11,6 +11,7 @@ import { runDraftGeneration } from '@/lib/llm/draft';
 import type { DraftInput } from '@/lib/llm/draft';
 import type { QualifyOutput } from '@/lib/llm/schemas';
 import type { ChannelDetail, VideoDetail } from '@/lib/youtube/types';
+import { logger } from '@/lib/logger';
 
 export type { OutreachDraft };
 
@@ -98,6 +99,10 @@ export async function generateDraftForChannel(
     defaultLanguage: v.defaultLanguage,
     defaultAudioLanguage: v.defaultAudioLanguage,
   }));
+
+  if (qualification.automatableWorkflows.length === 0) {
+    logger.warn({ channelId }, 'generating draft with no automatable workflows; prompt context will be degraded');
+  }
 
   const draftInput: DraftInput = {
     channel: channelDetail,
