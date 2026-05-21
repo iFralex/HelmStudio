@@ -36,7 +36,7 @@ export function QueuesCard({ queues }: QueuesCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Code</CardTitle>
+        <CardTitle>{copy.dashboard.queuesTitle}</CardTitle>
       </CardHeader>
       <CardContent>
         <ul className="space-y-1.5">

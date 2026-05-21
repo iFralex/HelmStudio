@@ -22,9 +22,9 @@ export function insertTestRun(db: TestDb): number {
     INSERT INTO pipeline_runs (status, triggered_by, started_at, finished_at,
       searches_performed, candidates_found, channels_enriched, channels_pre_rejected,
       channels_qualified, channels_post_rejected, youtube_quota_used,
-      llm_calls_count, llm_tokens_input, llm_tokens_output)
+      llm_calls_count, llm_tokens_input, llm_tokens_output, error_message)
     VALUES ('completed', 'manual', strftime('%s','now'), strftime('%s','now'),
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'e2etest-run')
   `);
   return Number(stmt.run().lastInsertRowid);
 }
@@ -89,7 +89,5 @@ export function insertTestQualification(
 
 export function cleanupTestChannels(db: TestDb): void {
   db.prepare(`DELETE FROM channels WHERE id LIKE 'e2etest-%'`).run();
-  db.prepare(
-    `DELETE FROM pipeline_runs WHERE triggered_by = 'manual' AND candidates_found = 0 AND channels_enriched = 0`,
-  ).run();
+  db.prepare(`DELETE FROM pipeline_runs WHERE error_message = 'e2etest-run'`).run();
 }

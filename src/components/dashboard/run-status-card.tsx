@@ -58,15 +58,15 @@ export function RunStatusCard({ initialRun, initialActive, initialRunId }: RunSt
   let statusLine: string;
   if (isActive && runId) {
     const processed = run ? run.channelsEnriched + run.channelsQualified : 0;
-    statusLine = `Pipeline in corso (run #${runId}, ${processed} canali processati)`;
+    statusLine = copy.dashboard.runInProgressStatus(runId, processed);
   } else if (run) {
     const label =
       run.status === 'completed'
-        ? 'completato'
+        ? copy.dashboard.runCompleted
         : run.status === 'failed'
-          ? 'fallito'
-          : 'cancellato';
-    statusLine = `Ultimo run #${run.id} ${label} — ${formatRelative(run.startedAt as unknown as Date)}`;
+          ? copy.dashboard.runFailed
+          : copy.dashboard.runCancelled;
+    statusLine = `Ultimo run #${run.id} ${label} — ${formatRelative(run.startedAt as unknown as string)}`;
   } else {
     statusLine = copy.dashboard.runCooldown;
   }
@@ -74,7 +74,7 @@ export function RunStatusCard({ initialRun, initialActive, initialRunId }: RunSt
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Stato pipeline</CardTitle>
+        <CardTitle>{copy.dashboard.runStatusTitle}</CardTitle>
         <CardAction>
           <Button onClick={handleRun} disabled={isActive || starting} size="sm">
             {isActive ? copy.dashboard.runInProgress : copy.dashboard.runNow}

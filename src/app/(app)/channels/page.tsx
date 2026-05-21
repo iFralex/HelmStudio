@@ -15,7 +15,7 @@ const ChannelsSearchParamsSchema = z.object({
   niche: z.string().max(200).optional().catch(undefined),
   format: z.string().max(200).optional().catch(undefined),
   lang: z.enum(['it', 'en']).optional().catch(undefined),
-  q: z.string().max(500).optional(),
+  q: z.string().max(500).optional().catch(undefined),
   sort: z
     .enum(['score_desc', 'subs_desc', 'qualified_at_desc', 'discovered_at_desc'])
     .optional()
@@ -104,7 +104,7 @@ export default async function ChannelsPage({ searchParams }: PageProps) {
           {hasFilters && (
             <Link href="/channels">
               <Button variant="outline" size="sm">
-                Reset filtri
+                {copy.channels.resetFilters}
               </Button>
             </Link>
           )}

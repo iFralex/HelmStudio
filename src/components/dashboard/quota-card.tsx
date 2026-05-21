@@ -45,7 +45,7 @@ export function QuotaCard({ quota }: QuotaCardProps) {
             </TooltipTrigger>
             <TooltipContent side="bottom">
               <div className="text-xs whitespace-pre">
-                {tooltipLines || 'Nessun utilizzo oggi'}
+                {tooltipLines || copy.dashboard.quotaNoUsage}
               </div>
             </TooltipContent>
           </Tooltip>

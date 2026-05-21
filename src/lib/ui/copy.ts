@@ -8,9 +8,16 @@ export const copy = {
   },
   dashboard: {
     title: 'Dashboard',
+    runStatusTitle: 'Stato pipeline',
     runNow: 'Avvia pipeline ora',
     runInProgress: 'Pipeline in corso…',
+    runInProgressStatus: (runId: number | undefined, processed: number) =>
+      `Pipeline in corso (run #${runId ?? '?'}, ${processed} canali processati)`,
+    runCompleted: 'completato',
+    runFailed: 'fallito',
+    runCancelled: 'cancellato',
     runCooldown: 'Pipeline non avviata oggi',
+    queuesTitle: 'Code',
     quotaToday: 'Quota YouTube oggi',
     unitsUsed: (n: number, cap: number) =>
       `${n.toLocaleString('it-IT')} / ${cap.toLocaleString('it-IT')} unità`,
@@ -21,6 +28,11 @@ export const copy = {
     queueSentNoReply: 'Inviati senza risposta',
     topRecent: 'Ultimi canali qualificati',
     noData: 'Nessun dato ancora — avvia la pipeline per cominciare.',
+    llmToday: 'LLM oggi',
+    llmCalls: 'Chiamate',
+    llmTokensInput: 'Token input',
+    llmTokensOutput: 'Token output',
+    quotaNoUsage: 'Nessun utilizzo oggi',
   },
   channels: {
     title: 'Canali',
@@ -51,6 +63,11 @@ export const copy = {
     paginationPrev: 'Precedenti',
     pageOf: (page: number, total: number) => `Pagina ${page} di ${total}`,
     noResults: 'Nessun canale corrisponde ai filtri.',
+    resetFilters: 'Reset filtri',
+    clearFilters: 'Cancella filtri',
+    pitchLangAll: 'Tutte',
+    pitchLangIt: 'Italiano',
+    pitchLangEn: 'Inglese',
   },
   outreachStatus: {
     none: 'Da rivedere',

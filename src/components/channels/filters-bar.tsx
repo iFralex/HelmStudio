@@ -221,9 +221,9 @@ export function FiltersBar({ filters, rawParams }: FiltersBarProps) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tutte</SelectItem>
-            <SelectItem value="it">Italiano</SelectItem>
-            <SelectItem value="en">Inglese</SelectItem>
+            <SelectItem value="all">{copy.channels.pitchLangAll}</SelectItem>
+            <SelectItem value="it">{copy.channels.pitchLangIt}</SelectItem>
+            <SelectItem value="en">{copy.channels.pitchLangEn}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -246,7 +246,7 @@ export function FiltersBar({ filters, rawParams }: FiltersBarProps) {
 
         <Link href="/channels">
           <Button variant="ghost" size="sm">
-            Cancella filtri
+            {copy.channels.clearFilters}
           </Button>
         </Link>
       </div>

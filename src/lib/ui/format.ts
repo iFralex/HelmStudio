@@ -18,8 +18,8 @@ export function formatDate(d: Date | number, locale = 'it-IT'): string {
   });
 }
 
-export function formatRelative(d: Date | number, locale = 'it-IT'): string {
-  const date = typeof d === 'number' ? new Date(d) : d;
+export function formatRelative(d: Date | number | string, locale = 'it-IT'): string {
+  const date = typeof d === 'number' ? new Date(d) : typeof d === 'string' ? new Date(d) : d;
   const diffMs = date.getTime() - Date.now();
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
 

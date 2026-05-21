@@ -1,4 +1,4 @@
-import { eq, and, desc, asc, sql, gte, lte, like, inArray, or, gt } from 'drizzle-orm';
+import { eq, and, desc, asc, sql, gte, lte, inArray, or } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
 import {
   channels,
@@ -225,6 +225,10 @@ export type ListChannelsFilters = {
   pageSize?: number;
 };
 
+function escapeLike(s: string): string {
+  return s.replace(/!/g, '!!').replace(/%/g, '!%').replace(/_/g, '!_');
+}
+
 export async function listChannelsForUi(
   filters: ListChannelsFilters = {},
   db: Db = getDb(),
@@ -267,18 +271,24 @@ export async function listChannelsForUi(
     conditions.push(lte(channels.subscriberCount, maxSubs));
   }
   if (nicheContains) {
-    conditions.push(like(qualifications.nicheClassification, `%${nicheContains}%`));
+    const pat = `%${escapeLike(nicheContains)}%`;
+    conditions.push(sql`${qualifications.nicheClassification} LIKE ${pat} ESCAPE '!'`);
   }
   if (formatContains) {
-    conditions.push(like(qualifications.formatType, `%${formatContains}%`));
+    const pat = `%${escapeLike(formatContains)}%`;
+    conditions.push(sql`${qualifications.formatType} LIKE ${pat} ESCAPE '!'`);
   }
   if (pitchLanguage) {
     conditions.push(eq(qualifications.pitchLanguage, pitchLanguage));
   }
   if (search) {
-    const pat = `%${search}%`;
+    const pat = `%${escapeLike(search)}%`;
     conditions.push(
-      or(like(channels.title, pat), like(channels.handle, pat), like(channels.description, pat))!,
+      or(
+        sql`${channels.title} LIKE ${pat} ESCAPE '!'`,
+        sql`${channels.handle} LIKE ${pat} ESCAPE '!'`,
+        sql`${channels.description} LIKE ${pat} ESCAPE '!'`,
+      )!,
     );
   }
 
@@ -336,7 +346,7 @@ export async function todayLlmStats(db: Db = getDb()): Promise<{
       outputTokens: sql<number>`coalesce(sum(${pipelineRuns.llmTokensOutput}), 0)`,
     })
     .from(pipelineRuns)
-    .where(gt(pipelineRuns.startedAt, new Date(todayStartSec * 1000)))
+    .where(gte(pipelineRuns.startedAt, new Date(todayStartSec * 1000)))
     .get();
 
   return {
