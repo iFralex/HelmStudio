@@ -174,13 +174,13 @@ export const copy = {
 
 ### Task 5: Channels list page
 
-- [ ] Create `src/app/(app)/channels/page.tsx`:
+- [x] Create `src/app/(app)/channels/page.tsx`:
   - reads `searchParams` from the page props (App Router supports this in server components)
   - parses params into `ListChannelsFilters` (Zod schema for safety; unknown values → defaults)
   - calls `listChannelsForUi(filters)`
   - renders a `<FiltersBar>` client component (writes back to URL via `useRouter().replace`) and a `<ChannelsTable>` server component
 
-- [ ] Filters live in URL params — exhaustive list per spec §11.3:
+- [x] Filters live in URL params — exhaustive list per spec §11.3:
   - `status` (multi, comma-separated)
   - `minScore`, `maxScore`
   - `minSubs`, `maxSubs`
@@ -191,10 +191,10 @@ export const copy = {
   - `sort` (one of the four enum values)
   - `page` (1-indexed)
 
-- [ ] Default sort: `score_desc`
-- [ ] Page size: 50; pagination footer with prev/next + "Pagina X di Y"
-- [ ] Empty state: `copy.channels.noResults` + a "Reset filtri" link clearing all params
-- [ ] Mark completed
+- [x] Default sort: `score_desc`
+- [x] Page size: 50; pagination footer with prev/next + "Pagina X di Y"
+- [x] Empty state: `copy.channels.noResults` + a "Reset filtri" link clearing all params
+- [x] Mark completed
 
 ### Task 6: Channels table
 
