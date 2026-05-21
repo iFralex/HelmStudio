@@ -182,7 +182,7 @@ export async function GET() {
 
 ### Task 7: launchd plist + install script
 
-- [ ] Create `scripts/com.you.creator-pipeline.plist.template`:
+- [x] Create `scripts/com.you.creator-pipeline.plist.template`:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -212,15 +212,15 @@ export async function GET() {
 </plist>
 ```
 
-- [ ] Create `scripts/install-launchd.sh`:
+- [x] Create `scripts/install-launchd.sh`:
   - reads `PIPELINE_TRIGGER_HOUR` and `PIPELINE_TRIGGER_MINUTE` from `.env`
   - substitutes `__PROJECT_DIR__`, `__HOUR__`, `__MINUTE__` into the template
   - writes the result to `~/Library/LaunchAgents/com.you.creator-pipeline.plist`
   - runs `launchctl bootout gui/$(id -u) ...` and `launchctl bootstrap gui/$(id -u) ...` to (re)install
   - optionally calls `sudo pmset repeat wakeorpoweron MTWRFSU $(printf '%02d:%02d:00' $((HOUR-1==-1?23:HOUR-1)) 58)` to wake the Mac just before the run (warn the user about sudo, allow `--no-wake` flag)
   - prints next firing time
-- [ ] Create `scripts/uninstall-launchd.sh` mirror that unloads + removes the plist
-- [ ] Mark completed
+- [x] Create `scripts/uninstall-launchd.sh` mirror that unloads + removes the plist
+- [x] Mark completed
 
 ### Task 8: Worker shutdown handling
 
