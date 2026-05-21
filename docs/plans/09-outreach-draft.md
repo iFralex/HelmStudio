@@ -75,7 +75,7 @@ Behaviour:
 
 ### Task 3: Service layer
 
-- [ ] Create `src/lib/services/outreach.ts`:
+- [x] Create `src/lib/services/outreach.ts`:
 
 ```typescript
 export async function generateDraftForChannel(channelId: string): Promise<{
@@ -97,7 +97,7 @@ export async function listDraftsForChannel(channelId: string): Promise<OutreachD
 export async function getCurrentDraft(channelId: string): Promise<OutreachDraft | null>;
 ```
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 4: Smoke script
 
