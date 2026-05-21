@@ -232,16 +232,16 @@ export async function GET() {
 
 ### Task 9: Tests
 
-- [ ] Create `src/lib/pipeline/__tests__/run.test.ts` (vitest):
+- [x] Create `src/lib/pipeline/__tests__/run.test.ts` (vitest):
   - mock `runDiscovery` and `runQualification` (returning summaries)
   - assert run row lifecycle: opens, summaries persisted in counters, closes as `completed`
   - assert second concurrent call throws (concurrent-run guard)
   - assert `QuotaExhausted` mid-run → run closed as `cancelled`
   - assert generic error → run closed as `failed`, error message persisted
-- [ ] Create `src/app/api/pipeline/__tests__/run.test.ts`:
+- [x] Create `src/app/api/pipeline/__tests__/run.test.ts`:
   - test "409 when a run is already active"
   - test "202 when no run is active" (mocks spawn to a no-op)
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 10: Documentation
 
