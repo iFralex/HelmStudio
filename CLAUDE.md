@@ -173,7 +173,7 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 ## Worker
 
 - Entry point: `src/worker/run.ts`. Reads `--manual` flag from `process.argv` to set `triggeredBy`.
-- Registers `SIGTERM`/`SIGINT` handlers that call `closeRun(runId, 'cancelled', 'received SIGTERM/SIGINT')` before exiting, so a `kill <pid>` never leaves a stale `running` row. Exits 0 on clean shutdown, 1 if an error occurs during cleanup.
+- Registers `SIGTERM`/`SIGINT` handlers that call `closeRun(runId, 'cancelled', 'received SIGTERM/SIGINT')` before exiting, so a `kill <pid>` never leaves a stale `running` row. Exits 1 on signal-triggered shutdown (run cancelled cleanly), 1 if an error occurs during cleanup.
 - The worker writes pipeline state to the shared SQLite database; the UI reads it via `GET /api/pipeline/status`.
 
 ## Outreach draft

@@ -23,7 +23,7 @@ export async function runPipeline(
   db: Db = getDb(),
 ): Promise<{
   runId?: number;
-  status: 'completed' | 'failed' | 'cancelled';
+  status: 'completed' | 'cancelled';
   summary: {
     discovery?: DiscoverySummary;
     qualification?: QualificationSummary;
