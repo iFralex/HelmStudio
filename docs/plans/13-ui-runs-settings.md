@@ -303,13 +303,13 @@ export async function deleteKeywordAction(input: { id: number }): Promise<void>;
 
 ### Task 11: E2E tests
 
-- [ ] Create `e2e/runs.spec.ts`:
+- [x] Create `e2e/runs.spec.ts`:
   - seed two runs (one completed, one cancelled) with synthetic events
   - log in, go to `/runs`, assert two rows with the correct status badges
   - click into the completed run → assert counters render, events table renders, error section absent
   - click into the cancelled run → assert the error banner is visible
 
-- [ ] Create `e2e/settings.spec.ts`:
+- [x] Create `e2e/settings.spec.ts`:
   - log in, go to `/settings`
   - update filters (set `minSubscribers=100000`) → assert success toast + value persists on reload
   - add a new keyword "test integrazione" → assert it appears in the table
@@ -317,12 +317,12 @@ export async function deleteKeywordAction(input: { id: number }): Promise<void>;
   - delete it (confirm dialog) → assert removed
   - the read-only sections render the env values and prompt versions
 
-- [ ] Create `e2e/csv-export.spec.ts`:
+- [x] Create `e2e/csv-export.spec.ts`:
   - seed 5 channels with varying data
   - log in, request `/api/channels/export?status=qualified` (Playwright's `request.get` with the auth cookie)
   - assert the body parses as CSV with the expected header
   - assert only qualified channels are present
-- [ ] Mark completed
+- [x] Mark completed (E2E test files created and verified via typecheck/lint; browser execution blocked by infra — same pre-existing issue affecting all E2E tests in this environment)
 
 ### Task 12: Definition of Done
 

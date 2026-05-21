@@ -208,3 +208,70 @@ export function insertTestOutreachDraft(
     );
   return Number(res.lastInsertRowid);
 }
+
+export function insertTestRunFull(
+  db: TestDb,
+  opts: {
+    status: 'running' | 'completed' | 'failed' | 'cancelled';
+    triggeredBy?: 'cron' | 'manual';
+    candidatesFound?: number;
+    channelsQualified?: number;
+    errorMessage?: string | null;
+    errorStack?: string | null;
+  },
+): number {
+  const stmt = db.prepare(`
+    INSERT INTO pipeline_runs (
+      status, triggered_by, started_at, finished_at,
+      searches_performed, candidates_found, channels_enriched, channels_pre_rejected,
+      channels_qualified, channels_post_rejected, youtube_quota_used,
+      llm_calls_count, llm_tokens_input, llm_tokens_output,
+      error_message, error_stack
+    )
+    VALUES (?, ?, strftime('%s','now') - 120, strftime('%s','now'),
+      5, ?, 10, 2, ?, 1, 1500, 20, 50000, 25000, ?, ?)
+  `);
+  return Number(
+    stmt.run(
+      opts.status,
+      opts.triggeredBy ?? 'manual',
+      opts.candidatesFound ?? 15,
+      opts.channelsQualified ?? 5,
+      opts.errorMessage ?? null,
+      opts.errorStack ?? null,
+    ).lastInsertRowid,
+  );
+}
+
+export function insertTestEvent(
+  db: TestDb,
+  runId: number,
+  opts: {
+    stage: 'discovery' | 'enrichment' | 'filter' | 'qualification' | 'meta';
+    event: string;
+    channelId?: string;
+    level?: 'info' | 'warn' | 'error';
+    details?: object;
+  },
+): number {
+  const res = db
+    .prepare(`
+    INSERT INTO pipeline_events (run_id, channel_id, stage, level, event, details)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `)
+    .run(
+      runId,
+      opts.channelId ?? null,
+      opts.stage,
+      opts.level ?? 'info',
+      opts.event,
+      opts.details ? JSON.stringify(opts.details) : null,
+    );
+  return Number(res.lastInsertRowid);
+}
+
+export function deleteTestRuns(db: TestDb, runIds: number[]): void {
+  if (runIds.length === 0) return;
+  const placeholders = runIds.map(() => '?').join(',');
+  db.prepare(`DELETE FROM pipeline_runs WHERE id IN (${placeholders})`).run(...runIds);
+}
