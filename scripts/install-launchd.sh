@@ -64,8 +64,9 @@ echo "Loaded $LABEL into launchd"
 
 # Optional: wake the Mac one minute before the run so launchd fires on time
 if [[ "$NO_WAKE" == false ]]; then
-  WAKE_HOUR=$(( (HOUR - 1 + 24) % 24 ))
-  WAKE_MIN=$(printf '%02d' 58)
+  WAKE_TOTAL_MIN=$(( HOUR * 60 + MINUTE - 1 + 24 * 60 ))
+  WAKE_HOUR=$(( (WAKE_TOTAL_MIN / 60) % 24 ))
+  WAKE_MIN=$(printf '%02d' $(( WAKE_TOTAL_MIN % 60 )))
   WAKE_TIME="$(printf '%02d' "$WAKE_HOUR"):${WAKE_MIN}:00"
   echo ""
   echo "Optionally setting pmset to wake the Mac at ${WAKE_TIME} (1 min before the run)."

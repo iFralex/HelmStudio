@@ -3,6 +3,7 @@ import pLimit from 'p-limit';
 import { getDb } from '@/lib/db/client';
 import { channels, pipelineRuns, qualifications, videoSelections } from '@/lib/db/schema';
 import { childLogger } from '@/lib/logger';
+import { QuotaExhausted } from '@/lib/youtube/quota';
 import { qualifyChannel } from './qualify-channel';
 
 type Db = ReturnType<typeof getDb>;
@@ -38,6 +39,7 @@ export async function runQualification(
             else if (result.status === 'skipped') skipped++;
             else if (result.status === 'rejected_post_qual') rejected++;
           } catch (err) {
+            if (err instanceof QuotaExhausted) throw err;
             log.error({ channelId, err }, 'unexpected error qualifying channel');
             rejected++;
           }
@@ -73,8 +75,6 @@ export async function runQualification(
 
     db.update(pipelineRuns)
       .set({
-        status: 'completed',
-        finishedAt: new Date(),
         channelsQualified: qualified,
         channelsPostRejected: rejected,
         llmCallsCount,
@@ -100,10 +100,6 @@ export async function runQualification(
       .get();
     db.update(pipelineRuns)
       .set({
-        status: 'failed',
-        finishedAt: new Date(),
-        errorMessage: err instanceof Error ? err.message : String(err),
-        errorStack: err instanceof Error ? err.stack : undefined,
         llmCallsCount: (selectionStats?.calls ?? 0) + (qualStats?.calls ?? 0),
         llmTokensInput: Number(selectionStats?.tokensIn ?? 0) + Number(qualStats?.tokensIn ?? 0),
         llmTokensOutput: Number(selectionStats?.tokensOut ?? 0) + Number(qualStats?.tokensOut ?? 0),
