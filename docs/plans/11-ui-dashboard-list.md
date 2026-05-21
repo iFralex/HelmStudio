@@ -67,7 +67,7 @@ export async function dashboardSnapshot(): Promise<{
 
 ### Task 2: Italian copy module
 
-- [ ] Create `src/lib/ui/copy.ts` with all Italian labels used across plans 11–13, grouped by page:
+- [x] Create `src/lib/ui/copy.ts` with all Italian labels used across plans 11–13, grouped by page:
 
 ```typescript
 export const copy = {
@@ -136,8 +136,8 @@ export const copy = {
 };
 ```
 
-- [ ] Used as `copy.dashboard.runNow` throughout templates — single source of truth, easy to audit
-- [ ] Mark completed
+- [x] Used as `copy.dashboard.runNow` throughout templates — single source of truth, easy to audit
+- [x] Mark completed
 
 ### Task 3: Top navigation refinement
 
