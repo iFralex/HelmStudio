@@ -133,14 +133,14 @@ channelDetail: {
 
 ### Task 3: Page shell
 
-- [ ] Create `src/app/(app)/channels/[channelId]/page.tsx`:
+- [x] Create `src/app/(app)/channels/[channelId]/page.tsx`:
   - server component
   - `params.channelId`
   - calls `getChannelDetail`
   - on null → `notFound()` (Next.js helper) with localised 404 page
   - renders a three-column grid on `lg` breakpoint, stacked on smaller screens
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 4: Left column — channel info + sample videos
 
