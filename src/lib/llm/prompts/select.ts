@@ -83,7 +83,7 @@ export function userTemplate(input: SelectInput): string {
     <view_count>${v.viewCount ?? 'unknown'}</view_count>
     <like_count>${v.likeCount ?? 'unknown'}</like_count>
     <comment_count>${v.commentCount ?? 'unknown'}</comment_count>
-    <tags>${(v.tags ?? []).join(', ')}</tags>
+    <tags>${(v.tags ?? []).map(escapeXml).join(', ')}</tags>
     <category_id>${v.categoryId ?? 'unknown'}</category_id>
     <language>${v.defaultLanguage ?? v.defaultAudioLanguage ?? 'unknown'}</language>
     <description>${escapeXml((v.description ?? '').slice(0, 300))}</description>

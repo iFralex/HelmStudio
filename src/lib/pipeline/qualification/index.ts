@@ -23,7 +23,7 @@ export async function forceRequalifyChannel(
     .insert(pipelineRuns)
     .values({ triggeredBy: 'manual' })
     .returning({ id: pipelineRuns.id })
-    .get();
+    .get()!;
   const runId = runRow.id;
 
   log.info({ runId }, 'force re-qualify started');

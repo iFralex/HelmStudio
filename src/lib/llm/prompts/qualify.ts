@@ -64,7 +64,7 @@ export function userTemplate(input: QualifyInput): string {
     <view_count>${v.viewCount ?? 'unknown'}</view_count>
     <like_count>${v.likeCount ?? 'unknown'}</like_count>
     <comment_count>${v.commentCount ?? 'unknown'}</comment_count>
-    <tags>${(v.tags ?? []).join(', ')}</tags>
+    <tags>${(v.tags ?? []).map(escapeXml).join(', ')}</tags>
     <category_id>${v.categoryId ?? 'unknown'}</category_id>
     <language>${v.defaultLanguage ?? v.defaultAudioLanguage ?? 'unknown'}</language>
     <description>${escapeXml((v.description ?? '').slice(0, 300))}</description>
@@ -75,7 +75,7 @@ export function userTemplate(input: QualifyInput): string {
   const classificationLines = selection.videoClassifications
     .map(
       (vc) =>
-        `    <video_classification video_id="${vc.videoId}" classification="${vc.classification}" automation_relevance_score="${vc.automationRelevanceScore}"/>`,
+        `    <video_classification video_id="${escapeXml(vc.videoId)}" classification="${vc.classification}" automation_relevance_score="${vc.automationRelevanceScore}"/>`,
     )
     .join('\n');
 
@@ -91,7 +91,7 @@ ${classificationLines}
 
   const transcriptItems: string[] = transcripts.map((t) => {
     const video = videoMap.get(t.videoId);
-    return `  <transcript video_id="${t.videoId}">
+    return `  <transcript video_id="${escapeXml(t.videoId)}">
     <title>${escapeXml(video?.title ?? t.videoId)}</title>
     <duration_seconds>${video?.durationSeconds ?? 'unknown'}</duration_seconds>
     <language>${t.language}</language>
@@ -101,7 +101,7 @@ ${classificationLines}
 
   if (failedTranscripts.length > 0) {
     const failedLines = failedTranscripts
-      .map((f) => `    <video id="${f.videoId}" reason="${escapeXml(f.reason)}"/>`)
+      .map((f) => `    <video id="${escapeXml(f.videoId)}" reason="${escapeXml(f.reason)}"/>`)
       .join('\n');
     transcriptItems.push(`  <transcripts_unavailable>\n${failedLines}\n  </transcripts_unavailable>`);
   }
