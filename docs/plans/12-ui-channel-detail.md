@@ -40,7 +40,7 @@ export async function getChannelDetail(channelId: string): Promise<{
 
 ### Task 2: Italian copy additions
 
-- [ ] Extend `src/lib/ui/copy.ts` with a `channelDetail` group:
+- [x] Extend `src/lib/ui/copy.ts` with a `channelDetail` group:
 
 ```typescript
 channelDetail: {
@@ -129,7 +129,7 @@ channelDetail: {
 }
 ```
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 3: Page shell
 
