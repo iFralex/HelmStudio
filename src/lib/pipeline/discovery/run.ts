@@ -21,6 +21,7 @@ export async function runDiscovery(
   channelsEnriched: number;
   channelsPreRejected: number;
   channelsReadyForQualification: number;
+  cancelled: boolean;
 }> {
   const log = childLogger({ module: 'discovery', runId });
   const config = await getPipelineConfig(db);
@@ -40,37 +41,19 @@ export async function runDiscovery(
     }
   };
 
-  try {
-    await runStep('keyword-sweep', () =>
-      runKeywordSweep({ runId, keywordCount: config.keywordsPerRun }, db),
-    );
+  await runStep('keyword-sweep', () =>
+    runKeywordSweep({ runId, keywordCount: config.keywordsPerRun }, db),
+  );
 
-    await runStep('category-exploration', () => runCategoryExploration({ runId }, db));
+  await runStep('category-exploration', () => runCategoryExploration({ runId }, db));
 
-    await runStep('enrichment', () => enrichCandidateChannels({ runId }, db));
+  await runStep('enrichment', () => enrichCandidateChannels({ runId }, db));
 
-    await runStep('filter', () => applyPreQualificationFilter({ runId }, db));
+  await runStep('filter', () => applyPreQualificationFilter({ runId }, db));
 
-    await runStep('video-enrichment', () =>
-      fetchVideosForSurvivingChannels({ runId, limit: config.targetQualifiedPerRun }, db),
-    );
-  } catch (err) {
-    db.update(pipelineRuns)
-      .set({
-        status: 'failed',
-        finishedAt: new Date(),
-        errorMessage: err instanceof Error ? err.message : String(err),
-      })
-      .where(eq(pipelineRuns.id, runId))
-      .run();
-    throw err;
-  }
-
-  const finishedAt = new Date();
-  db.update(pipelineRuns)
-    .set(cancelled ? { status: 'cancelled', finishedAt } : { status: 'completed', finishedAt })
-    .where(eq(pipelineRuns.id, runId))
-    .run();
+  await runStep('video-enrichment', () =>
+    fetchVideosForSurvivingChannels({ runId, limit: config.targetQualifiedPerRun }, db),
+  );
 
   const run = db.select().from(pipelineRuns).where(eq(pipelineRuns.id, runId)).get();
 
@@ -91,5 +74,5 @@ export async function runDiscovery(
 
   log.info({ ...summary, cancelled }, 'discovery pipeline complete');
 
-  return summary;
+  return { ...summary, cancelled };
 }
