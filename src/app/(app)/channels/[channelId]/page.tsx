@@ -4,6 +4,7 @@ import { copy } from '@/lib/ui/copy';
 import { ChannelInfo } from '@/components/channel-detail/channel-info';
 import { SampleVideosList } from '@/components/channel-detail/sample-videos-list';
 import { AssessmentCard } from '@/components/channel-detail/assessment-card';
+import { AgentReasoningPanel } from '@/components/channel-detail/agent-reasoning-panel';
 import { requalifyChannel } from './actions';
 
 interface PageProps {
@@ -28,12 +29,17 @@ export default async function ChannelDetailPage({ params }: PageProps) {
         </div>
 
         {/* Middle column: AI assessment + agent reasoning */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           <AssessmentCard
             qualification={detail.qualification}
             channelId={channelId}
             videos={detail.videos}
             requalifyAction={requalifyChannel}
+          />
+          <AgentReasoningPanel
+            videoSelection={detail.videoSelection}
+            videos={detail.videos}
+            transcriptsByVideo={detail.transcriptsByVideo}
           />
         </div>
 

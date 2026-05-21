@@ -181,7 +181,7 @@ channelDetail: {
 
 ### Task 6: "Perché questi video" agent panel
 
-- [ ] Create `src/components/channel-detail/agent-reasoning-panel.tsx`:
+- [x] Create `src/components/channel-detail/agent-reasoning-panel.tsx`:
   - section header with the brain icon and `copy.channelDetail.whyTheseVideosTitle`
   - `<blockquote>` for `videoSelection.formatConsistencySummary`
   - paragraph for `videoSelection.selectionRationale`
@@ -189,7 +189,7 @@ channelDetail: {
   - table of 20 rows; columns: thumbnail (24px), video title (linked), classification badge, relevance bar (small horizontal bar 0..10), reasoning text
   - selected videos (those in `videoSelection.selectedVideoIds`) have a left-border accent (e.g. `border-l-2 border-emerald-500`) AND a "Vedi transcript" button at the end of the row
   - clicking "Vedi transcript" opens a shadcn `<Dialog>` titled per `copy.channelDetail.transcriptModalTitle` showing the transcript text in a scroll area; if the transcript row's `fetchSucceeded=false`, show `copy.channelDetail.transcriptUnavailable` + the recorded `fetchError`
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 7: Right column — outreach widget (state machine)
 
