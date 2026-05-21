@@ -242,19 +242,19 @@ export function scoreColor(score: number | null): 'green' | 'yellow' | 'gray';
 
 ### Task 9: E2E tests
 
-- [ ] Create `e2e/dashboard.spec.ts`:
+- [x] Create `e2e/dashboard.spec.ts`:
   - seed DB with a recent run + queue counts (use a test helper that inserts directly)
   - log in (reuse helper from plan 01's auth tests)
   - assert dashboard renders: latest run info, queue counts, top recent grid with at least 1 card
   - click "Avvia pipeline ora" → assert button becomes disabled and a toast "Pipeline avviata" appears
-- [ ] Create `e2e/channels-list.spec.ts`:
+- [x] Create `e2e/channels-list.spec.ts`:
   - seed 60 channels at varying scores and statuses
   - go to `/channels`, assert 50 visible, pagination shows "Pagina 1 di 2"
   - filter by `minScore=70` → assert only high-scoring rows
   - filter by `outreachStatus=email_added` → assert only those
   - search for a title fragment → assert one matching row
   - URL preserves filters across reload
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 10: Definition of Done
 
