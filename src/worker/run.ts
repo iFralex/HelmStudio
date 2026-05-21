@@ -17,11 +17,11 @@ async function handleShutdown(signal: string): Promise<void> {
       await closeRun(active.runId, 'cancelled', `received ${signal}`);
       logger.info({ runId: active.runId }, 'run cancelled due to signal');
     }
+    process.exit(0);
   } catch (err) {
     logger.error({ err }, 'error during shutdown cleanup');
+    process.exit(1);
   }
-
-  process.exit(1);
 }
 
 process.on('SIGTERM', () => {

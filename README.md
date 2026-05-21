@@ -70,6 +70,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | `pnpm tsx scripts/transcript-smoke.ts <videoId>` | Manual transcript fetch smoke test for a single video (no API key required) |
 | `pnpm seed:keywords` | Upsert the curated Italian keyword list into the database (idempotent) |
 | `pnpm tsx scripts/run-discovery.ts` | Manual discovery pipeline smoke run (~3,200 YouTube quota units consumed) |
+| `pnpm worker:run` | Run a full cron-mode pipeline cycle (discovery + qualification); consumes real quota |
+| `pnpm worker:manual` | Same as `worker:run` but marks the run as manually triggered |
 
 ## Scheduling
 

@@ -18,6 +18,8 @@ pnpm db:init       # create data/ dir, run migrations, seed default settings (fi
 pnpm db:generate   # generate new migration from schema changes
 pnpm db:migrate    # apply pending migrations
 pnpm db:studio     # open Drizzle Studio browser UI
+pnpm worker:run    # run a full cron-mode pipeline cycle (discovery + qualification); consumes real quota
+pnpm worker:manual # same as worker:run but sets triggeredBy='manual'
 pnpm tsx scripts/llm-smoke.ts  # manual LLM connectivity smoke test (requires local proxy)
 pnpm tsx scripts/transcript-smoke.ts <videoId>  # manual transcript fetch smoke test (no API key required)
 pnpm seed:keywords             # upsert ~70 curated Italian keywords into seed_keywords (idempotent)
@@ -45,6 +47,8 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `src/app/login/` — public login page
 - `src/app/api/auth/route.ts` — POST login, sets `session` cookie
 - `src/app/api/auth/logout/route.ts` — POST logout, clears `session` cookie
+- `src/app/api/pipeline/run/route.ts` — POST: spawns the worker process if no run is active (202), or returns 409 `{ ok: false, error: 'run_already_active', runId }` if one is
+- `src/app/api/pipeline/status/route.ts` — GET: returns `{ active, latestRun, quota, queues }` by composing `isRunActive()`, `getLatestRun()`, `quotaSummary()`, and `countChannelsByStatus()`; polled by the dashboard
 
 ## UI components
 
@@ -153,6 +157,24 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - Seed data lives in `src/lib/seeds/` — `keywords.ts` exports `SEED_KEYWORDS`, `categories.ts` exports `IN_SCOPE_CATEGORY_IDS`.
 - `computeChannelAggregates(channelId, db?)` in `src/lib/pipeline/aggregates.ts` is the stable contract for plan 08's LLM prompt building. Returns `ZERO_AGGREGATES` when fewer than 3 videos are present. Uses population stddev (not sample). Reads the 20 most recent videos.
 - `parseIso8601Duration(iso)` in `src/lib/youtube/duration.ts` parses ISO 8601 duration strings (including P1DT… day component); throws on unparseable input. Used by `operations.ts` internally.
+
+## Pipeline orchestrator
+
+- Entry point: `runPipeline(opts, db?)` in `src/lib/pipeline/run.ts`. Accepts `triggeredBy: 'cron' | 'manual'` and optional `stages` array (`['discovery', 'qualification']` by default).
+- Sequence: `preflightChecks()` → `openRun()` → `runDiscovery()` → `runQualification()` → `closeRun('completed')`.
+- `preflightChecks()` in `src/lib/pipeline/preflight.ts` requires at least 4,500 units of headroom (`PIPELINE_YOUTUBE_QUOTA_DAILY_LIMIT - PIPELINE_YOUTUBE_QUOTA_SAFETY_BUFFER - todayUnitsSpent >= 4500`); throws `InsufficientQuotaHeadroom` if not. `runPipeline` catches this and returns `{ status: 'cancelled' }` without opening a run row.
+- `openRun(triggeredBy, db?)` in `src/lib/pipeline/lifecycle.ts` inserts a `pipeline_runs` row with `status='running'` inside a transaction that also checks for an existing running row; throws `ConcurrentRunError` if one is found.
+- `closeRun(runId, status, errorMessage?, errorStack?, db?)` in `lifecycle.ts` is atomic (SELECT+UPDATE in one transaction) and idempotent: silently no-ops if the row is already in a terminal status.
+- `isRunActive(db?)` returns `{ active: boolean; runId?: number }`.
+- `runDiscovery` returns a `cancelled: boolean` flag when quota is exhausted mid-discovery. `runPipeline` checks this flag and skips qualification, returning `status: 'cancelled'` immediately (the discovery stage already wrote `status='cancelled'` to the DB).
+- `QuotaExhausted` thrown by qualification closes the run as `'cancelled'`; any other error closes as `'failed'` and re-throws.
+- The Next.js server never calls pipeline stages directly. `POST /api/pipeline/run` spawns the worker as a detached child process (`child.unref()`) and returns 202 immediately.
+
+## Worker
+
+- Entry point: `src/worker/run.ts`. Reads `--manual` flag from `process.argv` to set `triggeredBy`.
+- Registers `SIGTERM`/`SIGINT` handlers that call `closeRun(runId, 'cancelled', 'received SIGTERM/SIGINT')` before exiting, so a `kill <pid>` never leaves a stale `running` row. Exits 0 on clean shutdown, 1 if an error occurs during cleanup.
+- The worker writes pipeline state to the shared SQLite database; the UI reads it via `GET /api/pipeline/status`.
 
 ## Outreach draft
 

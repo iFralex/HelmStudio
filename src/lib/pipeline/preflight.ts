@@ -10,10 +10,9 @@ export class InsufficientQuotaHeadroom extends Error {
   constructor(
     public readonly spent: number,
     public readonly required: number,
+    headroom: number,
   ) {
-    super(
-      `Need ~${required} units, only ${env.PIPELINE_YOUTUBE_QUOTA_DAILY_LIMIT - spent} headroom remaining today`,
-    );
+    super(`Need ~${required} units, only ${headroom} headroom remaining today`);
     this.name = 'InsufficientQuotaHeadroom';
   }
 }
@@ -24,6 +23,6 @@ export async function preflightChecks(db: Db = getDb()): Promise<void> {
     env.PIPELINE_YOUTUBE_QUOTA_DAILY_LIMIT - env.PIPELINE_YOUTUBE_QUOTA_SAFETY_BUFFER;
   const headroom = cap - spent;
   if (headroom < REQUIRED_HEADROOM) {
-    throw new InsufficientQuotaHeadroom(spent, REQUIRED_HEADROOM);
+    throw new InsufficientQuotaHeadroom(spent, REQUIRED_HEADROOM, headroom);
   }
 }

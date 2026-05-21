@@ -21,6 +21,7 @@ export async function runDiscovery(
   channelsEnriched: number;
   channelsPreRejected: number;
   channelsReadyForQualification: number;
+  cancelled: boolean;
 }> {
   const log = childLogger({ module: 'discovery', runId });
   const config = await getPipelineConfig(db);
@@ -91,5 +92,5 @@ export async function runDiscovery(
 
   log.info({ ...summary, cancelled }, 'discovery pipeline complete');
 
-  return summary;
+  return { ...summary, cancelled };
 }

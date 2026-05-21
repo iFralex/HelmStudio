@@ -47,26 +47,35 @@ export async function closeRun(
   errorStack?: string,
   db: Db = getDb(),
 ): Promise<void> {
-  const existing = db
-    .select({ status: pipelineRuns.status })
-    .from(pipelineRuns)
-    .where(eq(pipelineRuns.id, runId))
-    .get();
+  let skipped = false;
 
-  if (!existing || existing.status !== 'running') {
-    log.warn({ runId, currentStatus: existing?.status }, 'closeRun called on non-running row, skipping');
+  db.transaction((tx) => {
+    const existing = tx
+      .select({ status: pipelineRuns.status })
+      .from(pipelineRuns)
+      .where(eq(pipelineRuns.id, runId))
+      .get();
+
+    if (!existing || existing.status !== 'running') {
+      skipped = true;
+      return;
+    }
+
+    tx.update(pipelineRuns)
+      .set({
+        status,
+        finishedAt: new Date(),
+        ...(errorMessage !== undefined ? { errorMessage } : {}),
+        ...(errorStack !== undefined ? { errorStack } : {}),
+      })
+      .where(eq(pipelineRuns.id, runId))
+      .run();
+  });
+
+  if (skipped) {
+    log.warn({ runId }, 'closeRun called on non-running row, skipping');
     return;
   }
-
-  db.update(pipelineRuns)
-    .set({
-      status,
-      finishedAt: new Date(),
-      ...(errorMessage !== undefined ? { errorMessage } : {}),
-      ...(errorStack !== undefined ? { errorStack } : {}),
-    })
-    .where(eq(pipelineRuns.id, runId))
-    .run();
 
   log.info({ runId, status }, 'pipeline run closed');
 }

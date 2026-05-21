@@ -62,8 +62,8 @@ describe('POST /api/pipeline/run', () => {
     expect(fakeChild.unref).toHaveBeenCalledOnce();
 
     const spawnArgs = mockSpawn.mock.calls[0]!;
-    expect(spawnArgs[1]).toContain('src/worker/run.ts');
-    expect(spawnArgs[1]).toContain('--manual');
+    expect(spawnArgs[0]).toBe(process.execPath);
+    expect(spawnArgs[1]).toEqual(['--import', 'tsx', 'src/worker/run.ts', '--manual']);
     expect(spawnArgs[2]).toMatchObject({ detached: true, stdio: 'ignore' });
   });
 });

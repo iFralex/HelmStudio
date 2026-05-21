@@ -28,6 +28,8 @@ if [[ -f "$ENV_FILE" ]]; then
     [[ -z "$key" ]] && continue
     value="${value%%#*}"        # strip inline comments
     value="${value%"${value##*[![:space:]]}"}"  # strip trailing whitespace
+    value="${value%\"}" ; value="${value#\"}"   # strip double quotes
+    value="${value%\'}" ; value="${value#\'}"   # strip single quotes
     case "$key" in
       PIPELINE_TRIGGER_HOUR) PIPELINE_TRIGGER_HOUR="$value" ;;
       PIPELINE_TRIGGER_MINUTE) PIPELINE_TRIGGER_MINUTE="$value" ;;

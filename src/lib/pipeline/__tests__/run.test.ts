@@ -76,6 +76,7 @@ vi.mock('../../services/settings', () => ({
 
 import { runPipeline } from '../run';
 import { openRun, ConcurrentRunError } from '../lifecycle';
+import { QuotaExhausted } from '../../youtube/quota';
 
 describe.runIf(sqlite3Available)('runPipeline', () => {
   let db: Db;
@@ -86,6 +87,7 @@ describe.runIf(sqlite3Available)('runPipeline', () => {
     channelsEnriched: 8,
     channelsPreRejected: 2,
     channelsReadyForQualification: 6,
+    cancelled: false,
   };
   const qualificationSummary = { qualified: 4, skipped: 1, rejected: 1 };
 
@@ -111,6 +113,7 @@ describe.runIf(sqlite3Available)('runPipeline', () => {
       .get();
     expect(row?.status).toBe('completed');
     expect(row?.finishedAt).toBeTruthy();
+    expect(row?.triggeredBy).toBe('manual');
   });
 
   it('passes runId to both stage functions', async () => {
@@ -179,5 +182,61 @@ describe.runIf(sqlite3Available)('runPipeline', () => {
     expect(result.status).toBe('completed');
     expect(mockRunDiscovery).not.toHaveBeenCalled();
     expect(mockRunQualification).toHaveBeenCalled();
+  });
+
+  it('skips qualification when stages=[discovery]', async () => {
+    const result = await runPipeline({ triggeredBy: 'manual', stages: ['discovery'] }, db);
+
+    expect(result.status).toBe('completed');
+    expect(mockRunDiscovery).toHaveBeenCalled();
+    expect(mockRunQualification).not.toHaveBeenCalled();
+  });
+
+  it('skips qualification and returns cancelled when discovery is cancelled due to quota', async () => {
+    mockRunDiscovery.mockResolvedValue({ ...discoverySummary, cancelled: true });
+
+    const result = await runPipeline({ triggeredBy: 'cron' }, db);
+
+    expect(result.status).toBe('cancelled');
+    expect(result.runId).toBeTypeOf('number');
+    expect(mockRunQualification).not.toHaveBeenCalled();
+
+    const row = db
+      .select()
+      .from(schema.pipelineRuns)
+      .where(eq(schema.pipelineRuns.id, result.runId!))
+      .get();
+    expect(row?.status).toBe('cancelled');
+  });
+
+  it('closes run as cancelled when QuotaExhausted is thrown during qualification', async () => {
+    mockRunQualification.mockRejectedValue(new QuotaExhausted(9000, 9500));
+
+    const result = await runPipeline({ triggeredBy: 'cron' }, db);
+
+    expect(result.status).toBe('cancelled');
+    expect(result.runId).toBeTypeOf('number');
+    expect(result.summary.discovery).toEqual(discoverySummary);
+
+    const row = db
+      .select()
+      .from(schema.pipelineRuns)
+      .where(eq(schema.pipelineRuns.id, result.runId!))
+      .get();
+    expect(row?.status).toBe('cancelled');
+    expect(row?.finishedAt).toBeTruthy();
+    expect(row?.errorMessage).toContain('quota');
+  });
+
+  it('ConcurrentRunError carries the blocking runId', async () => {
+    const blockingId = await openRun('cron', db);
+
+    try {
+      await runPipeline({ triggeredBy: 'manual' }, db);
+      expect.fail('should have thrown');
+    } catch (err) {
+      expect(err).toBeInstanceOf(ConcurrentRunError);
+      expect((err as ConcurrentRunError).runId).toBe(blockingId);
+    }
   });
 });
