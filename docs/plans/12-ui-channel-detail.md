@@ -266,14 +266,14 @@ export async function deleteChannel(input: { channelId: string }): Promise<void>
 
 ### Task 9: GDPR delete flow
 
-- [ ] In the channel info card (left column footer), add a small destructive `<Button variant="ghost" size="sm">` with the `copy.channelDetail.deleteChannel` label
-- [ ] Clicking opens a confirm `<AlertDialog>` with the localized body and a typed-name guard (operator must type the channel title to enable the delete button)
-- [ ] On confirm → `deleteChannel` server action:
+- [x] In the channel info card (left column footer), add a small destructive `<Button variant="ghost" size="sm">` with the `copy.channelDetail.deleteChannel` label
+- [x] Clicking opens a confirm `<AlertDialog>` with the localized body and a typed-name guard (operator must type the channel title to enable the delete button)
+- [x] On confirm → `deleteChannel` server action:
   - removes the `channels` row (cascades to videos, qualifications, video_selections, transcripts, outreach_drafts, pipeline_events)
   - calls `deleteTranscriptsForChannel(channelId)` (plan 06) AND `deleteRawForChannel(channelId)` (plan 03)
   - logs `pipelineEvents`: `stage='meta'`, `event='channel_deleted'`
   - `redirect('/channels')` with a success toast
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 10: Transcript viewer modal
 

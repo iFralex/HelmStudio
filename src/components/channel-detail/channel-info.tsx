@@ -4,10 +4,22 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { copy } from '@/lib/ui/copy';
 import { cn } from '@/lib/utils';
 import { formatCompact, formatDate } from '@/lib/ui/format';
+import { deleteChannel } from '@/app/(app)/channels/[channelId]/actions';
 import type { Channel } from '@/lib/db/queries';
 
 const CATEGORY_NAMES: Record<string, string> = {
@@ -53,6 +65,8 @@ interface ChannelInfoProps {
 
 export function ChannelInfo({ channel }: ChannelInfoProps) {
   const [expanded, setExpanded] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [confirmText, setConfirmText] = useState('');
   const description = channel.description ?? '';
   const isLong = description.length > 300;
   const displayedDescription = isLong && !expanded ? description.slice(0, 300) + '…' : description;
@@ -170,6 +184,57 @@ export function ChannelInfo({ channel }: ChannelInfoProps) {
       >
         {copy.channelDetail.openOnYoutube}
       </Link>
+
+      {/* GDPR delete */}
+      <div className="pt-2 border-t">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-destructive hover:text-destructive hover:bg-destructive/10 w-full"
+          onClick={() => {
+            setConfirmText('');
+            setDeleteDialogOpen(true);
+          }}
+        >
+          {copy.channelDetail.deleteChannel}
+        </Button>
+      </div>
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle>{copy.channelDetail.deleteChannelConfirmTitle}</DialogTitle>
+            <DialogDescription>{copy.channelDetail.deleteChannelConfirmBody}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="confirm-channel-name" className="text-sm">
+              Digita <span className="font-semibold">{channel.title}</span> per confermare
+            </Label>
+            <Input
+              id="confirm-channel-name"
+              value={confirmText}
+              onChange={(e) => setConfirmText(e.target.value)}
+              placeholder={channel.title}
+              autoComplete="off"
+            />
+          </div>
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              {copy.channelDetail.deleteChannelCancel}
+            </DialogClose>
+            <form action={deleteChannel}>
+              <input type="hidden" name="channelId" value={channel.id} />
+              <Button
+                type="submit"
+                variant="destructive"
+                disabled={confirmText !== channel.title}
+              >
+                {copy.channelDetail.deleteChannelConfirmAction}
+              </Button>
+            </form>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
