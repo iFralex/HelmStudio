@@ -44,7 +44,7 @@ export type DraftOutput = z.infer<typeof DraftOutputSchema>;
 
 ### Task 2: Draft caller
 
-- [ ] Create `src/lib/llm/draft.ts`:
+- [x] Create `src/lib/llm/draft.ts`:
 
 ```typescript
 export type DraftInput = {
@@ -71,7 +71,7 @@ Behaviour:
   - inserts a new `outreach_drafts` row with `isCurrent=true`, populating `subject`, `body`, `language`, `qualificationId`, `modelUsed`, `promptVersion`, `inputTokens`, `outputTokens`, `rawResponsePath`
 - returns `{ draftId, output, usage }`
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 3: Service layer
 
