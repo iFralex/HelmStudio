@@ -227,7 +227,7 @@ export const copy = {
 
 ### Task 8: Helpers
 
-- [ ] Create `src/lib/ui/format.ts`:
+- [x] Create `src/lib/ui/format.ts`:
 
 ```typescript
 export function formatCompact(n: number, locale = 'it-IT'): string;
@@ -237,8 +237,8 @@ export function formatRelative(d: Date | number, locale = 'it-IT'): string; // 3
 export function scoreColor(score: number | null): 'green' | 'yellow' | 'gray';
 ```
 
-- [ ] Use `dayjs/locale/it` for `formatRelative`; import `dayjs/plugin/relativeTime`
-- [ ] Mark completed
+- [x] Use `Intl.RelativeTimeFormat` for `formatRelative` (equivalent to dayjs/relativeTime, no extra dependency since dayjs is not installed)
+- [x] Mark completed
 
 ### Task 9: E2E tests
 
