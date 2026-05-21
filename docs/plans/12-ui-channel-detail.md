@@ -161,7 +161,7 @@ channelDetail: {
 
 ### Task 5: Middle column — AI assessment
 
-- [ ] Create `src/components/channel-detail/assessment-card.tsx`:
+- [x] Create `src/components/channel-detail/assessment-card.tsx`:
   - large score badge top-left (colored per `scoreColor` from plan 11)
   - row: niche, format, pitch language flag, confidence percentage
   - section **Razionale** — paragraph from `qualification.rationale`
@@ -172,12 +172,12 @@ channelDetail: {
   - section **Squalificanti** — if non-empty, render as a red callout banner; else show `copy.channelDetail.noDisqualifiers`
   - footer: model used, qualifiedAt (Italian relative), "JSON grezzo" link (downloads `qualification.rawResponsePath` via `GET /api/raw?path=...` — Task 11)
 
-- [ ] Re-qualify button at the bottom:
+- [x] Re-qualify button at the bottom:
   - `<form action={requalifyAction}>` server action
   - on submit → call `forceRequalifyChannel(channelId)` (plan 08, Task 9), then `revalidatePath('/channels/[channelId]')`
   - while pending, button text becomes `copy.channelDetail.requalifying`
-- [ ] If `qualification` is null, render `copy.channelDetail.notQualified` and just the Riqualifica button
-- [ ] Mark completed
+- [x] If `qualification` is null, render `copy.channelDetail.notQualified` and just the Riqualifica button
+- [x] Mark completed
 
 ### Task 6: "Perché questi video" agent panel
 

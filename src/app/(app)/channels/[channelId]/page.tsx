@@ -3,6 +3,8 @@ import { getChannelDetail } from '@/lib/db/queries';
 import { copy } from '@/lib/ui/copy';
 import { ChannelInfo } from '@/components/channel-detail/channel-info';
 import { SampleVideosList } from '@/components/channel-detail/sample-videos-list';
+import { AssessmentCard } from '@/components/channel-detail/assessment-card';
+import { requalifyChannel } from './actions';
 
 interface PageProps {
   params: Promise<{ channelId: string }>;
@@ -27,7 +29,12 @@ export default async function ChannelDetailPage({ params }: PageProps) {
 
         {/* Middle column: AI assessment + agent reasoning */}
         <div className="space-y-4">
-          <div className="text-muted-foreground text-sm">{copy.channelDetail.assessmentTitle}</div>
+          <AssessmentCard
+            qualification={detail.qualification}
+            channelId={channelId}
+            videos={detail.videos}
+            requalifyAction={requalifyChannel}
+          />
         </div>
 
         {/* Right column: outreach widget */}
