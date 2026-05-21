@@ -4,7 +4,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { eq } from 'drizzle-orm';
-import * as schema from '../../../db/schema';
+import * as schema from '../db/schema';
 
 let sqlite3Available = true;
 try {
@@ -35,7 +35,7 @@ vi.mock('@/lib/llm/call', async (importOriginal) => {
   return { ...mod, callLLM: mockCallLLM };
 });
 
-const MIGRATIONS_FOLDER = path.resolve(import.meta.dirname, '../../../../../drizzle');
+const MIGRATIONS_FOLDER = path.resolve(import.meta.dirname, '../../../drizzle');
 
 type Db = ReturnType<typeof drizzle<typeof schema>>;
 
