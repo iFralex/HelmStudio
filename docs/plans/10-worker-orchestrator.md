@@ -46,7 +46,7 @@ export async function isRunActive(): Promise<{ active: boolean; runId?: number }
 
 ### Task 2: Quota pre-flight check
 
-- [ ] Create `src/lib/pipeline/preflight.ts`:
+- [x] Create `src/lib/pipeline/preflight.ts`:
 
 ```typescript
 export class InsufficientQuotaHeadroom extends Error {
@@ -63,7 +63,7 @@ export async function preflightChecks(): Promise<void>;
 // Throws InsufficientQuotaHeadroom on failure.
 ```
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 3: Top-level orchestrator
 
