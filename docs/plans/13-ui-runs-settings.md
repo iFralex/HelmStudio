@@ -22,7 +22,7 @@ Per spec §11.5 the runs page is a table of `pipelineRuns` rows with the per-sta
 
 ### Task 1: Italian copy additions
 
-- [ ] Extend `src/lib/ui/copy.ts` with two new groups:
+- [x] Extend `src/lib/ui/copy.ts` with two new groups:
 
 ```typescript
 runs: {
@@ -128,7 +128,7 @@ settings: {
 },
 ```
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 2: Runs list page
 
