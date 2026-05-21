@@ -50,17 +50,20 @@ vi.mock('@/lib/storage/paths', () => ({
       `raw/llm/video_selections/${channelId}/run-${runId}-${ts}.json`,
     rawLlmQualification: (channelId: string, runId: number, ts: string) =>
       `raw/llm/qualifications/${channelId}/run-${runId}-${ts}.json`,
+    rawTranscript: (channelId: string, videoId: string) =>
+      `raw/transcripts/${channelId}/${videoId}.json`,
   },
   tsForFilename: () => '2024-01-01T00-00-00-000Z',
 }));
 
-const { mockGetOrFetchManyTranscripts } = vi.hoisted(() => ({
-  mockGetOrFetchManyTranscripts: vi.fn(),
+const { mockFetchTranscript } = vi.hoisted(() => ({
+  mockFetchTranscript: vi.fn(),
 }));
 
-vi.mock('@/lib/transcripts/batch', () => ({
-  getOrFetchManyTranscripts: mockGetOrFetchManyTranscripts,
-}));
+vi.mock('@/lib/transcripts/fetcher', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/transcripts/fetcher')>();
+  return { ...actual, fetchTranscript: mockFetchTranscript };
+});
 
 const MIGRATIONS_FOLDER = path.resolve(import.meta.dirname, '../../../../../drizzle');
 
@@ -189,7 +192,7 @@ describe.skipIf(!sqlite3Available)('qualifyChannel integration', () => {
   beforeEach(() => {
     mockDumpRaw.mockClear();
     mockDumpRaw.mockImplementation(async (rel: string) => rel);
-    mockGetOrFetchManyTranscripts.mockReset();
+    mockFetchTranscript.mockReset();
     _resetSettingsCache();
     db = makeDb();
     seedDb(db);
@@ -205,18 +208,22 @@ describe.skipIf(!sqlite3Available)('qualifyChannel integration', () => {
 
     __setLlmForTest(makeFakeClient([makeSelectOutputJson(videoIds, selectedIds), makeQualifyOutputJson()]));
 
-    mockGetOrFetchManyTranscripts.mockResolvedValue([
-      { ok: true, videoId: selectedIds[0], language: 'it', segments: [], text: 'Transcript 1', characterCount: 12 },
-      { ok: true, videoId: selectedIds[1], language: 'it', segments: [], text: 'Transcript 2', characterCount: 12 },
-      { ok: true, videoId: selectedIds[2], language: 'it', segments: [], text: 'Transcript 3', characterCount: 12 },
-      { ok: false, videoId: selectedIds[3], reason: 'no_captions', message: 'No captions' },
-      { ok: false, videoId: selectedIds[4], reason: 'no_captions', message: 'No captions' },
-    ]);
+    mockFetchTranscript
+      .mockResolvedValueOnce({ ok: true, videoId: selectedIds[0], language: 'it', segments: [], text: 'Transcript 1', characterCount: 12 })
+      .mockResolvedValueOnce({ ok: true, videoId: selectedIds[1], language: 'it', segments: [], text: 'Transcript 2', characterCount: 12 })
+      .mockResolvedValueOnce({ ok: true, videoId: selectedIds[2], language: 'it', segments: [], text: 'Transcript 3', characterCount: 12 })
+      .mockResolvedValueOnce({ ok: false, videoId: selectedIds[3], reason: 'no_captions', message: 'No captions' })
+      .mockResolvedValueOnce({ ok: false, videoId: selectedIds[4], reason: 'no_captions', message: 'No captions' });
 
     const result = await qualifyChannel({ channelId: CHANNEL_ID, runId: RUN_ID, force: true }, db);
 
     expect(result.status).toBe('qualified');
     expect(result.qualificationId).toBeTypeOf('number');
+
+    const transcriptRows = db.select().from(schema.transcripts).all();
+    expect(transcriptRows).toHaveLength(5);
+    expect(transcriptRows.filter((r) => r.fetchSucceeded)).toHaveLength(3);
+    expect(transcriptRows.filter((r) => !r.fetchSucceeded)).toHaveLength(2);
 
     const selections = db.select().from(schema.videoSelections).all();
     expect(selections).toHaveLength(1);

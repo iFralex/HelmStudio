@@ -11,10 +11,10 @@ export async function fetchSelectedTranscripts(
 ): Promise<TranscriptFetchResult[]> {
   const { channelId, selectedVideoIds, runId } = args;
 
-  const results = await getOrFetchManyTranscripts({
-    channelId,
-    videoIds: selectedVideoIds,
-  });
+  const results = await getOrFetchManyTranscripts(
+    { channelId, videoIds: selectedVideoIds },
+    db,
+  );
 
   const succeeded = results.filter((r) => r.ok).length;
   const failed = results.length - succeeded;

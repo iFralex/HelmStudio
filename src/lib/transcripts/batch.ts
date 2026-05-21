@@ -1,22 +1,27 @@
+import { getDb } from '../db/client';
 import { logger } from '../logger';
 import { getOrFetchTranscript } from './store';
 import type { TranscriptFetchResult } from './fetcher';
 
-export async function getOrFetchManyTranscripts(args: {
-  channelId: string;
-  videoIds: string[];
-  preferredLanguages?: string[];
-}): Promise<TranscriptFetchResult[]> {
+type Db = ReturnType<typeof getDb>;
+
+export async function getOrFetchManyTranscripts(
+  args: {
+    channelId: string;
+    videoIds: string[];
+    preferredLanguages?: string[];
+  },
+  db?: Db,
+): Promise<TranscriptFetchResult[]> {
   const { channelId, videoIds, preferredLanguages } = args;
 
   const results = await Promise.all(
     videoIds.map(async (videoId) => {
       try {
-        const result = await getOrFetchTranscript({
-          videoId,
-          channelId,
-          preferredLanguages,
-        });
+        const result = await getOrFetchTranscript(
+          { videoId, channelId, preferredLanguages },
+          db,
+        );
         if (result.ok) {
           logger.info(
             { videoId, language: result.language, characterCount: result.characterCount },

@@ -59,7 +59,7 @@ describe('getOrFetchManyTranscripts', () => {
       videoId: 'vid1',
       channelId: 'chan1',
       preferredLanguages: ['fr', 'de'],
-    });
+    }, undefined);
   });
 
   it('passes undefined preferredLanguages when not provided', async () => {
@@ -74,7 +74,7 @@ describe('getOrFetchManyTranscripts', () => {
       videoId: 'vid1',
       channelId: 'chan1',
       preferredLanguages: undefined,
-    });
+    }, undefined);
   });
 
   it('returns empty array for empty videoIds', async () => {
