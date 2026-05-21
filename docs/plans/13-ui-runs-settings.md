@@ -207,7 +207,7 @@ export function statusColor(s: PipelineRun['status']): 'green' | 'blue' | 'red' 
 
 ### Task 6: Keywords CRUD
 
-- [ ] Add to `src/lib/db/queries.ts`:
+- [x] Add to `src/lib/db/queries.ts`:
 
 ```typescript
 export async function listKeywords(): Promise<SeedKeyword[]>;
@@ -224,13 +224,13 @@ export async function updateKeyword(
 export async function deleteKeyword(id: number): Promise<void>;
 ```
 
-- [ ] Constraints: `keyword` is trimmed; duplicate (case-insensitive) → throw `KeywordAlreadyExists` mapped to a localised toast
-- [ ] Create `src/components/settings/keywords-section.tsx`:
+- [x] Constraints: `keyword` is trimmed; duplicate (case-insensitive) → throw `KeywordAlreadyExists` mapped to a localised toast
+- [x] Create `src/components/settings/keywords-section.tsx`:
   - header + description from `copy.settings.keywords*`
   - row of inputs for "add new" at the top
   - table of all keywords with columns per `copy.settings.column*`; each row has actions: toggle active (`copy.settings.deactivate` / `activate`), edit notes (inline input on click), delete (with confirm dialog)
   - actions invoke server actions in `src/app/(app)/settings/actions.ts`
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 7: Filters & pipeline-config forms
 

@@ -489,6 +489,44 @@ export async function listKeywords(db: Db = getDb()): Promise<SeedKeyword[]> {
     .all();
 }
 
+export class KeywordAlreadyExists extends Error {
+  constructor(keyword: string) {
+    super(`Keyword already exists: ${keyword}`);
+    this.name = 'KeywordAlreadyExists';
+  }
+}
+
+export async function createKeyword(
+  input: { keyword: string; notes?: string },
+  db: Db = getDb(),
+): Promise<SeedKeyword> {
+  const trimmed = input.keyword.trim();
+  const existing = await db
+    .select()
+    .from(seedKeywords)
+    .where(sql`lower(${seedKeywords.keyword}) = lower(${trimmed})`)
+    .get();
+  if (existing) throw new KeywordAlreadyExists(trimmed);
+  const row = await db
+    .insert(seedKeywords)
+    .values({ keyword: trimmed, notes: input.notes ?? null })
+    .returning()
+    .get();
+  return row!
+}
+
+export async function updateKeyword(
+  id: number,
+  patch: Partial<Pick<SeedKeyword, 'isActive' | 'notes'>>,
+  db: Db = getDb(),
+): Promise<void> {
+  await db.update(seedKeywords).set(patch).where(eq(seedKeywords.id, id)).run();
+}
+
+export async function deleteKeyword(id: number, db: Db = getDb()): Promise<void> {
+  await db.delete(seedKeywords).where(eq(seedKeywords.id, id)).run();
+}
+
 export async function dashboardSnapshot(db: Db = getDb()): Promise<{
   latestRun: PipelineRun | null;
   queues: Record<DiscoveryStatus | OutreachStatus, number>;
