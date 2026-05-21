@@ -131,7 +131,7 @@ main();
 
 ### Task 5: Manual-trigger API route
 
-- [ ] Create `src/app/api/pipeline/run/route.ts`:
+- [x] Create `src/app/api/pipeline/run/route.ts`:
 
 ```typescript
 import { NextResponse } from 'next/server';
@@ -159,8 +159,8 @@ export async function POST() {
 }
 ```
 
-- [ ] The API does NOT wait for the worker; the UI polls `/api/pipeline/status` to watch progress (next task)
-- [ ] Mark completed
+- [x] The API does NOT wait for the worker; the UI polls `/api/pipeline/status` to watch progress (next task)
+- [x] Mark completed
 
 ### Task 6: Pipeline status endpoint
 
