@@ -109,14 +109,14 @@ export async function getCurrentDraft(channelId: string): Promise<OutreachDraft 
 
 ### Task 5: Tests
 
-- [ ] Create `src/lib/services/outreach/__tests__/generate-draft.test.ts`:
+- [x] Create `src/lib/services/outreach/__tests__/generate-draft.test.ts`:
   - mock `callLLM` to return a valid draft
   - assert one row inserted, `isCurrent=true`, raw path written
   - assert previous current draft is demoted to `isCurrent=false`
   - assert calling `generateDraftForChannel` on a channel without a qualification throws a clear error
-- [ ] Test the validation band: stub `callLLM` to return a 30-word body → expect one retry; if retry also fails, surface `LlmFormatError`
-- [ ] Test language: when qualification.pitchLanguage='en', the draft schema accepts it; subject/body returned in English (validated by the LLM mock, not by us)
-- [ ] Mark completed
+- [x] Test the validation band: stub `callLLM` to return a 30-word body → expect one retry; if retry also fails, surface `LlmFormatError`
+- [x] Test language: when qualification.pitchLanguage='en', the draft schema accepts it; subject/body returned in English (validated by the LLM mock, not by us)
+- [x] Mark completed
 
 ### Task 6: Definition of Done
 
