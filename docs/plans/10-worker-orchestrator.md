@@ -164,7 +164,7 @@ export async function POST() {
 
 ### Task 6: Pipeline status endpoint
 
-- [ ] Create `src/app/api/pipeline/status/route.ts`:
+- [x] Create `src/app/api/pipeline/status/route.ts`:
 
 ```typescript
 export async function GET() {
@@ -177,8 +177,8 @@ export async function GET() {
 }
 ```
 
-- [ ] Used by the dashboard (plan 11) for the "Avvia pipeline" affordance and live progress
-- [ ] Mark completed
+- [x] Used by the dashboard (plan 11) for the "Avvia pipeline" affordance and live progress
+- [x] Mark completed
 
 ### Task 7: launchd plist + install script
 
