@@ -102,7 +102,7 @@ Behaviour:
 
 ### Task 4: Worker entry point
 
-- [ ] Create `src/worker/run.ts`:
+- [x] Create `src/worker/run.ts`:
 
 ```typescript
 #!/usr/bin/env tsx
@@ -125,9 +125,9 @@ async function main() {
 main();
 ```
 
-- [ ] Add npm script `worker:run` → `tsx src/worker/run.ts`
-- [ ] Add `worker:manual` → `tsx src/worker/run.ts --manual`
-- [ ] Mark completed
+- [x] Add npm script `worker:run` → `tsx src/worker/run.ts`
+- [x] Add `worker:manual` → `tsx src/worker/run.ts --manual`
+- [x] Mark completed
 
 ### Task 5: Manual-trigger API route
 
