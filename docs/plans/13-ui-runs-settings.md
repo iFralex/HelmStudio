@@ -173,7 +173,7 @@ export function statusColor(s: PipelineRun['status']): 'green' | 'blue' | 'red' 
 
 ### Task 4: Run detail page
 
-- [ ] Create `src/app/(app)/runs/[id]/page.tsx`:
+- [x] Create `src/app/(app)/runs/[id]/page.tsx`:
   - server component
   - `getRunById(id)` → 404 helper on null
   - layout: header with `copy.runs.runDetailTitle(id)` + "← Tutti i run" back link
@@ -187,8 +187,8 @@ export function statusColor(s: PipelineRun['status']): 'green' | 'blue' | 'red' 
     - details column renders the JSON `details` as a small inline preformatted block (line-clamped to 2 lines, click to expand inline)
     - virtualised rendering only if rows > 200 (use `@tanstack/react-virtual` if needed; otherwise plain table)
 
-- [ ] If the run is `'running'`, the page polls itself every 5 s via a small client island showing a "Aggiornamento automatico" indicator
-- [ ] Mark completed
+- [x] If the run is `'running'`, the page polls itself every 5 s via a small client island showing a "Aggiornamento automatico" indicator
+- [x] Mark completed
 
 ### Task 5: Settings page shell
 

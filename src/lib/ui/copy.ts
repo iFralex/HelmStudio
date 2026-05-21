@@ -235,6 +235,12 @@ export const copy = {
     eventColumnChannel: 'Canale',
     eventColumnDetails: 'Dettagli',
     loadPrevious: 'Carica i precedenti',
+    autoRefresh: 'Aggiornamento automatico',
+    filterAll: 'Tutti gli stadi',
+    filterApply: 'Filtra',
+    filterReset: 'Azzera filtri',
+    channelIdPlaceholder: 'ID canale',
+    errorStackTrace: 'Traccia dello stack',
   },
   settings: {
     title: 'Impostazioni',
