@@ -33,6 +33,11 @@ export const copy = {
     llmTokensInput: 'Token input',
     llmTokensOutput: 'Token output',
     quotaNoUsage: 'Nessun utilizzo oggi',
+    toastPipelineStarted: 'Pipeline avviata',
+    toastPipelineAlreadyRunning: (runId: number | string) =>
+      `Pipeline già in corso (run #${runId})`,
+    toastPipelineStartError: "Errore durante l'avvio",
+    toastNetworkError: 'Errore di rete',
   },
   channels: {
     title: 'Canali',

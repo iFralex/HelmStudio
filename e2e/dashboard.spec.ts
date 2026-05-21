@@ -94,5 +94,6 @@ test('clicking Avvia pipeline ora shows Pipeline avviata toast', async ({ page }
 
   await button.click();
 
+  await expect(button).toBeDisabled();
   await expect(page.getByText('Pipeline avviata')).toBeVisible({ timeout: 5000 });
 });

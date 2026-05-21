@@ -40,16 +40,16 @@ export function RunStatusCard({ initialRun, initialActive, initialRunId }: RunSt
     try {
       const res = await fetch('/api/pipeline/run', { method: 'POST' });
       if (res.status === 202) {
-        toast.success('Pipeline avviata');
+        toast.success(copy.dashboard.toastPipelineStarted);
         await fetchStatus();
       } else if (res.status === 409) {
         const data = (await res.json()) as { runId?: number };
-        toast.error(`Pipeline già in corso (run #${data.runId ?? '?'})`);
+        toast.error(copy.dashboard.toastPipelineAlreadyRunning(data.runId ?? '?'));
       } else {
-        toast.error("Errore durante l'avvio");
+        toast.error(copy.dashboard.toastPipelineStartError);
       }
     } catch {
-      toast.error('Errore di rete');
+      toast.error(copy.dashboard.toastNetworkError);
     } finally {
       setStarting(false);
     }
@@ -66,7 +66,7 @@ export function RunStatusCard({ initialRun, initialActive, initialRunId }: RunSt
         : run.status === 'failed'
           ? copy.dashboard.runFailed
           : copy.dashboard.runCancelled;
-    statusLine = `Ultimo run #${run.id} ${label} — ${formatRelative(run.startedAt as unknown as string)}`;
+    statusLine = `Ultimo run #${run.id} ${label} — ${formatRelative(run.startedAt as Date | string)}`;
   } else {
     statusLine = copy.dashboard.runCooldown;
   }

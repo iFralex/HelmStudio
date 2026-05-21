@@ -11,7 +11,9 @@ export function openTestDb(): TestDb | null {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Database = require('better-sqlite3') as typeof BetterSqlite3;
-    return new Database(dbPath());
+    const db = new Database(dbPath());
+    db.pragma('foreign_keys = ON');
+    return db;
   } catch {
     return null;
   }

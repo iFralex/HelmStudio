@@ -113,11 +113,11 @@ export default async function ChannelsPage({ searchParams }: PageProps) {
         <>
           <ChannelsTable rows={result.rows} />
 
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between pt-4">
-              <p className="text-sm text-muted-foreground">
-                {copy.channels.pageOf(result.page, totalPages)}
-              </p>
+          <div className="flex items-center justify-between pt-4">
+            <p className="text-sm text-muted-foreground">
+              {copy.channels.pageOf(result.page, totalPages)}
+            </p>
+            {totalPages > 1 && (
               <div className="flex gap-2">
                 {result.page > 1 && (
                   <Link href={buildHref(flatParams, { page: result.page - 1 })}>
@@ -134,8 +134,8 @@ export default async function ChannelsPage({ searchParams }: PageProps) {
                   </Link>
                 )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </>
       )}
     </div>
