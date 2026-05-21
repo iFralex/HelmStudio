@@ -47,9 +47,7 @@ export async function closeRun(
   errorStack?: string,
   db: Db = getDb(),
 ): Promise<void> {
-  let skipped = false;
-
-  db.transaction((tx) => {
+  const skipped = db.transaction((tx) => {
     const existing = tx
       .select({ status: pipelineRuns.status })
       .from(pipelineRuns)
@@ -57,8 +55,7 @@ export async function closeRun(
       .get();
 
     if (!existing || existing.status !== 'running') {
-      skipped = true;
-      return;
+      return true;
     }
 
     tx.update(pipelineRuns)
@@ -70,6 +67,8 @@ export async function closeRun(
       })
       .where(eq(pipelineRuns.id, runId))
       .run();
+
+    return false;
   });
 
   if (skipped) {

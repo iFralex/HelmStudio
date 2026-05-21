@@ -6,9 +6,8 @@
  */
 
 import { getDb } from '../src/lib/db/client';
-import { pipelineRuns } from '../src/lib/db/schema';
 import { runDiscovery } from '../src/lib/pipeline/discovery/run';
-import { closeRun } from '../src/lib/pipeline/lifecycle';
+import { openRun, closeRun } from '../src/lib/pipeline/lifecycle';
 import { quotaSummary } from '../src/lib/youtube/dashboard';
 
 async function main() {
@@ -17,11 +16,7 @@ async function main() {
   const quotaBefore = await quotaSummary(db);
   console.log(`Quota before: ${quotaBefore.spent}/${quotaBefore.cap} units spent today`);
 
-  const runId = db
-    .insert(pipelineRuns)
-    .values({ triggeredBy: 'manual' })
-    .returning({ id: pipelineRuns.id })
-    .get()!.id;
+  const runId = await openRun('manual', db);
 
   console.log(`\nStarted pipeline run #${runId}`);
 

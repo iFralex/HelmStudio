@@ -40,6 +40,7 @@ async function main() {
     const result = await runPipeline({ triggeredBy }, undefined, (runId) => {
       activeRunId = runId;
     });
+    activeRunId = undefined;
     logger.info({ result }, 'worker finished');
     process.exit(0);
   } catch (err) {
