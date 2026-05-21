@@ -49,13 +49,14 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `src/app/api/auth/logout/route.ts` — POST logout, clears `session` cookie
 - `src/app/api/pipeline/run/route.ts` — POST: spawns the worker process if no run is active (202), or returns 409 `{ ok: false, error: 'run_already_active', runId }` if one is
 - `src/app/api/pipeline/status/route.ts` — GET: returns `{ active, latestRun, quota, queues }` by composing `isRunActive()`, `getLatestRun()`, `quotaSummary()`, and `countChannelsByStatus()`; polled by the dashboard
+- `src/app/api/raw/route.ts` — GET `/api/raw?path=<relativePath>`: serves a raw JSON file from `DATA_DIR/raw/` as a download attachment. Validates the resolved path is strictly inside `DATA_DIR/raw/` (path traversal guard); returns 400 on missing path, 403 if path escapes the raw directory, 404 if file is absent. Used by the channel detail page to let operators download LLM/qualification envelopes.
 
 ## UI components
 
 - shadcn/ui components are in `src/components/ui/`. Tailwind v4 is in use (not v3).
 - The `cn` utility (clsx + tailwind-merge) is exported from `src/lib/utils.ts`.
 - PostCSS config: `postcss.config.mjs`.
-- Italian UI strings live in `src/lib/ui/copy.ts` as the `copy` object, grouped by page (`copy.nav`, `copy.dashboard`, `copy.channels`, `copy.outreachStatus`). Always use `copy.*` in components — never hardcode Italian strings.
+- Italian UI strings live in `src/lib/ui/copy.ts` as the `copy` object, grouped by page (`copy.nav`, `copy.dashboard`, `copy.channels`, `copy.outreachStatus`, `copy.channelDetail`). Always use `copy.*` in components — never hardcode Italian strings.
 - Formatting utilities live in `src/lib/ui/format.ts`: `formatCompact` (compact locale number), `formatNumber`, `formatDate`, `formatRelative` (uses `Intl.RelativeTimeFormat`, no extra dependency), `scoreColor` (≥70 → `'green'`, 40–69 → `'yellow'`, <40 → `'gray'`). Do not duplicate these inline in components.
 - `ALL_OUTREACH_STATUSES` is exported from `src/lib/db/queries.ts` as the single source of truth for the ordered outreach status list.
 - `next.config.ts` whitelists remote image domains for `next/image`: `yt3.ggpht.com` (channel thumbnails) and `i.ytimg.com` (video thumbnails). Add new domains here before using them with `<Image>`.
@@ -70,6 +71,7 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `listChannelsForUi(filters, db?)` in `src/lib/db/queries.ts` is the stable contract for the channels list page. Accepts `ListChannelsFilters` (outreachStatus, score/subscriber ranges, nicheContains, formatContains, pitchLanguage, free-text search, sort, page, pageSize); uses a LEFT JOIN on `qualifications`. Default sort: `score_desc`; default page size: 50.
 - `dashboardSnapshot(db?)` in `src/lib/db/queries.ts` is the stable contract for the dashboard page. Returns `{ latestRun, queues, topRecent, quota }` via a single `Promise.all` of parallel queries. Do not query these tables directly from dashboard components.
 - `todayLlmStats(db?)` in `src/lib/db/queries.ts` returns today's aggregate LLM call counts and token totals from `pipelineRuns`. Uses UTC midnight as the day boundary (intentionally different from `quotaSummary` which uses Pacific Time).
+- `getChannelDetail(channelId, db?)` in `src/lib/db/queries.ts` is the stable contract for the channel detail page. Returns `{ channel, videos, qualification, videoSelection, transcriptsByVideo, currentDraft, draftHistory }` or `null` if the channel doesn't exist. `transcriptsByVideo` is a `Record<videoId, Transcript | null>` covering all 20 video rows (null for videos without a transcript). Do not query the underlying tables directly from channel detail components.
 - Schema evolution: edit schema → `pnpm db:generate` → review generated SQL → `pnpm db:migrate`.
 - `pnpm db:init` seeds `filters` and `pipeline_config` settings using `onConflictDoNothing` — safe to re-run without overwriting user-customized values.
 - TypeScript scripts in `scripts/` are run with `tsx` (listed in devDependencies).

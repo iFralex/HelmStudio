@@ -36,7 +36,7 @@ const CLASSIFICATION_VARIANT: Record<
 interface AgentReasoningPanelProps {
   videoSelection: VideoSelection | null;
   videos: Video[];
-  transcriptsByVideo: Map<string, Transcript | null>;
+  transcriptsByVideo: Record<string, Transcript | null>;
 }
 
 export function AgentReasoningPanel({
@@ -104,7 +104,7 @@ export function AgentReasoningPanel({
               {classifications.map((c) => {
                 const video = videoMap.get(c.videoId);
                 const isSelected = selectedIds.has(c.videoId);
-                const transcript = transcriptsByVideo.get(c.videoId) ?? null;
+                const transcript = transcriptsByVideo[c.videoId] ?? null;
                 const isExpanded = expandedRow === c.videoId;
 
                 return (

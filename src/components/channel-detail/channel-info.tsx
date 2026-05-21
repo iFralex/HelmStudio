@@ -49,12 +49,12 @@ function parseDiscoverySource(source: string | null): string | null {
   if (!source) return null;
   if (source.startsWith('keyword:')) {
     const kw = source.slice('keyword:'.length);
-    return `Trovato via keyword: ${kw}`;
+    return copy.channelDetail.discoveryViaKeyword(kw);
   }
   if (source.startsWith('category:')) {
     const id = source.slice('category:'.length);
     const name = CATEGORY_NAMES[id] ?? id;
-    return `Trovato in categoria: ${name}`;
+    return copy.channelDetail.discoveryViaCategory(name);
   }
   return source;
 }

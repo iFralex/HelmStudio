@@ -59,6 +59,7 @@ export function OutreachWidget({
       )}
       {status === 'drafted' && currentDraft && (
         <DraftedView
+          key={currentDraft.id}
           channelId={channel.id}
           draft={currentDraft}
           draftHistory={draftHistory}
@@ -157,6 +158,8 @@ function EmailAddedView({
       setElapsed(secs);
       if (secs < 60) {
         router.refresh();
+      } else {
+        clearInterval(interval);
       }
     }, 3000);
     return () => clearInterval(interval);

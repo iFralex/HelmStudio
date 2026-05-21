@@ -37,23 +37,6 @@ const DraftBodySchema = z.object({
   body: z.string(),
 });
 
-function insertMetaEvent(
-  db: ReturnType<typeof getDb>,
-  channelId: string,
-  event: string,
-  details?: Record<string, unknown>,
-) {
-  db.insert(pipelineEvents)
-    .values({
-      channelId,
-      stage: 'meta',
-      level: 'info',
-      event,
-      details: details ?? null,
-    })
-    .run();
-}
-
 export async function requalifyChannel(formData: FormData): Promise<void> {
   const parsed = ChannelIdSchema.safeParse({ channelId: formData.get('channelId') });
   if (!parsed.success) return;
@@ -114,7 +97,12 @@ export async function regenerateDraft(formData: FormData): Promise<void> {
   logger.info({ channelId }, 'regenerating draft');
 
   await generateDraftForChannel(channelId, db);
-  insertMetaEvent(db, channelId, 'draft_regenerated');
+  db.transaction((tx) => {
+    tx.update(channels).set({ outreachStatus: 'drafted' }).where(eq(channels.id, channelId)).run();
+    tx.insert(pipelineEvents)
+      .values({ channelId, stage: 'meta', level: 'info', event: 'draft_regenerated' })
+      .run();
+  });
 
   revalidatePath(`/channels/${channelId}`);
 }
@@ -209,12 +197,17 @@ export async function deleteChannel(formData: FormData): Promise<void> {
     deleteRawForChannel(channelId),
   ]);
 
-  db.transaction((tx) => {
-    tx.insert(pipelineEvents)
-      .values({ channelId, stage: 'meta', level: 'info', event: 'channel_deleted' })
-      .run();
-    tx.delete(channels).where(eq(channels.id, channelId)).run();
-  });
+  db.delete(channels).where(eq(channels.id, channelId)).run();
+  // channelId is stored in details since the FK field would be null after the delete
+  db.insert(pipelineEvents)
+    .values({
+      channelId: null,
+      stage: 'meta',
+      level: 'info',
+      event: 'channel_deleted',
+      details: { deletedChannelId: channelId },
+    })
+    .run();
 
   logger.info({ channelId }, 'channel deleted');
   revalidatePath('/channels');

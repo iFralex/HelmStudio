@@ -87,6 +87,8 @@ export const copy = {
   },
   channelDetail: {
     notFound: 'Canale non trovato.',
+    discoveryViaKeyword: (kw: string) => `Trovato via keyword: ${kw}`,
+    discoveryViaCategory: (name: string) => `Trovato in categoria: ${name}`,
     openOnYoutube: 'Apri su YouTube',
     subscribers: 'iscritti',
     totalVideos: 'video totali',

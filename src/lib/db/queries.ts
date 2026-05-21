@@ -374,7 +374,7 @@ export async function getChannelDetail(
   videos: Video[];
   qualification: Qualification | null;
   videoSelection: VideoSelection | null;
-  transcriptsByVideo: Map<string, Transcript | null>;
+  transcriptsByVideo: Record<string, Transcript | null>;
   currentDraft: OutreachDraft | null;
   draftHistory: OutreachDraft[];
 } | null> {
@@ -415,9 +415,11 @@ export async function getChannelDetail(
       ? db.select().from(transcripts).where(inArray(transcripts.videoId, videoIds)).all()
       : [];
 
-  const transcriptsByVideo = new Map<string, Transcript | null>(videoIds.map((id) => [id, null]));
+  const transcriptsByVideo: Record<string, Transcript | null> = Object.fromEntries(
+    videoIds.map((id) => [id, null]),
+  );
   for (const t of transcriptRows) {
-    transcriptsByVideo.set(t.videoId, t);
+    transcriptsByVideo[t.videoId] = t;
   }
 
   const draftHistory = allDrafts.filter((d) => !d.isCurrent);
