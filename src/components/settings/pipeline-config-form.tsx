@@ -1,18 +1,42 @@
 'use client';
 
+import { useActionState, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
+import { toast } from 'sonner';
 import type { PipelineConfigSetting } from '@/lib/services/settings';
 import { copy } from '@/lib/ui/copy';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { updatePipelineConfigAction } from '@/app/(app)/settings/actions';
 
 interface Props {
   config: PipelineConfigSetting;
 }
 
-export function PipelineConfigForm({ config }: Props) {
+function SubmitButton() {
+  const { pending } = useFormStatus();
   return (
-    <form className="space-y-4">
+    <Button type="submit" disabled={pending}>
+      {pending ? copy.settings.exportRunning : copy.settings.savePipelineConfig}
+    </Button>
+  );
+}
+
+export function PipelineConfigForm({ config }: Props) {
+  const [state, formAction] = useActionState(updatePipelineConfigAction, null);
+
+  useEffect(() => {
+    if (!state) return;
+    if (state.ok) {
+      toast.success(copy.settings.pipelineConfigSaved);
+    } else {
+      toast.error(state.error);
+    }
+  }, [state]);
+
+  return (
+    <form action={formAction} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="keywordsPerRun">{copy.settings.keywordsPerRun}</Label>
@@ -37,9 +61,7 @@ export function PipelineConfigForm({ config }: Props) {
           />
         </div>
       </div>
-      <Button type="submit" disabled>
-        {copy.settings.savePipelineConfig}
-      </Button>
+      <SubmitButton />
     </form>
   );
 }

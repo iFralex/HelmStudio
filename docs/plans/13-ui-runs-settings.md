@@ -234,15 +234,15 @@ export async function deleteKeyword(id: number): Promise<void>;
 
 ### Task 7: Filters & pipeline-config forms
 
-- [ ] Create `src/components/settings/filters-form.tsx`:
+- [x] Create `src/components/settings/filters-form.tsx`:
   - client form (uses `useFormState` + `useFormStatus`) bound to the `updateFilters` server action
   - inputs for each field per `copy.settings.*`
   - zod validation on the server side: `minSubscribers < maxSubscribers`, `country` 2-letter ISO, etc.
   - on success: toast `copy.settings.filtersSaved`
-- [ ] Create `src/components/settings/pipeline-config-form.tsx`:
+- [x] Create `src/components/settings/pipeline-config-form.tsx`:
   - same pattern; bound to `updatePipelineConfig`
   - validates `keywordsPerRun` 1..70 and `targetQualifiedPerRun` 1..200
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 8: Settings server actions
 

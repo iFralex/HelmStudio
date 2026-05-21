@@ -1,10 +1,14 @@
 'use client';
 
+import { useActionState, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
+import { toast } from 'sonner';
 import type { FiltersSetting } from '@/lib/services/settings';
 import { copy } from '@/lib/ui/copy';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { updateFiltersAction } from '@/app/(app)/settings/actions';
 
 interface Props {
   filters: FiltersSetting;
@@ -37,9 +41,29 @@ function Field({
   );
 }
 
-export function FiltersForm({ filters }: Props) {
+function SubmitButton() {
+  const { pending } = useFormStatus();
   return (
-    <form className="space-y-4">
+    <Button type="submit" disabled={pending}>
+      {pending ? copy.settings.exportRunning : copy.settings.saveFilters}
+    </Button>
+  );
+}
+
+export function FiltersForm({ filters }: Props) {
+  const [state, formAction] = useActionState(updateFiltersAction, null);
+
+  useEffect(() => {
+    if (!state) return;
+    if (state.ok) {
+      toast.success(copy.settings.filtersSaved);
+    } else {
+      toast.error(state.error);
+    }
+  }, [state]);
+
+  return (
+    <form action={formAction} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
           id="minSubscribers"
@@ -78,9 +102,7 @@ export function FiltersForm({ filters }: Props) {
           defaultValue={filters.inactiveDays}
         />
       </div>
-      <Button type="submit" disabled>
-        {copy.settings.saveFilters}
-      </Button>
+      <SubmitButton />
     </form>
   );
 }
