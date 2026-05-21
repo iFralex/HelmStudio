@@ -21,12 +21,12 @@ Per spec §10.2, the draft prompt operates on the latest `qualifications` row's 
 
 ### Task 1: Prompt and schema
 
-- [ ] Create `src/lib/llm/prompts/draft.ts`:
+- [x] Create `src/lib/llm/prompts/draft.ts`:
   - export `version = 'draft-v1'`
   - export `system` — the exact text from spec §10.2 (no clickbait, no bullets, free-pilot mention, 120-180 word body)
   - export `userTemplate(input: DraftInput): string` per spec §10.2
 
-- [ ] Extend `src/lib/llm/schemas.ts`:
+- [x] Extend `src/lib/llm/schemas.ts`:
 
 ```typescript
 export const DraftOutputSchema = z.object({
@@ -37,10 +37,10 @@ export const DraftOutputSchema = z.object({
 export type DraftOutput = z.infer<typeof DraftOutputSchema>;
 ```
 
-- [ ] Post-parse business check `validateDraftOutput(d, language)`:
+- [x] Post-parse business check `validateDraftOutput(d, language)`:
   - subject length ≤ 60 → warn (not error) and accept anyway
   - body word count between 80 and 250 → accept; outside → reject and trigger retry once (treat as format failure)
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 2: Draft caller
 

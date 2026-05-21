@@ -58,3 +58,27 @@ export const QualifyOutputSchema = z.object({
 });
 
 export type QualifyOutput = z.infer<typeof QualifyOutputSchema>;
+
+export const DraftOutputSchema = z.object({
+  subject: z.string().min(5).max(80), // hard cap > 60 to allow minor overruns
+  body: z.string().min(200).max(3000), // ~120-180 words ≈ 800-1200 chars
+});
+
+export type DraftOutput = z.infer<typeof DraftOutputSchema>;
+
+export function validateDraftOutput(
+  d: DraftOutput,
+  _language: 'it' | 'en',
+): { valid: true } | { valid: false; reason: string } {
+  if (d.subject.length > 60) {
+    // warn only — log at call site, not an error
+  }
+  const wordCount = d.body.trim().split(/\s+/).length;
+  if (wordCount < 80 || wordCount > 250) {
+    return {
+      valid: false,
+      reason: `Body word count is ${wordCount}, expected between 80 and 250 words.`,
+    };
+  }
+  return { valid: true };
+}
