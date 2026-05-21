@@ -67,7 +67,7 @@ export async function preflightChecks(): Promise<void>;
 
 ### Task 3: Top-level orchestrator
 
-- [ ] Create `src/lib/pipeline/run.ts`:
+- [x] Create `src/lib/pipeline/run.ts`:
 
 ```typescript
 export type RunPipelineOptions = {
@@ -98,7 +98,7 @@ Behaviour:
 5. Catch any other error → `closeRun(runId, 'failed', err.message, err.stack)`; re-throw
 6. Log a final summary line to pino at `info`
 
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 4: Worker entry point
 
