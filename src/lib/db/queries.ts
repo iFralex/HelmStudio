@@ -366,6 +366,73 @@ export const ALL_OUTREACH_STATUSES: OutreachStatus[] = [
   'ignored',
 ];
 
+export async function getChannelDetail(
+  channelId: string,
+  db: Db = getDb(),
+): Promise<{
+  channel: Channel;
+  videos: Video[];
+  qualification: Qualification | null;
+  videoSelection: VideoSelection | null;
+  transcriptsByVideo: Map<string, Transcript | null>;
+  currentDraft: OutreachDraft | null;
+  draftHistory: OutreachDraft[];
+} | null> {
+  const channel = await getChannelById(channelId, db);
+  if (!channel) return null;
+
+  const [videoRows, qualification, currentDraft, allDrafts] = await Promise.all([
+    db
+      .select()
+      .from(videos)
+      .where(eq(videos.channelId, channelId))
+      .orderBy(desc(videos.publishedAt))
+      .limit(20)
+      .all(),
+    getLatestQualification(channelId, db),
+    getCurrentDraft(channelId, db),
+    db
+      .select()
+      .from(outreachDrafts)
+      .where(eq(outreachDrafts.channelId, channelId))
+      .orderBy(desc(outreachDrafts.createdAt))
+      .all(),
+  ]);
+
+  let videoSelection: VideoSelection | null = null;
+  if (qualification?.videoSelectionId) {
+    videoSelection =
+      db
+        .select()
+        .from(videoSelections)
+        .where(eq(videoSelections.id, qualification.videoSelectionId))
+        .get() ?? null;
+  }
+
+  const videoIds = videoRows.map((v) => v.id);
+  const transcriptRows =
+    videoIds.length > 0
+      ? db.select().from(transcripts).where(inArray(transcripts.videoId, videoIds)).all()
+      : [];
+
+  const transcriptsByVideo = new Map<string, Transcript | null>(videoIds.map((id) => [id, null]));
+  for (const t of transcriptRows) {
+    transcriptsByVideo.set(t.videoId, t);
+  }
+
+  const draftHistory = allDrafts.filter((d) => !d.isCurrent);
+
+  return {
+    channel,
+    videos: videoRows,
+    qualification,
+    videoSelection,
+    transcriptsByVideo,
+    currentDraft,
+    draftHistory,
+  };
+}
+
 export async function dashboardSnapshot(db: Db = getDb()): Promise<{
   latestRun: PipelineRun | null;
   queues: Record<DiscoveryStatus | OutreachStatus, number>;

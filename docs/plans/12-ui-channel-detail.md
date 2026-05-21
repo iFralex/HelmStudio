@@ -21,7 +21,7 @@ This page is the most state-rich in the app. It reads from `channels`, `videos`,
 
 ### Task 1: Data loader
 
-- [ ] Extend `src/lib/db/queries.ts`:
+- [x] Extend `src/lib/db/queries.ts`:
 
 ```typescript
 export async function getChannelDetail(channelId: string): Promise<{
@@ -35,8 +35,8 @@ export async function getChannelDetail(channelId: string): Promise<{
 } | null>;
 ```
 
-- [ ] Returns `null` if the channel doesn't exist (404 in the page)
-- [ ] Mark completed
+- [x] Returns `null` if the channel doesn't exist (404 in the page)
+- [x] Mark completed
 
 ### Task 2: Italian copy additions
 
