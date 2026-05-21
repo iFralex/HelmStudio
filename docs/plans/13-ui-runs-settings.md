@@ -246,7 +246,7 @@ export async function deleteKeyword(id: number): Promise<void>;
 
 ### Task 8: Settings server actions
 
-- [ ] Create `src/app/(app)/settings/actions.ts`:
+- [x] Create `src/app/(app)/settings/actions.ts`:
 
 ```typescript
 'use server';
@@ -270,9 +270,9 @@ export async function updateKeywordAction(input: {
 export async function deleteKeywordAction(input: { id: number }): Promise<void>;
 ```
 
-- [ ] Each action validates with zod, performs the DB write, calls `revalidatePath('/settings')`
-- [ ] All return-value typing makes the form components display localised errors
-- [ ] Mark completed
+- [x] Each action validates with zod, performs the DB write, calls `revalidatePath('/settings')`
+- [x] All return-value typing makes the form components display localised errors
+- [x] Mark completed
 
 ### Task 9: Read-only models and prompts sections
 
