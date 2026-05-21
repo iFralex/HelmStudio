@@ -144,7 +144,7 @@ channelDetail: {
 
 ### Task 4: Left column — channel info + sample videos
 
-- [ ] Create `src/components/channel-detail/channel-info.tsx`:
+- [x] Create `src/components/channel-detail/channel-info.tsx`:
   - thumbnail (rounded, ~80px)
   - title, handle (linked to YouTube), country, language flag emoji
   - stat row: subscribers (compact), total videos
@@ -153,11 +153,11 @@ channelDetail: {
   - discovery source badge ("Trovato via keyword: rassegna stampa" or "Trovato in categoria: Notizie e Politica")
   - "Apri su YouTube" link
 
-- [ ] Create `src/components/channel-detail/sample-videos-list.tsx`:
+- [x] Create `src/components/channel-detail/sample-videos-list.tsx`:
   - last 10 videos
   - per row: small thumbnail (~60×34), title (linked to youtu.be/<id>), published date, duration, views (compact)
   - hover: title becomes underlined
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 5: Middle column — AI assessment
 
