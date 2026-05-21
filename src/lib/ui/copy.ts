@@ -161,6 +161,21 @@ export const copy = {
     notesPlaceholder: 'Note interne libere…',
     draftHistory: 'Cronologia bozze',
     draftHistoryEmpty: 'Nessuna bozza precedente.',
+    viewDraft: 'Visualizza',
+    draftGenerationError: 'Errore durante la generazione della bozza',
+    draftGenerationFailed: 'Generazione bozza non riuscita.',
+    retryButton: 'Riprova',
+    subjectPrefix: (subject: string) => `Oggetto: ${subject}`,
+
+    // Description expand/collapse
+    showMore: 'Mostra altro',
+    showLess: 'Mostra meno',
+    deleteConfirmTypePrefix: 'Digita',
+    deleteConfirmTypeSuffix: 'per confermare',
+
+    // Transcript footer
+    transcriptCharCount: (n: number) => `${n.toLocaleString('it-IT')} caratteri`,
+    transcriptSource: 'via youtube-transcript',
 
     // GDPR
     deleteChannel: 'Elimina canale',

@@ -24,7 +24,7 @@ interface TranscriptModalProps {
   transcript: Transcript | null;
 }
 
-export function TranscriptModal({ videoId: _videoId, videoTitle, transcript }: TranscriptModalProps) {
+export function TranscriptModal({ videoTitle, transcript }: TranscriptModalProps) {
   const title = copy.channelDetail.transcriptModalTitle(videoTitle);
 
   const renderBody = () => {
@@ -65,8 +65,8 @@ export function TranscriptModal({ videoId: _videoId, videoTitle, transcript }: T
               {langToFlag(lang)} {lang}
             </span>
           )}
-          <span>{charCount.toLocaleString('it-IT')} caratteri</span>
-          <span>via youtube-transcript</span>
+          <span>{copy.channelDetail.transcriptCharCount(charCount)}</span>
+          <span>{copy.channelDetail.transcriptSource}</span>
         </div>
       </div>
     );

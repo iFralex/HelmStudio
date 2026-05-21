@@ -162,7 +162,7 @@ export function ChannelInfo({ channel }: ChannelInfoProps) {
               onClick={() => setExpanded((v) => !v)}
               className="text-xs text-primary hover:underline mt-1"
             >
-              {expanded ? 'Mostra meno' : 'Mostra altro'}
+              {expanded ? copy.channelDetail.showLess : copy.channelDetail.showMore}
             </button>
           )}
         </div>
@@ -208,7 +208,9 @@ export function ChannelInfo({ channel }: ChannelInfoProps) {
           </DialogHeader>
           <div className="space-y-2">
             <Label htmlFor="confirm-channel-name" className="text-sm">
-              Digita <span className="font-semibold">{channel.title}</span> per confermare
+              {copy.channelDetail.deleteConfirmTypePrefix}{' '}
+              <span className="font-semibold">{channel.title}</span>{' '}
+              {copy.channelDetail.deleteConfirmTypeSuffix}
             </Label>
             <Input
               id="confirm-channel-name"

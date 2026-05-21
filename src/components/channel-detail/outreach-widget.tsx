@@ -111,7 +111,7 @@ function NoneView({
         fd.set('email', email.trim());
         await saveEmailAndDraftAction(fd);
       } catch {
-        toast.error('Errore durante la generazione della bozza');
+        toast.error(copy.channelDetail.draftGenerationError);
       }
     });
   };
@@ -165,7 +165,7 @@ function EmailAddedView({
   if (elapsed >= 60) {
     return (
       <div className="space-y-3">
-        <p className="text-sm text-destructive">Generazione bozza non riuscita.</p>
+        <p className="text-sm text-destructive">{copy.channelDetail.draftGenerationFailed}</p>
         <Button
           size="sm"
           variant="outline"
@@ -178,7 +178,7 @@ function EmailAddedView({
             });
           }}
         >
-          {isPending ? copy.channelDetail.regenerating : 'Riprova'}
+          {isPending ? copy.channelDetail.regenerating : copy.channelDetail.retryButton}
         </Button>
       </div>
     );
@@ -219,7 +219,7 @@ function DraftedView({
   const [didCopy, setDidCopy] = useState(false);
 
   const handleCopy = async () => {
-    const text = `Oggetto: ${subject}\n\n${body}`;
+    const text = `${copy.channelDetail.subjectPrefix(subject)}\n\n${body}`;
     await navigator.clipboard.writeText(text);
     setDidCopy(true);
     setTimeout(() => setDidCopy(false), 2000);
@@ -478,7 +478,7 @@ function DraftHistoryRow({ draft }: { draft: OutreachDraft }) {
       <span>{formatRelative(draft.createdAt)}</span>
       <Dialog>
         <DialogTrigger className="hover:underline text-xs">
-          Visualizza
+          {copy.channelDetail.viewDraft}
         </DialogTrigger>
         <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
