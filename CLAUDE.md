@@ -23,6 +23,7 @@ pnpm tsx scripts/transcript-smoke.ts <videoId>  # manual transcript fetch smoke 
 pnpm seed:keywords             # upsert ~70 curated Italian keywords into seed_keywords (idempotent)
 pnpm tsx scripts/run-discovery.ts  # manual discovery pipeline smoke run (~3,200 quota units consumed)
 pnpm tsx scripts/qualify-one.ts <channelId>  # force-qualify one channel already in the DB (requires live LLM proxy)
+pnpm tsx scripts/draft-one.ts <channelId>    # generate outreach draft for a qualified channel (requires live LLM proxy)
 ```
 
 ## Language convention
@@ -123,7 +124,7 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `runId` is required in `context` when `kind` is `video_selection` or `qualification`; omitting it throws immediately.
 - Prompt modules live in `src/lib/llm/prompts/`; each exports `version` (string), `system` (string), and `userTemplate(args)` (function returning string). Shared XML escaping lives in `src/lib/llm/prompts/xml-helpers.ts`.
 - Zod output schemas for LLM callers live in `src/lib/llm/schemas.ts` (not alongside prompts). Post-parse business validation functions (e.g. `validateSelectOutput`) also live there and must be called by the caller after `callLLM` returns; on failure they throw `LlmBusinessRuleError`.
-- Application code calls higher-level wrappers (`runVideoSelection` in `src/lib/llm/select.ts`, `runFinalQualification` in `src/lib/llm/qualify.ts`) rather than `callLLM` directly. Each wrapper builds the user message, calls `callLLM`, inserts the result into its DB table, and returns `{ <entityId>, output, usage }`. `TokenUsage = { inputTokens: number; outputTokens: number }` is the shared return type accumulated across retry attempts.
+- Application code calls higher-level wrappers (`runVideoSelection` in `src/lib/llm/select.ts`, `runFinalQualification` in `src/lib/llm/qualify.ts`, `runDraftGeneration` in `src/lib/llm/draft.ts`) rather than `callLLM` directly. Each wrapper builds the user message, calls `callLLM`, inserts the result into its DB table, and returns `{ <entityId>, output, usage }`. `TokenUsage = { inputTokens: number; outputTokens: number }` is the shared return type accumulated across retry attempts. `runDraftGeneration` adds a second word-count retry loop on top of `callLLM`'s schema-level retry; it accumulates token usage across both layers.
 - `llmStatsForRun(runId, db?)` in `src/lib/llm/dashboard.ts` is the stable contract for per-run LLM stats in the dashboard UI.
 - `estimateTokens` and `truncateMiddle` in `src/lib/llm/tokens.ts` are used for prompt budgeting; `truncateMiddle` keeps head 60% / tail 40% with a marker.
 - Test seams: `__setLlmForTest(fakeClient)` and `__resetLlmForTest()` in `src/lib/llm/client.ts`; call both in `beforeEach`/`afterEach`.
@@ -152,6 +153,17 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - Seed data lives in `src/lib/seeds/` — `keywords.ts` exports `SEED_KEYWORDS`, `categories.ts` exports `IN_SCOPE_CATEGORY_IDS`.
 - `computeChannelAggregates(channelId, db?)` in `src/lib/pipeline/aggregates.ts` is the stable contract for plan 08's LLM prompt building. Returns `ZERO_AGGREGATES` when fewer than 3 videos are present. Uses population stddev (not sample). Reads the 20 most recent videos.
 - `parseIso8601Duration(iso)` in `src/lib/youtube/duration.ts` parses ISO 8601 duration strings (including P1DT… day component); throws on unparseable input. Used by `operations.ts` internally.
+
+## Outreach draft
+
+- Entry point for UI callers is `src/lib/services/outreach.ts`. Three exported functions: `generateDraftForChannel(channelId, db?)`, `listDraftsForChannel(channelId, db?)`, `getCurrentDraft(channelId, db?)`.
+- `generateDraftForChannel` requires the channel to have a `latestQualificationId`; throws immediately otherwise. Fetches the most-recent qualification row and the 5 most-recent videos to build the prompt context.
+- Lower-level caller is `runDraftGeneration` in `src/lib/llm/draft.ts`. Uses `tier: 'fast'` model. Adds a word-count retry loop (one retry if body word count < 80 or > 250); accumulates token usage across both `callLLM` calls. Throws `LlmFormatError` if the retry still fails.
+- Subject length > 60 chars is warn-only (logged, not an error); the draft is accepted anyway.
+- `validateDraftOutput(d)` in `src/lib/llm/schemas.ts` performs the word-count check (80–250 words). Called by `runDraftGeneration` after `callLLM` returns.
+- DB: `outreach_drafts` table (schema in `src/lib/db/schema.ts`). Only one draft per channel has `isCurrent=true`; `runDraftGeneration` demotes all previous current drafts inside a SQLite transaction before inserting the new row.
+- `getCurrentDraft(channelId, db?)` in `src/lib/db/queries.ts` is the stable query contract for UI consumption.
+- Outreach draft tests conditionally skip DB-dependent cases when `better-sqlite3` native bindings cannot load — same pattern as other DB-dependent tests.
 
 ## Qualification pipeline
 

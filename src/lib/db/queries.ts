@@ -103,6 +103,13 @@ export async function countChannelsByStatus(
   return base;
 }
 
+export async function getQualificationById(
+  id: number,
+  db: Db = getDb(),
+): Promise<Qualification | null> {
+  return db.select().from(qualifications).where(eq(qualifications.id, id)).get() ?? null;
+}
+
 export async function getLatestQualification(
   channelId: string,
   db: Db = getDb(),
