@@ -224,11 +224,11 @@ export async function GET() {
 
 ### Task 8: Worker shutdown handling
 
-- [ ] In `src/worker/run.ts`, handle `SIGTERM` and `SIGINT`:
+- [x] In `src/worker/run.ts`, handle `SIGTERM` and `SIGINT`:
   - if a run is in progress, attempt `closeRun(runId, 'cancelled', 'received SIGTERM/SIGINT')`
   - then exit non-zero
-- [ ] Operator can `kill <pid>` cleanly without leaving a `running` row
-- [ ] Mark completed
+- [x] Operator can `kill <pid>` cleanly without leaving a `running` row
+- [x] Mark completed
 
 ### Task 9: Tests
 
