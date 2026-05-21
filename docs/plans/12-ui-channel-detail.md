@@ -231,7 +231,7 @@ channelDetail: {
 
 ### Task 8: Server actions
 
-- [ ] Create `src/app/(app)/channels/[channelId]/actions.ts`:
+- [x] Create `src/app/(app)/channels/[channelId]/actions.ts`:
 
 ```typescript
 'use server';
@@ -255,14 +255,14 @@ export async function requalifyChannel(input: { channelId: string }): Promise<vo
 export async function deleteChannel(input: { channelId: string }): Promise<void>;
 ```
 
-- [ ] Each action:
+- [x] Each action:
   - validates input with zod
   - performs the DB mutation in a transaction
   - calls `revalidatePath` for the channel page (and `/channels`, `/` for delete)
   - logs at `info` level
   - audit-friendly: writes a `pipelineEvents` row with `stage='meta'`, `event='outreach_status_changed' | 'draft_regenerated' | 'channel_deleted' | ...`
-- [ ] Email validation: trims + zod `z.string().email()`; on invalid, throw with Italian message displayed via toast in the calling form
-- [ ] Mark completed
+- [x] Email validation: trims + zod `z.string().email()`; on invalid, throw with Italian message displayed via toast in the calling form
+- [x] Mark completed
 
 ### Task 9: GDPR delete flow
 
