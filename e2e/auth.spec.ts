@@ -10,7 +10,7 @@ test('logs in with correct password and lands on dashboard', async ({ page }) =>
   await page.fill('input[name="password"]', process.env['ADMIN_PASSWORD'] ?? 'test1234');
   await page.click('button[type="submit"]');
   await expect(page).toHaveURL('/');
-  await expect(page.getByText('Pipeline non ancora avviata.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 });
 
 test('rejects wrong password', async ({ page }) => {
