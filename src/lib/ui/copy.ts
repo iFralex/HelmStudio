@@ -38,6 +38,8 @@ export const copy = {
       `Pipeline già in corso (run #${runId})`,
     toastPipelineStartError: "Errore durante l'avvio",
     toastNetworkError: 'Errore di rete',
+    runLastStatus: (id: number, label: string, time: string) =>
+      `Ultimo run #${id} ${label} — ${time}`,
   },
   channels: {
     title: 'Canali',

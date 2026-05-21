@@ -66,7 +66,7 @@ export function RunStatusCard({ initialRun, initialActive, initialRunId }: RunSt
         : run.status === 'failed'
           ? copy.dashboard.runFailed
           : copy.dashboard.runCancelled;
-    statusLine = `Ultimo run #${run.id} ${label} — ${formatRelative(run.startedAt as Date | string)}`;
+    statusLine = copy.dashboard.runLastStatus(run.id, label, formatRelative(run.startedAt as Date | string));
   } else {
     statusLine = copy.dashboard.runCooldown;
   }
