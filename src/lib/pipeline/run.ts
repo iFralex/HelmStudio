@@ -21,6 +21,7 @@ const log = childLogger({ module: 'pipeline' });
 export async function runPipeline(
   opts: RunPipelineOptions,
   db: Db = getDb(),
+  onRunOpened?: (runId: number) => void,
 ): Promise<{
   runId?: number;
   status: 'completed' | 'cancelled';
@@ -43,6 +44,7 @@ export async function runPipeline(
   }
 
   const runId = await openRun(triggeredBy, db);
+  onRunOpened?.(runId);
   const summary: { discovery?: DiscoverySummary; qualification?: QualificationSummary } = {};
 
   try {

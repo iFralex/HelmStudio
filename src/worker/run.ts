@@ -1,10 +1,11 @@
 #!/usr/bin/env tsx
 import { env } from '@/lib/env';
 import { runPipeline } from '@/lib/pipeline/run';
-import { closeRun, isRunActive } from '@/lib/pipeline/lifecycle';
+import { closeRun } from '@/lib/pipeline/lifecycle';
 import { logger } from '@/lib/logger';
 
 let shuttingDown = false;
+let activeRunId: number | undefined;
 
 async function handleShutdown(signal: string): Promise<void> {
   if (shuttingDown) return;
@@ -12,10 +13,9 @@ async function handleShutdown(signal: string): Promise<void> {
   logger.info({ signal }, 'received shutdown signal');
 
   try {
-    const active = await isRunActive();
-    if (active.active && active.runId !== undefined) {
-      await closeRun(active.runId, 'cancelled', `received ${signal}`);
-      logger.info({ runId: active.runId }, 'run cancelled due to signal');
+    if (activeRunId !== undefined) {
+      await closeRun(activeRunId, 'cancelled', `received ${signal}`);
+      logger.info({ runId: activeRunId }, 'run cancelled due to signal');
     }
     process.exit(1);
   } catch (err) {
@@ -37,7 +37,9 @@ async function main() {
   const triggeredBy = process.argv.includes('--manual') ? 'manual' : 'cron';
   logger.info({ triggeredBy }, 'worker starting');
   try {
-    const result = await runPipeline({ triggeredBy });
+    const result = await runPipeline({ triggeredBy }, undefined, (runId) => {
+      activeRunId = runId;
+    });
     logger.info({ result }, 'worker finished');
     process.exit(0);
   } catch (err) {

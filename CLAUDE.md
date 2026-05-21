@@ -166,7 +166,7 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `openRun(triggeredBy, db?)` in `src/lib/pipeline/lifecycle.ts` inserts a `pipeline_runs` row with `status='running'` inside a transaction that also checks for an existing running row; throws `ConcurrentRunError` if one is found.
 - `closeRun(runId, status, errorMessage?, errorStack?, db?)` in `lifecycle.ts` is atomic (SELECT+UPDATE in one transaction) and idempotent: silently no-ops if the row is already in a terminal status.
 - `isRunActive(db?)` returns `{ active: boolean; runId?: number }`.
-- `runDiscovery` returns a `cancelled: boolean` flag when quota is exhausted mid-discovery. `runPipeline` checks this flag and skips qualification, returning `status: 'cancelled'` immediately (the discovery stage already wrote `status='cancelled'` to the DB).
+- `runDiscovery` returns a `cancelled: boolean` flag when quota is exhausted mid-discovery. `runPipeline` checks this flag, calls `closeRun(runId, 'cancelled')`, skips qualification, and returns `status: 'cancelled'`.
 - `QuotaExhausted` thrown by qualification closes the run as `'cancelled'`; any other error closes as `'failed'` and re-throws.
 - The Next.js server never calls pipeline stages directly. `POST /api/pipeline/run` spawns the worker as a detached child process (`child.unref()`) and returns 202 immediately.
 

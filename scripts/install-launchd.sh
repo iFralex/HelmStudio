@@ -40,7 +40,14 @@ fi
 HOUR="${PIPELINE_TRIGGER_HOUR:-4}"
 MINUTE="${PIPELINE_TRIGGER_MINUTE:-0}"
 
+PNPM_PATH="$(command -v pnpm 2>/dev/null || true)"
+if [[ -z "$PNPM_PATH" ]]; then
+  echo "Error: pnpm not found in PATH. Install pnpm or ensure it is on your PATH." >&2
+  exit 1
+fi
+
 echo "Project dir : $PROJECT_DIR"
+echo "pnpm        : $PNPM_PATH"
 echo "Schedule    : ${HOUR}:$(printf '%02d' "$MINUTE") daily"
 
 mkdir -p "$HOME/Library/LaunchAgents"
@@ -49,6 +56,7 @@ mkdir -p "$PROJECT_DIR/data/logs"
 # Substitute placeholders into the template
 sed \
   -e "s|__PROJECT_DIR__|${PROJECT_DIR}|g" \
+  -e "s|__PNPM_PATH__|${PNPM_PATH}|g" \
   -e "s|<integer>__HOUR__</integer>|<integer>${HOUR}</integer>|g" \
   -e "s|<integer>__MINUTE__</integer>|<integer>${MINUTE}</integer>|g" \
   "$TEMPLATE" > "$PLIST_DEST"
