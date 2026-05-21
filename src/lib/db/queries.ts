@@ -346,7 +346,7 @@ export async function todayLlmStats(db: Db = getDb()): Promise<{
   };
 }
 
-const ALL_OUTREACH_STATUSES: OutreachStatus[] = [
+export const ALL_OUTREACH_STATUSES: OutreachStatus[] = [
   'none',
   'email_added',
   'drafted',

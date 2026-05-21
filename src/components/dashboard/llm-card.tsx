@@ -1,4 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { formatCompact } from '@/lib/ui/format';
 
 interface LlmStats {
   callsCount: number;
@@ -8,10 +9,6 @@ interface LlmStats {
 
 interface LlmCardProps {
   stats: LlmStats;
-}
-
-function fmt(n: number): string {
-  return new Intl.NumberFormat('it-IT', { notation: 'compact', maximumFractionDigits: 1 }).format(n);
 }
 
 export function LlmCard({ stats }: LlmCardProps) {
@@ -28,11 +25,11 @@ export function LlmCard({ stats }: LlmCardProps) {
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Token input</dt>
-            <dd className="font-medium tabular-nums">{fmt(stats.inputTokens)}</dd>
+            <dd className="font-medium tabular-nums">{formatCompact(stats.inputTokens)}</dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">Token output</dt>
-            <dd className="font-medium tabular-nums">{fmt(stats.outputTokens)}</dd>
+            <dd className="font-medium tabular-nums">{formatCompact(stats.outputTokens)}</dd>
           </div>
         </dl>
       </CardContent>

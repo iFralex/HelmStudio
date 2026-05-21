@@ -21,18 +21,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import type { ListChannelsFilters, OutreachStatus } from '@/lib/db/queries';
+import { ALL_OUTREACH_STATUSES, type ListChannelsFilters, type OutreachStatus } from '@/lib/db/queries';
 import { copy } from '@/lib/ui/copy';
-
-const OUTREACH_STATUSES: OutreachStatus[] = [
-  'none',
-  'email_added',
-  'drafted',
-  'sent',
-  'replied',
-  'no_reply',
-  'ignored',
-];
 
 export interface FiltersBarProps {
   filters: ListChannelsFilters;
@@ -127,7 +117,7 @@ export function FiltersBar({ filters, rawParams }: FiltersBarProps) {
           <DropdownMenuContent>
             <DropdownMenuLabel>{copy.channels.filterOutreachStatus}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {OUTREACH_STATUSES.map((status) => (
+            {ALL_OUTREACH_STATUSES.map((status) => (
               <DropdownMenuCheckboxItem
                 key={status}
                 checked={selectedStatuses.includes(status)}

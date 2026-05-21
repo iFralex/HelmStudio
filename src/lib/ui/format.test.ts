@@ -50,23 +50,22 @@ describe('scoreColor', () => {
 });
 
 describe('formatRelative', () => {
-  it('returns a non-empty string for past dates', () => {
+  it('uses hour unit for 3-hour-old dates', () => {
     const pastDate = new Date(Date.now() - 3 * 3_600_000); // 3 hours ago
     const result = formatRelative(pastDate);
-    expect(result.length).toBeGreaterThan(0);
-    expect(typeof result).toBe('string');
+    expect(result).toMatch(/hour|or/i); // "3 hours ago" or "3 ore fa"
+    expect(result).toContain('3');
   });
 
-  it('returns a non-empty string for recent past', () => {
+  it('uses second unit for 30-second-old dates', () => {
     const pastDate = new Date(Date.now() - 30_000); // 30 seconds ago
     const result = formatRelative(pastDate);
-    expect(result.length).toBeGreaterThan(0);
+    expect(result).toMatch(/second/i); // "30 seconds ago" or "30 secondi fa"
   });
 
-  it('accepts a number (timestamp)', () => {
+  it('uses day unit for 1-day-old timestamp', () => {
     const ts = Date.now() - 86_400_000; // 1 day ago
     const result = formatRelative(ts);
-    expect(typeof result).toBe('string');
-    expect(result.length).toBeGreaterThan(0);
+    expect(result).toMatch(/day|yesterday|ieri|giorn/i); // locale-agnostic
   });
 });

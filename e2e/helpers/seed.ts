@@ -89,4 +89,7 @@ export function insertTestQualification(
 
 export function cleanupTestChannels(db: TestDb): void {
   db.prepare(`DELETE FROM channels WHERE id LIKE 'e2etest-%'`).run();
+  db.prepare(
+    `DELETE FROM pipeline_runs WHERE triggered_by = 'manual' AND candidates_found = 0 AND channels_enriched = 0`,
+  ).run();
 }

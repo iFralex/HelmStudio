@@ -3,6 +3,7 @@ import { LogoutButton } from '@/components/logout-button';
 import { NavLink } from '@/components/nav-link';
 import { copy } from '@/lib/ui/copy';
 import { quotaSummary } from '@/lib/youtube/dashboard';
+import { formatCompact } from '@/lib/ui/format';
 
 const navLinks = [
   { href: '/', label: copy.nav.dashboard },
@@ -10,12 +11,6 @@ const navLinks = [
   { href: '/runs', label: copy.nav.runs },
   { href: '/settings', label: copy.nav.settings },
 ];
-
-function compactQuota(n: number): string {
-  return new Intl.NumberFormat('it-IT', { notation: 'compact', maximumFractionDigits: 1 }).format(
-    n,
-  );
-}
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const quota = await quotaSummary();
@@ -37,7 +32,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               className="text-xs text-muted-foreground hover:text-primary transition-colors"
               title={copy.dashboard.quotaToday}
             >
-              YT: {compactQuota(quota.spent)}/{compactQuota(quota.cap)}
+              YT: {formatCompact(quota.spent)}/{formatCompact(quota.cap)}
             </Link>
             <LogoutButton />
           </div>

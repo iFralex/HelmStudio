@@ -5,18 +5,8 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardAction } from '@/components/ui/card';
 import { copy } from '@/lib/ui/copy';
+import { formatRelative } from '@/lib/ui/format';
 import type { PipelineRun } from '@/lib/db/queries';
-
-function timeAgo(d: Date | string): string {
-  const ms = Date.now() - new Date(d as string).getTime();
-  const s = Math.floor(ms / 1000);
-  if (s < 60) return 'poco fa';
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m} min fa`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h fa`;
-  return `${Math.floor(h / 24)}g fa`;
-}
 
 interface RunStatusCardProps {
   initialRun: PipelineRun | null;
@@ -76,7 +66,7 @@ export function RunStatusCard({ initialRun, initialActive, initialRunId }: RunSt
         : run.status === 'failed'
           ? 'fallito'
           : 'cancellato';
-    statusLine = `Ultimo run #${run.id} ${label} — ${timeAgo(run.startedAt)}`;
+    statusLine = `Ultimo run #${run.id} ${label} — ${formatRelative(run.startedAt as unknown as Date)}`;
   } else {
     statusLine = copy.dashboard.runCooldown;
   }

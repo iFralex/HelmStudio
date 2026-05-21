@@ -1,20 +1,10 @@
 import { z } from 'zod';
 import Link from 'next/link';
-import { listChannelsForUi, type ListChannelsFilters, type OutreachStatus } from '@/lib/db/queries';
+import { listChannelsForUi, ALL_OUTREACH_STATUSES, type ListChannelsFilters, type OutreachStatus } from '@/lib/db/queries';
 import { copy } from '@/lib/ui/copy';
 import { ChannelsTable } from '@/components/channels/channels-table';
 import { FiltersBar } from '@/components/channels/filters-bar';
 import { Button } from '@/components/ui/button';
-
-const OUTREACH_STATUSES: OutreachStatus[] = [
-  'none',
-  'email_added',
-  'drafted',
-  'sent',
-  'replied',
-  'no_reply',
-  'ignored',
-];
 
 const ChannelsSearchParamsSchema = z.object({
   status: z.string().optional(),
@@ -22,8 +12,8 @@ const ChannelsSearchParamsSchema = z.object({
   maxScore: z.coerce.number().int().min(0).max(100).optional().catch(undefined),
   minSubs: z.coerce.number().int().min(0).optional().catch(undefined),
   maxSubs: z.coerce.number().int().min(0).optional().catch(undefined),
-  niche: z.string().max(200).optional(),
-  format: z.string().max(200).optional(),
+  niche: z.string().max(200).optional().catch(undefined),
+  format: z.string().max(200).optional().catch(undefined),
   lang: z.enum(['it', 'en']).optional().catch(undefined),
   q: z.string().max(500).optional(),
   sort: z
@@ -45,7 +35,7 @@ function parseFilters(flat: Record<string, string | undefined>): ListChannelsFil
   const outreachStatus = parsed.status
     ? parsed.status
         .split(',')
-        .filter((s): s is OutreachStatus => OUTREACH_STATUSES.includes(s as OutreachStatus))
+        .filter((s): s is OutreachStatus => ALL_OUTREACH_STATUSES.includes(s as OutreachStatus))
     : undefined;
 
   return {
