@@ -3,7 +3,7 @@ import { getDb } from '@/lib/db/client';
 import { outreachDrafts, videos } from '@/lib/db/schema';
 import {
   getChannelById,
-  getLatestQualification,
+  getQualificationById,
   getCurrentDraft as queryGetCurrentDraft,
 } from '@/lib/db/queries';
 import type { OutreachDraft } from '@/lib/db/queries';
@@ -37,7 +37,7 @@ function rowToChannelDetail(
 }
 
 function rowToQualifyOutput(
-  qual: NonNullable<Awaited<ReturnType<typeof getLatestQualification>>>,
+  qual: NonNullable<Awaited<ReturnType<typeof getQualificationById>>>,
 ): QualifyOutput {
   return {
     nicheClassification: qual.nicheClassification ?? '',
@@ -66,7 +66,7 @@ export async function generateDraftForChannel(
     throw new Error(`Channel ${channelId} has no qualification; run qualification first`);
   }
 
-  const qualRow = await getLatestQualification(channelId, db);
+  const qualRow = await getQualificationById(channel.latestQualificationId, db);
   if (!qualRow) throw new Error(`No qualification row found for channel ${channelId}`);
 
   const videoRows = db
@@ -122,7 +122,7 @@ export async function listDraftsForChannel(
     .select()
     .from(outreachDrafts)
     .where(eq(outreachDrafts.channelId, channelId))
-    .orderBy(desc(outreachDrafts.createdAt))
+    .orderBy(desc(outreachDrafts.createdAt), desc(outreachDrafts.id))
     .all();
 }
 
