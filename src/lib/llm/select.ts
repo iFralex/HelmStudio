@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm';
 import { getDb } from '@/lib/db/client';
 import { videoSelections } from '@/lib/db/schema';
 import { callLLM, LlmBusinessRuleError, type TokenUsage } from './call';

@@ -72,11 +72,11 @@ function seedVideo(db: Db, videoId: string, channelId: string): void {
     .run();
 }
 
-beforeEach(() => {
-  _resetSettingsCache();
-});
-
 describe.runIf(sqlite3Available)('shouldQualify', () => {
+  beforeEach(() => {
+    _resetSettingsCache();
+  });
+
   it('returns skip=false for eligible enriched channel with videos', async () => {
     const db = makeDb();
     seedChannel(db, 'UCa');

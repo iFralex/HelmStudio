@@ -22,6 +22,7 @@ pnpm tsx scripts/llm-smoke.ts  # manual LLM connectivity smoke test (requires lo
 pnpm tsx scripts/transcript-smoke.ts <videoId>  # manual transcript fetch smoke test (no API key required)
 pnpm seed:keywords             # upsert ~70 curated Italian keywords into seed_keywords (idempotent)
 pnpm tsx scripts/run-discovery.ts  # manual discovery pipeline smoke run (~3,200 quota units consumed)
+pnpm tsx scripts/qualify-one.ts <channelId>  # force-qualify one channel already in the DB (requires live LLM proxy)
 ```
 
 ## Language convention
@@ -116,10 +117,12 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `withLlmLimit` (from `src/lib/llm/limiter.ts`) caps concurrency at 3 simultaneous LLM calls.
 - `callLLM` enforces JSON-only output (`response_format: { type: 'json_object' }`), validates against a Zod schema, and retries once on parse or validation failure by echoing the bad response back as an assistant turn and appending a correction prompt. After two consecutive failures it throws `LlmFormatError`.
 - Every call dumps the full envelope (system, user, all attempt texts, parsed result or error, usage, latency, timestamp, prompt version, model) to `data/raw/llm/...` via `dumpRaw`. Path shape is determined by `context.kind`.
-- `LlmFormatError` and `LlmCallError` both carry a `.rawPath` field so callers can log the failure location.
+- `LlmFormatError`, `LlmCallError`, and `LlmBusinessRuleError` all carry a `.rawPath` field so callers can log the failure location. `LlmBusinessRuleError` is thrown by application-level callers (not `callLLM` itself) when post-parse business logic fails (e.g. `selectedVideoIds` contains IDs absent from `videoClassifications`). `qualifyChannel` catches both `LlmFormatError` and `LlmBusinessRuleError` and treats them identically.
 - `callLLM` accumulates token usage across retry attempts — the returned `usage` reflects all tokens consumed, including any failed first attempt.
 - `runId` is required in `context` when `kind` is `video_selection` or `qualification`; omitting it throws immediately.
-- Prompt modules live in `src/lib/llm/prompts/`; each exports `version` (string), `system` (string), and `userTemplate(args)` (function returning string).
+- Prompt modules live in `src/lib/llm/prompts/`; each exports `version` (string), `system` (string), and `userTemplate(args)` (function returning string). Shared XML escaping lives in `src/lib/llm/prompts/xml-helpers.ts`.
+- Zod output schemas for LLM callers live in `src/lib/llm/schemas.ts` (not alongside prompts). Post-parse business validation functions (e.g. `validateSelectOutput`) also live there and must be called by the caller after `callLLM` returns; on failure they throw `LlmBusinessRuleError`.
+- Application code calls higher-level wrappers (`runVideoSelection` in `src/lib/llm/select.ts`, `runFinalQualification` in `src/lib/llm/qualify.ts`) rather than `callLLM` directly. Each wrapper builds the user message, calls `callLLM`, inserts the result into its DB table, and returns `{ <entityId>, output, usage }`. `TokenUsage = { inputTokens: number; outputTokens: number }` is the shared return type accumulated across retry attempts.
 - `llmStatsForRun(runId, db?)` in `src/lib/llm/dashboard.ts` is the stable contract for per-run LLM stats in the dashboard UI.
 - `estimateTokens` and `truncateMiddle` in `src/lib/llm/tokens.ts` are used for prompt budgeting; `truncateMiddle` keeps head 60% / tail 40% with a marker.
 - Test seams: `__setLlmForTest(fakeClient)` and `__resetLlmForTest()` in `src/lib/llm/client.ts`; call both in `beforeEach`/`afterEach`.
@@ -148,6 +151,17 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - Seed data lives in `src/lib/seeds/` — `keywords.ts` exports `SEED_KEYWORDS`, `categories.ts` exports `IN_SCOPE_CATEGORY_IDS`.
 - `computeChannelAggregates(channelId, db?)` in `src/lib/pipeline/aggregates.ts` is the stable contract for plan 08's LLM prompt building. Returns `ZERO_AGGREGATES` when fewer than 3 videos are present. Uses population stddev (not sample). Reads the 20 most recent videos.
 - `parseIso8601Duration(iso)` in `src/lib/youtube/duration.ts` parses ISO 8601 duration strings (including P1DT… day component); throws on unparseable input. Used by `operations.ts` internally.
+
+## Qualification pipeline
+
+- Entry points: `runQualification(args, db?)` in `src/lib/pipeline/qualification/run.ts` for batch runs (called from the discovery worker); `forceRequalifyChannel(channelId, db?)` in `src/lib/pipeline/qualification/index.ts` for UI-triggered single-channel runs.
+- Three-step sequence per channel: Step 1 (`runVideoSelection`) classifies the 20 most-recent videos and selects 3–5 for deep analysis → Step 2 (`fetchSelectedTranscripts`) fetches transcripts for the selected videos (best-effort, non-blocking) → Step 3 (`runFinalQualification`) produces the final structured assessment.
+- `shouldQualify(channelId, opts?, db?)` in `policy.ts` gates each channel: skips if `force=false` and `lastQualifiedAt` is within `requalifyAfterDays`, if `discoveryStatus` is not `'enriched'` or `'qualified'`, or if the channel has no video rows.
+- `runQualification` selects `discoveryStatus='enriched'` channels ordered by `discoveredAt DESC` and uses `pLimit(3)` for concurrency. A single channel failure does not abort the batch. After the batch it writes aggregate LLM token/call counters to `pipelineRuns`.
+- `forceRequalifyChannel` creates a synthetic `pipelineRuns` row with `triggeredBy='manual'`, calls `qualifyChannel(..., force: true)`, then finalises the run row with LLM token/call counters and `status='completed'`.
+- Transcript budget: 4,000 tokens per transcript via `truncateMiddle`; if fewer than 5 transcripts succeeded the budget is redistributed proportionally (`Math.floor(20000 / successfulCount)`).
+- LLM errors at step 1 or step 3 set `discoveryStatus='rejected_post_qual'`, `rejectionReason='llm_format_failure'`, and log a `channel_qualification_failed` pipeline event.
+- On success, `qualifyChannel` updates denormalised fields on `channels`: `latestQualificationId`, `latestAutomationScore`, `lastQualifiedAt`, `discoveryStatus='qualified'`.
 
 ## Testing
 

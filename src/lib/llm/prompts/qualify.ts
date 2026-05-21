@@ -1,6 +1,7 @@
 import type { SelectInput } from './select';
 import type { SelectOutput } from '@/lib/llm/schemas';
 import type { TranscriptFetchResult } from '@/lib/transcripts/fetcher';
+import { escapeXml } from './xml-helpers';
 
 export const version = 'qualify-v2';
 
@@ -159,11 +160,3 @@ SPECIFICITY of \`automatableWorkflows.description\` and \`suggestedSolution\`.
 </channel_analysis_request>`;
 }
 
-function escapeXml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-}

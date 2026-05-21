@@ -1,4 +1,4 @@
-import { eq, sum, count } from 'drizzle-orm';
+import { eq, sum, count, desc } from 'drizzle-orm';
 import pLimit from 'p-limit';
 import { getDb } from '@/lib/db/client';
 import { channels, pipelineRuns, qualifications, videoSelections } from '@/lib/db/schema';
@@ -18,7 +18,7 @@ export async function runQualification(
     .select({ id: channels.id })
     .from(channels)
     .where(eq(channels.discoveryStatus, 'enriched'))
-    .orderBy(channels.discoveredAt)
+    .orderBy(desc(channels.discoveredAt))
     .all();
 
   log.info({ total: enrichedChannels.length }, 'starting qualification batch');

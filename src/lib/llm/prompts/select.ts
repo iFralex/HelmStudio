@@ -1,5 +1,6 @@
 import type { ChannelDetail, VideoDetail } from '@/lib/youtube/types';
 import type { ChannelAggregates } from '@/lib/pipeline/aggregates';
+import { escapeXml } from './xml-helpers';
 
 export const version = 'select-v1';
 
@@ -106,11 +107,3 @@ Return a JSON object with videoClassifications (one entry per video, exactly ${v
 </channel_analysis_request>`;
 }
 
-function escapeXml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-}

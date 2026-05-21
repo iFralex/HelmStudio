@@ -8,7 +8,7 @@ export const VideoClassificationSchema = z.object({
 });
 
 export const SelectOutputSchema = z.object({
-  videoClassifications: z.array(VideoClassificationSchema).length(20),
+  videoClassifications: z.array(VideoClassificationSchema).min(1).max(20),
   formatConsistencySummary: z.string(),
   selectedVideoIds: z.array(z.string()).min(3).max(5),
   selectionRationale: z.string(),
