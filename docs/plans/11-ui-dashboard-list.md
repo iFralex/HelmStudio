@@ -198,7 +198,7 @@ export const copy = {
 
 ### Task 6: Channels table
 
-- [ ] Create `src/components/channels/channels-table.tsx`:
+- [x] Create `src/components/channels/channels-table.tsx`:
   - shadcn `<Table>` with `<TableHeader>`/`<TableBody>`
   - columns from `copy.channels.column*`
   - Score column: a small numeric badge with color from a helper `scoreColor(score)`:
@@ -207,9 +207,9 @@ export const copy = {
     - `<40` → gray
   - Subscribers formatted with `formatCompact(n)` → `12.4K`, `1.2M` (Italian locale via `Intl.NumberFormat('it-IT', { notation: 'compact' })`)
   - Outreach status: small badge using `copy.outreachStatus[status]`
-  - Last qualified: relative-time via `dayjs.from(d, true)` with Italian locale (e.g. "3 ore fa")
+  - Last qualified: relative-time via `Intl.RelativeTimeFormat` with Italian locale (e.g. "3 ore fa")
   - Each row is a `<Link>` to `/channels/[channelId]`
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 7: Filters bar component
 
