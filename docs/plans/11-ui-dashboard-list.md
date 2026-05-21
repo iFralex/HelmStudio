@@ -141,11 +141,11 @@ export const copy = {
 
 ### Task 3: Top navigation refinement
 
-- [ ] Update the layout from plan 01 (`src/app/(app)/layout.tsx`):
+- [x] Update the layout from plan 01 (`src/app/(app)/layout.tsx`):
   - replace placeholder labels with `copy.nav.*`
   - active-link styling (subtle bottom border on the current section)
   - on the right side: a compact quota indicator (e.g. "YT: 2.3k/10k") linking to the dashboard
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 4: Dashboard page
 
