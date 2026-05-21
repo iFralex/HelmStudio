@@ -245,12 +245,12 @@ export async function GET() {
 
 ### Task 10: Documentation
 
-- [ ] Update README "Scheduling" section:
+- [x] Update README "Scheduling" section:
   - explain `pnpm worker:manual` for ad-hoc runs from the terminal
   - explain the dashboard "Avvia pipeline" button (calls the same code)
   - explain `bash scripts/install-launchd.sh` to enable nightly scheduling
   - call out the Mac-sleep caveat and the `pmset` mitigation
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 11: Definition of Done
 

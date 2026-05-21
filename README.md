@@ -71,6 +71,50 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | `pnpm seed:keywords` | Upsert the curated Italian keyword list into the database (idempotent) |
 | `pnpm tsx scripts/run-discovery.ts` | Manual discovery pipeline smoke run (~3,200 YouTube quota units consumed) |
 
+## Scheduling
+
+The pipeline can be triggered three ways: ad-hoc from the terminal, on-demand from the dashboard, or automatically on a nightly schedule via macOS launchd.
+
+### Ad-hoc run from the terminal
+
+```bash
+pnpm worker:manual
+```
+
+Runs the full discovery + qualification cycle immediately (worker process exits when done). Useful for one-off refreshes or smoke-testing a fresh install. Expects all env vars to be set in `.env`. Quota is consumed as normal.
+
+### Dashboard trigger
+
+The "Avvia pipeline" button in the operator dashboard calls `POST /api/pipeline/run`, which spawns the same worker process in the background and returns immediately. The dashboard polls `GET /api/pipeline/status` to show live progress. If a run is already active the endpoint returns 409 and the button is disabled.
+
+### Nightly schedule (macOS launchd)
+
+To run the pipeline automatically every night:
+
+```bash
+bash scripts/install-launchd.sh
+```
+
+The script reads `PIPELINE_TRIGGER_HOUR` and `PIPELINE_TRIGGER_MINUTE` from `.env` (defaults: `4:00`), writes a plist to `~/Library/LaunchAgents/com.you.creator-pipeline.plist`, and loads it with `launchctl`. Verify it loaded:
+
+```bash
+launchctl list | grep creator-pipeline
+```
+
+To remove the schedule:
+
+```bash
+bash scripts/uninstall-launchd.sh
+```
+
+**Mac-sleep caveat:** launchd only fires when the Mac is awake. By default `install-launchd.sh` calls `sudo pmset repeat wakeorpoweron MTWRFSU HH:MM:00` to schedule a wake-or-power-on one minute before the pipeline runs (requires sudo). If the Mac is plugged in, this is reliable. If you are on battery or do not want the automatic wake, pass `--no-wake`:
+
+```bash
+bash scripts/install-launchd.sh --no-wake
+```
+
+With `--no-wake` the Mac must already be awake at the scheduled time for the pipeline to fire.
+
 ## Third-party library notes
 
 **youtube-transcript** (`youtube-transcript` package, pinned): fetches captions via YouTube's public `timedtext` endpoint (no API quota cost). This endpoint is undocumented and can break without notice when YouTube changes its internal implementation. If transcript fetching stops working, check the package's issue tracker for updates and bump the pin.
