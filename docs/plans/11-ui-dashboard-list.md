@@ -213,7 +213,7 @@ export const copy = {
 
 ### Task 7: Filters bar component
 
-- [ ] Create `src/components/channels/filters-bar.tsx`:
+- [x] Create `src/components/channels/filters-bar.tsx`:
   - client component
   - `<Input>` for `search`, debounced 300ms
   - `<Select>` for `outreachStatus` (multi-select via shadcn `<DropdownMenuCheckboxItem>`)
@@ -223,7 +223,7 @@ export const copy = {
   - `<Select>` for `sort`
   - "Cancella filtri" link
   - All changes synced into `URLSearchParams` via `useRouter().replace(\`/channels?\${qs}\`)`; preserves `page` only when other filters don't change
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 8: Helpers
 
