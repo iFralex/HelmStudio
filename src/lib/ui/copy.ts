@@ -75,6 +75,7 @@ export const copy = {
     pitchLangAll: 'Tutte',
     pitchLangIt: 'Italiano',
     pitchLangEn: 'Inglese',
+    exportCsv: 'Esporta CSV con questi filtri',
   },
   outreachStatus: {
     none: 'Da rivedere',

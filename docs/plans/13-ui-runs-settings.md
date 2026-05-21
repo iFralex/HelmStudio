@@ -289,7 +289,7 @@ export async function deleteKeywordAction(input: { id: number }): Promise<void>;
 
 ### Task 10: CSV export endpoint
 
-- [ ] Create `src/app/api/channels/export/route.ts`:
+- [x] Create `src/app/api/channels/export/route.ts`:
   - `GET /api/channels/export?...` — accepts the same filter query params as `/channels` (Task 5 of plan 11)
   - parses with the same zod schema (refactor: extract the schema into `src/lib/db/list-channels-filters.ts` so both consumers share it)
   - streams rows in chunks of 500 from `listChannelsForUi({ ...filters, pageSize: 500, page: n })` until exhausted
@@ -298,8 +298,8 @@ export async function deleteKeywordAction(input: { id: number }): Promise<void>;
   - URL column built as `https://youtube.com/channel/<youtubeChannelId>` (handle column also kept if present)
   - `Content-Type: text/csv; charset=utf-8` and `Content-Disposition: attachment; filename="canali-YYYY-MM-DD.csv"`
   - escapes commas, quotes, newlines per RFC 4180
-- [ ] The settings page button is just an `<a href="/api/channels/export">` (no extra JS); also exposed in the channels list page as "Esporta CSV con questi filtri" that passes the current URL search params through
-- [ ] Mark completed
+- [x] The settings page button is just an `<a href="/api/channels/export">` (no extra JS); also exposed in the channels list page as "Esporta CSV con questi filtri" that passes the current URL search params through
+- [x] Mark completed
 
 ### Task 11: E2E tests
 
