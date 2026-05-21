@@ -161,15 +161,15 @@ export async function listEventsForRun(
 
 ### Task 3: Status colour helper
 
-- [ ] Extend `src/lib/ui/format.ts`:
+- [x] Extend `src/lib/ui/format.ts`:
 
 ```typescript
 export function statusColor(s: PipelineRun['status']): 'green' | 'blue' | 'red' | 'gray';
 // completed → green, running → blue, failed → red, cancelled → gray
 ```
 
-- [ ] Use it as a small badge component in the runs table
-- [ ] Mark completed
+- [x] Use it as a small badge component in the runs table
+- [x] Mark completed
 
 ### Task 4: Run detail page
 
