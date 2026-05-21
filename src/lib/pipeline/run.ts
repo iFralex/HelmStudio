@@ -49,6 +49,7 @@ export async function runPipeline(
     if (runStages.includes('discovery')) {
       summary.discovery = await runDiscovery(runId, db);
       if (summary.discovery.cancelled) {
+        await closeRun(runId, 'cancelled', 'quota exhausted during discovery', undefined, db);
         log.info({ runId, summary }, 'pipeline run cancelled due to quota exhaustion during discovery');
         return { runId, status: 'cancelled', summary };
       }
