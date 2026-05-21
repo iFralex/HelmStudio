@@ -1,4 +1,4 @@
-import { eq, and, desc, asc, sql, gte, lte, inArray, or } from 'drizzle-orm';
+import { eq, and, desc, asc, sql, gte, lte, lt, inArray, or } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
 import {
   channels,
@@ -178,6 +178,52 @@ export async function getLatestRun(db: Db = getDb()): Promise<PipelineRun | null
   return (
     db.select().from(pipelineRuns).orderBy(desc(pipelineRuns.startedAt)).limit(1).get() ?? null
   );
+}
+
+export async function listRuns(
+  opts?: { limit?: number; before?: number },
+  db: Db = getDb(),
+): Promise<PipelineRun[]> {
+  const { limit = 50, before } = opts ?? {};
+  const conditions: SQL<unknown>[] = [];
+  if (before !== undefined) {
+    conditions.push(lt(pipelineRuns.startedAt, new Date(before)));
+  }
+  return db
+    .select()
+    .from(pipelineRuns)
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .orderBy(desc(pipelineRuns.startedAt))
+    .limit(limit)
+    .all();
+}
+
+export async function getRunById(id: number, db: Db = getDb()): Promise<PipelineRun | null> {
+  return db.select().from(pipelineRuns).where(eq(pipelineRuns.id, id)).get() ?? null;
+}
+
+export async function listEventsForRun(
+  runId: number,
+  opts?: { channelId?: string; stage?: string },
+  db: Db = getDb(),
+): Promise<Array<PipelineEvent & { channelTitle: string | null }>> {
+  const { channelId, stage } = opts ?? {};
+  const conditions: SQL<unknown>[] = [eq(pipelineEvents.runId, runId)];
+  if (channelId) conditions.push(eq(pipelineEvents.channelId, channelId));
+  if (stage) conditions.push(eq(pipelineEvents.stage, stage as PipelineEvent['stage']));
+
+  const rows = db
+    .select()
+    .from(pipelineEvents)
+    .leftJoin(channels, eq(pipelineEvents.channelId, channels.id))
+    .where(and(...conditions))
+    .orderBy(asc(pipelineEvents.createdAt))
+    .all();
+
+  return rows.map((r) => ({
+    ...r.pipeline_events,
+    channelTitle: r.channels?.title ?? null,
+  }));
 }
 
 export async function todayQuotaUsed(db: Db = getDb()): Promise<number> {

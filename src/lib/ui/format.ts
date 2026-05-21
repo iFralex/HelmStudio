@@ -41,6 +41,15 @@ export function formatRelative(d: Date | number | string, locale = 'it-IT'): str
   return rtf.format(diffYears, 'year');
 }
 
+export function statusColor(
+  s: 'running' | 'completed' | 'failed' | 'cancelled',
+): 'green' | 'blue' | 'red' | 'gray' {
+  if (s === 'completed') return 'green';
+  if (s === 'running') return 'blue';
+  if (s === 'failed') return 'red';
+  return 'gray';
+}
+
 export function scoreColor(score: number | null): 'green' | 'yellow' | 'gray' {
   if (score === null || score === undefined) return 'gray';
   if (score >= 70) return 'green';

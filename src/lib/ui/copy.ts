@@ -234,6 +234,7 @@ export const copy = {
     eventColumnEvent: 'Evento',
     eventColumnChannel: 'Canale',
     eventColumnDetails: 'Dettagli',
+    loadPrevious: 'Carica i precedenti',
   },
   settings: {
     title: 'Impostazioni',

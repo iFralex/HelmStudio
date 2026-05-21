@@ -132,7 +132,7 @@ settings: {
 
 ### Task 2: Runs list page
 
-- [ ] Add to `src/lib/db/queries.ts`:
+- [x] Add to `src/lib/db/queries.ts`:
 
 ```typescript
 export async function listRuns(opts?: { limit?: number; before?: number }): Promise<PipelineRun[]>;
@@ -150,14 +150,14 @@ export async function listEventsForRun(
 // LEFT JOIN channels to surface the title alongside the channelId.
 ```
 
-- [ ] Create `src/app/(app)/runs/page.tsx`:
+- [x] Create `src/app/(app)/runs/page.tsx`:
   - server component, reads `searchParams.before`
   - calls `listRuns({ limit: 50, before })`
   - renders a header with `copy.runs.title` and a table of runs
   - columns: id, startedAt (relative + absolute on hover), finishedAt or — , triggeredBy badge, status badge (color per `statusColor(status)`), candidates, qualified, quota used (compact), LLM tokens (compact, input+output)
   - each row links to `/runs/[id]`
   - footer pagination: "Carica i precedenti" linking to `?before=<earliestStartedAt>`
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 3: Status colour helper
 
