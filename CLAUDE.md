@@ -77,6 +77,7 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `deleteRawForChannel(channelId)` removes all per-channel raw data (transcripts, youtube/channels, youtube/videos, llm/*). It does NOT delete `raw/youtube/search/` (keyed by date/keyword, not channelId). This is the GDPR deletion hook.
 - `channelId` passed to storage functions must be alphanumeric/dash/underscore only — validated at the storage layer.
 - LLM raw envelopes are stored under `raw/llm/<kind>/<channelId>/`. Path helpers: `paths.rawLlmVideoSelection(channelId, runId, ts)`, `paths.rawLlmQualification(channelId, runId, ts)`, `paths.rawLlmDraft(channelId, ts)`, `paths.rawLlmPlaceholder(channelId, ts)`. `runId` is required for the first two.
+- The `qualifications` table has both `rawResponsePath` and `rawPromptPath` columns; both are set to the same envelope file path (returned by `callLLM`) because the envelope already contains the full prompt (system + user) alongside the response. There is no separate prompt-only dump.
 - Transcript raw envelopes are stored under `raw/transcripts/<channelId>/`. Path helper: `paths.rawTranscript(channelId, videoId)` — one file per video (overwritten on re-fetch).
 
 ## Logging

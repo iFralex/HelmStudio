@@ -28,54 +28,75 @@ export async function runQualification(
   let skipped = 0;
   let rejected = 0;
 
-  await Promise.all(
-    enrichedChannels.map(({ id: channelId }) =>
-      limit(async () => {
-        try {
-          const result = await qualifyChannel({ channelId, runId }, db);
-          if (result.status === 'qualified') qualified++;
-          else if (result.status === 'skipped') skipped++;
-          else if (result.status === 'rejected_post_qual') rejected++;
-        } catch (err) {
-          log.error({ channelId, err }, 'unexpected error qualifying channel');
-          rejected++;
-        }
-      }),
-    ),
-  );
+  try {
+    await Promise.all(
+      enrichedChannels.map(({ id: channelId }) =>
+        limit(async () => {
+          try {
+            const result = await qualifyChannel({ channelId, runId }, db);
+            if (result.status === 'qualified') qualified++;
+            else if (result.status === 'skipped') skipped++;
+            else if (result.status === 'rejected_post_qual') rejected++;
+          } catch (err) {
+            log.error({ channelId, err }, 'unexpected error qualifying channel');
+            rejected++;
+          }
+        }),
+      ),
+    );
 
-  const selectionStats = db
-    .select({
-      calls: count(),
-      tokensIn: sum(videoSelections.inputTokens),
-      tokensOut: sum(videoSelections.outputTokens),
-    })
-    .from(videoSelections)
-    .where(eq(videoSelections.runId, runId))
-    .get();
+    const selectionStats = db
+      .select({
+        calls: count(),
+        tokensIn: sum(videoSelections.inputTokens),
+        tokensOut: sum(videoSelections.outputTokens),
+      })
+      .from(videoSelections)
+      .where(eq(videoSelections.runId, runId))
+      .get();
 
-  const qualStats = db
-    .select({
-      calls: count(),
-      tokensIn: sum(qualifications.inputTokens),
-      tokensOut: sum(qualifications.outputTokens),
-    })
-    .from(qualifications)
-    .where(eq(qualifications.runId, runId))
-    .get();
+    const qualStats = db
+      .select({
+        calls: count(),
+        tokensIn: sum(qualifications.inputTokens),
+        tokensOut: sum(qualifications.outputTokens),
+      })
+      .from(qualifications)
+      .where(eq(qualifications.runId, runId))
+      .get();
 
-  const llmCallsCount = (selectionStats?.calls ?? 0) + (qualStats?.calls ?? 0);
-  const llmTokensInput =
-    Number(selectionStats?.tokensIn ?? 0) + Number(qualStats?.tokensIn ?? 0);
-  const llmTokensOutput =
-    Number(selectionStats?.tokensOut ?? 0) + Number(qualStats?.tokensOut ?? 0);
+    const llmCallsCount = (selectionStats?.calls ?? 0) + (qualStats?.calls ?? 0);
+    const llmTokensInput =
+      Number(selectionStats?.tokensIn ?? 0) + Number(qualStats?.tokensIn ?? 0);
+    const llmTokensOutput =
+      Number(selectionStats?.tokensOut ?? 0) + Number(qualStats?.tokensOut ?? 0);
 
-  db.update(pipelineRuns)
-    .set({ channelsQualified: qualified, channelsPostRejected: rejected, llmCallsCount, llmTokensInput, llmTokensOutput })
-    .where(eq(pipelineRuns.id, runId))
-    .run();
+    db.update(pipelineRuns)
+      .set({
+        status: 'completed',
+        finishedAt: new Date(),
+        channelsQualified: qualified,
+        channelsPostRejected: rejected,
+        llmCallsCount,
+        llmTokensInput,
+        llmTokensOutput,
+      })
+      .where(eq(pipelineRuns.id, runId))
+      .run();
 
-  log.info({ qualified, skipped, rejected, llmCallsCount, llmTokensInput, llmTokensOutput }, 'qualification batch complete');
+    log.info({ qualified, skipped, rejected, llmCallsCount, llmTokensInput, llmTokensOutput }, 'qualification batch complete');
 
-  return { qualified, skipped, rejected };
+    return { qualified, skipped, rejected };
+  } catch (err) {
+    db.update(pipelineRuns)
+      .set({
+        status: 'failed',
+        finishedAt: new Date(),
+        errorMessage: err instanceof Error ? err.message : String(err),
+        errorStack: err instanceof Error ? err.stack : undefined,
+      })
+      .where(eq(pipelineRuns.id, runId))
+      .run();
+    throw err;
+  }
 }
