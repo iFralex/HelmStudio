@@ -22,7 +22,7 @@ Per spec §12, the worker is a separate Node process from the Next.js server, bu
 
 ### Task 1: Pipeline run lifecycle
 
-- [ ] Create `src/lib/pipeline/lifecycle.ts`:
+- [x] Create `src/lib/pipeline/lifecycle.ts`:
 
 ```typescript
 export async function openRun(triggeredBy: 'cron' | 'manual'): Promise<number>;
@@ -41,8 +41,8 @@ export async function closeRun(
 export async function isRunActive(): Promise<{ active: boolean; runId?: number }>;
 ```
 
-- [ ] Concurrent-run guard uses a unique partial index on `pipelineRuns(status) WHERE status='running'` if SQLite supports it; if not, a SELECT-then-INSERT inside a transaction
-- [ ] Mark completed
+- [x] Concurrent-run guard uses a unique partial index on `pipelineRuns(status) WHERE status='running'` if SQLite supports it; if not, a SELECT-then-INSERT inside a transaction
+- [x] Mark completed
 
 ### Task 2: Quota pre-flight check
 
