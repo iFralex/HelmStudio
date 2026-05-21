@@ -302,7 +302,7 @@ export async function deleteChannel(input: { channelId: string }): Promise<void>
 
 ### Task 13: E2E test
 
-- [ ] Create `e2e/channel-detail.spec.ts`:
+- [x] Create `e2e/channel-detail.spec.ts`:
   - seed a fully qualified channel (use a test helper inserting all required rows)
   - log in, navigate to `/channels/<id>`
   - assert assessment, agent reasoning panel, sample videos render
@@ -312,7 +312,7 @@ export async function deleteChannel(input: { channelId: string }): Promise<void>
   - click `Segna come inviata` → assert state transitions to `'sent'`
   - mark as `Risposta ricevuta` → assert final state
   - delete the channel via the confirm dialog → assert redirect to `/channels` and the row is gone
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 14: Definition of Done
 
