@@ -192,7 +192,7 @@ export function statusColor(s: PipelineRun['status']): 'green' | 'blue' | 'red' 
 
 ### Task 5: Settings page shell
 
-- [ ] Create `src/app/(app)/settings/page.tsx`:
+- [x] Create `src/app/(app)/settings/page.tsx`:
   - server component
   - loads: `getFilters()` and `getPipelineConfig()` (plan 03), `listKeywords()` (Task 6), env-derived values for read-only sections
   - renders a single page with **sections** separated by `<Separator />`:
@@ -202,8 +202,8 @@ export function statusColor(s: PipelineRun['status']): 'green' | 'blue' | 'red' 
     4. Modelli LLM (read-only)
     5. Versioni prompt (read-only)
     6. Esporta dati (CSV button)
-- [ ] Each section gets its own client island for the form when needed; static read-only sections stay server-rendered
-- [ ] Mark completed
+- [x] Each section gets its own client island for the form when needed; static read-only sections stay server-rendered
+- [x] Mark completed
 
 ### Task 6: Keywords CRUD
 

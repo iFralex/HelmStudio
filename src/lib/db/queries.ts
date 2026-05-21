@@ -481,6 +481,14 @@ export async function getChannelDetail(
   };
 }
 
+export async function listKeywords(db: Db = getDb()): Promise<SeedKeyword[]> {
+  return db
+    .select()
+    .from(seedKeywords)
+    .orderBy(desc(seedKeywords.isActive), asc(seedKeywords.lastUsedAt))
+    .all();
+}
+
 export async function dashboardSnapshot(db: Db = getDb()): Promise<{
   latestRun: PipelineRun | null;
   queues: Record<DiscoveryStatus | OutreachStatus, number>;
