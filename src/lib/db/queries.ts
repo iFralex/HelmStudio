@@ -1,4 +1,4 @@
-import { eq, and, desc, asc, sql, gte, lte, like, inArray, or } from 'drizzle-orm';
+import { eq, and, desc, asc, sql, gte, lte, like, inArray, or, gt } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
 import {
   channels,
@@ -317,6 +317,32 @@ export async function listChannelsForUi(
     totalCount: countRow?.count ?? 0,
     page,
     pageSize,
+  };
+}
+
+export async function todayLlmStats(db: Db = getDb()): Promise<{
+  callsCount: number;
+  inputTokens: number;
+  outputTokens: number;
+}> {
+  const todayStart = new Date();
+  todayStart.setUTCHours(0, 0, 0, 0);
+  const todayStartSec = Math.floor(todayStart.getTime() / 1000);
+
+  const row = db
+    .select({
+      callsCount: sql<number>`coalesce(sum(${pipelineRuns.llmCallsCount}), 0)`,
+      inputTokens: sql<number>`coalesce(sum(${pipelineRuns.llmTokensInput}), 0)`,
+      outputTokens: sql<number>`coalesce(sum(${pipelineRuns.llmTokensOutput}), 0)`,
+    })
+    .from(pipelineRuns)
+    .where(gt(pipelineRuns.startedAt, new Date(todayStartSec * 1000)))
+    .get();
+
+  return {
+    callsCount: row?.callsCount ?? 0,
+    inputTokens: row?.inputTokens ?? 0,
+    outputTokens: row?.outputTokens ?? 0,
   };
 }
 

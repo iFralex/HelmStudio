@@ -149,7 +149,7 @@ export const copy = {
 
 ### Task 4: Dashboard page
 
-- [ ] Replace `src/app/(app)/page.tsx` content. Three rows:
+- [x] Replace `src/app/(app)/page.tsx` content. Three rows:
 
   **Row 1 — Pipeline status**
   - card with current state: "Pipeline in corso (run #N, fase: qualifica, 14/50 canali processati)" OR "Ultimo run #N completato 4h fa" OR `copy.dashboard.runCooldown`
@@ -165,12 +165,12 @@ export const copy = {
   - 10 cards in a responsive grid: thumbnail, title, handle, score badge, niche
   - clicking a card → `/channels/[channelId]`
 
-- [ ] Component decomposition:
+- [x] Component decomposition:
   - `<DashboardLayout>` server component fetching `dashboardSnapshot`
   - `<RunStatusCard>` client component for polling
   - `<QuotaCard>`, `<QueuesCard>`, `<LlmCard>` server components
   - `<TopRecentGrid>` server component
-- [ ] Mark completed
+- [x] Mark completed
 
 ### Task 5: Channels list page
 
