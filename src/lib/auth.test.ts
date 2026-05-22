@@ -46,23 +46,23 @@ describe('createSessionCookie', () => {
   beforeEach(() => setEnv(VALID_PASSWORD, VALID_SECRET));
   afterEach(() => setEnv(undefined, undefined));
 
-  it('returns a cookie with name, value, and future expiry', () => {
+  it('returns a cookie with name, value, and future expiry', async () => {
     const before = Date.now();
-    const cookie = createSessionCookie();
+    const cookie = await createSessionCookie();
     expect(cookie.name).toBe('session');
     expect(typeof cookie.value).toBe('string');
     expect(cookie.value).toMatch(/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/);
     expect(cookie.expires.getTime()).toBeGreaterThan(before);
   });
 
-  it('throws when SESSION_SECRET is missing', () => {
+  it('throws when SESSION_SECRET is missing', async () => {
     delete process.env.SESSION_SECRET;
-    expect(() => createSessionCookie()).toThrow('SESSION_SECRET');
+    await expect(createSessionCookie()).rejects.toThrow('SESSION_SECRET');
   });
 
-  it('throws when SESSION_SECRET is too short', () => {
+  it('throws when SESSION_SECRET is too short', async () => {
     process.env.SESSION_SECRET = 'short';
-    expect(() => createSessionCookie()).toThrow('SESSION_SECRET');
+    await expect(createSessionCookie()).rejects.toThrow('SESSION_SECRET');
   });
 });
 
@@ -70,51 +70,51 @@ describe('verifySessionCookie', () => {
   beforeEach(() => setEnv(VALID_PASSWORD, VALID_SECRET));
   afterEach(() => setEnv(undefined, undefined));
 
-  it('returns true for a freshly created cookie', () => {
-    const { value } = createSessionCookie();
-    expect(verifySessionCookie(value)).toBe(true);
+  it('returns true for a freshly created cookie', async () => {
+    const { value } = await createSessionCookie();
+    expect(await verifySessionCookie(value)).toBe(true);
   });
 
-  it('returns false for undefined', () => {
-    expect(verifySessionCookie(undefined)).toBe(false);
+  it('returns false for undefined', async () => {
+    expect(await verifySessionCookie(undefined)).toBe(false);
   });
 
-  it('returns false for empty string', () => {
-    expect(verifySessionCookie('')).toBe(false);
+  it('returns false for empty string', async () => {
+    expect(await verifySessionCookie('')).toBe(false);
   });
 
-  it('returns false for a token with no dot separator', () => {
-    expect(verifySessionCookie('nodot')).toBe(false);
+  it('returns false for a token with no dot separator', async () => {
+    expect(await verifySessionCookie('nodot')).toBe(false);
   });
 
-  it('returns false for a tampered signature', () => {
-    const { value } = createSessionCookie();
+  it('returns false for a tampered signature', async () => {
+    const { value } = await createSessionCookie();
     const dot = value.lastIndexOf('.');
     const tampered = value.slice(0, dot) + '.invalidsignature';
-    expect(verifySessionCookie(tampered)).toBe(false);
+    expect(await verifySessionCookie(tampered)).toBe(false);
   });
 
-  it('returns false for a tampered payload with valid-looking signature', () => {
-    const { value } = createSessionCookie();
+  it('returns false for a tampered payload with valid-looking signature', async () => {
+    const { value } = await createSessionCookie();
     const dot = value.lastIndexOf('.');
     const sig = value.slice(dot + 1);
     const fakePayload = Buffer.from(JSON.stringify({ exp: Date.now() + 99999999 })).toString(
       'base64url',
     );
-    expect(verifySessionCookie(`${fakePayload}.${sig}`)).toBe(false);
+    expect(await verifySessionCookie(`${fakePayload}.${sig}`)).toBe(false);
   });
 
-  it('returns false for an expired token', () => {
+  it('returns false for an expired token', async () => {
     const expiredPayload = Buffer.from(JSON.stringify({ exp: Date.now() - 1 })).toString(
       'base64url',
     );
     const sig = signPayload(expiredPayload, VALID_SECRET);
-    expect(verifySessionCookie(`${expiredPayload}.${sig}`)).toBe(false);
+    expect(await verifySessionCookie(`${expiredPayload}.${sig}`)).toBe(false);
   });
 
-  it('returns false when SESSION_SECRET is missing', () => {
-    const { value } = createSessionCookie();
+  it('returns false when SESSION_SECRET is missing', async () => {
+    const { value } = await createSessionCookie();
     delete process.env.SESSION_SECRET;
-    expect(verifySessionCookie(value)).toBe(false);
+    expect(await verifySessionCookie(value)).toBe(false);
   });
 });

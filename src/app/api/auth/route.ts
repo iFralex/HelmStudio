@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const cookie = createSessionCookie();
+  const cookie = await createSessionCookie();
   const response = NextResponse.json({ ok: true });
   response.cookies.set(cookie.name, cookie.value, {
     httpOnly: true,
