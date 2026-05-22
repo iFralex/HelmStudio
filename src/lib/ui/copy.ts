@@ -5,6 +5,7 @@ export const copy = {
     runs: 'Run',
     settings: 'Impostazioni',
     logout: 'Esci',
+    toggleTheme: 'Cambia tema',
   },
   dashboard: {
     title: 'Dashboard',
