@@ -33,6 +33,10 @@ export async function runCategoryExploration(
         quotaExhausted = err;
         break;
       }
+      if (isYoutubeNotFound(err)) {
+        log.warn({ categoryId }, 'category chart not available in this region, skipping');
+        continue;
+      }
       throw err;
     }
 
@@ -96,4 +100,13 @@ export async function runCategoryExploration(
   if (quotaExhausted) throw quotaExhausted;
 
   return { categoriesProcessed, candidatesInserted, candidatesAlreadyKnown };
+}
+
+function isYoutubeNotFound(err: unknown): boolean {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'code' in err &&
+    (err as Record<string, unknown>).code === 404
+  );
 }
