@@ -20,9 +20,16 @@ const baseOptions: pino.LoggerOptions = {
   timestamp: pino.stdTimeFunctions.isoTime,
 };
 
+// In dev, use pino-pretty as a direct synchronous stream instead of transport.
+// The transport option spawns pino-pretty in a worker thread via thread-stream,
+// which breaks under Turbopack because __dirname is replaced with /ROOT/ at
+// bundle time, making the worker path unresolvable at runtime.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const prettyStream = env.NODE_ENV === 'development' ? require('pino-pretty')({ colorize: true, sync: true }) : null;
+
 export const logger =
   env.NODE_ENV === 'development'
-    ? pino({ ...baseOptions, transport: { target: 'pino-pretty' } })
+    ? pino(baseOptions, prettyStream)
     : env.NODE_ENV === 'production'
       ? pino(baseOptions, makeProdStreams())
       : pino(baseOptions);
