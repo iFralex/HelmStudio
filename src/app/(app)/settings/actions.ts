@@ -104,18 +104,26 @@ export async function createKeywordAction(input: {
   }
 }
 
+const UpdateKeywordSchema = z.object({
+  id: z.number().int().positive(),
+  isActive: z.boolean().optional(),
+  notes: z.string().max(1000).nullable().optional(),
+});
+
 export async function updateKeywordAction(input: {
   id: number;
   isActive?: boolean;
   notes?: string | null;
 }): Promise<ActionResult> {
+  const parsed = UpdateKeywordSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: 'Input non valido' };
   try {
-    const { id, ...patch } = input;
+    const { id, ...patch } = parsed.data;
     await updateKeyword(id, patch);
     revalidatePath('/settings');
     return { ok: true };
   } catch {
-    return { ok: false, error: 'Errore durante l\'aggiornamento' };
+    return { ok: false, error: "Errore durante l'aggiornamento" };
   }
 }
 

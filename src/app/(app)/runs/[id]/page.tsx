@@ -16,7 +16,7 @@ interface PageProps {
 export default async function RunDetailPage({ params, searchParams }: PageProps) {
   const { id: idStr } = await params;
   const id = Number(idStr);
-  if (!Number.isFinite(id) || id <= 0) notFound();
+  if (!Number.isInteger(id) || id <= 0) notFound();
 
   const run = await getRunById(id);
   if (!run) notFound();
