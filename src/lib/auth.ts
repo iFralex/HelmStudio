@@ -24,10 +24,13 @@ function toBase64url(buf: ArrayBuffer | Uint8Array): string {
     .replace(/=/g, '');
 }
 
-function fromBase64url(str: string): Uint8Array {
+function fromBase64url(str: string): Uint8Array<ArrayBuffer> {
   const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
   const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
-  return Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
+  const binary = atob(padded);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
 }
 
 export function verifyPassword(plain: string): boolean {
@@ -37,7 +40,7 @@ export function verifyPassword(plain: string): boolean {
   const b = new TextEncoder().encode(expected);
   if (a.length !== b.length) return false;
   let result = 0;
-  for (let i = 0; i < a.length; i++) result |= a[i] ^ b[i];
+  for (let i = 0; i < a.length; i++) result |= a[i]! ^ b[i]!;
   return result === 0;
 }
 

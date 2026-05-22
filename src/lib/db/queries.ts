@@ -1,4 +1,8 @@
 import { eq, and, desc, asc, sql, gte, lte, lt, inArray, or } from 'drizzle-orm';
+export type { OutreachStatus, ListChannelsFilters } from './constants';
+export { ALL_OUTREACH_STATUSES } from './constants';
+import { ALL_OUTREACH_STATUSES } from './constants';
+import type { OutreachStatus, ListChannelsFilters } from './constants';
 import type { SQL } from 'drizzle-orm';
 import {
   channels,
@@ -29,7 +33,6 @@ export type SeedKeyword = typeof seedKeywords.$inferSelect;
 export type Setting = typeof settings.$inferSelect;
 
 export type DiscoveryStatus = Channel['discoveryStatus'];
-export type OutreachStatus = Channel['outreachStatus'];
 
 export interface ListChannelsOpts {
   discoveryStatus?: DiscoveryStatus;
@@ -252,20 +255,6 @@ export async function setSetting(
     .run();
 }
 
-export type ListChannelsFilters = {
-  outreachStatus?: OutreachStatus[];
-  minScore?: number;
-  maxScore?: number;
-  minSubs?: number;
-  maxSubs?: number;
-  nicheContains?: string;
-  formatContains?: string;
-  pitchLanguage?: 'it' | 'en';
-  search?: string;
-  sort?: 'score_desc' | 'subs_desc' | 'qualified_at_desc' | 'discovered_at_desc';
-  page?: number;
-  pageSize?: number;
-};
 
 function escapeLike(s: string): string {
   return s.replace(/!/g, '!!').replace(/%/g, '!%').replace(/_/g, '!_');
@@ -398,15 +387,6 @@ export async function todayLlmStats(db: Db = getDb()): Promise<{
   };
 }
 
-export const ALL_OUTREACH_STATUSES: OutreachStatus[] = [
-  'none',
-  'email_added',
-  'drafted',
-  'sent',
-  'replied',
-  'no_reply',
-  'ignored',
-];
 
 export async function getChannelDetail(
   channelId: string,

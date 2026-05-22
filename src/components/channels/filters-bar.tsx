@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import { ALL_OUTREACH_STATUSES, type ListChannelsFilters, type OutreachStatus } from '@/lib/db/queries';
+import { ALL_OUTREACH_STATUSES, type ListChannelsFilters, type OutreachStatus } from '@/lib/db/constants';
 import { copy } from '@/lib/ui/copy';
 
 export interface FiltersBarProps {
