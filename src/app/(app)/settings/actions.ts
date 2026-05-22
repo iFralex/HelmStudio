@@ -128,11 +128,13 @@ export async function updateKeywordAction(input: {
 }
 
 export async function deleteKeywordAction(input: { id: number }): Promise<ActionResult> {
+  const parsed = z.object({ id: z.number().int().positive() }).safeParse(input);
+  if (!parsed.success) return { ok: false, error: 'Input non valido' };
   try {
-    await deleteKeyword(input.id);
+    await deleteKeyword(parsed.data.id);
     revalidatePath('/settings');
     return { ok: true };
   } catch {
-    return { ok: false, error: 'Errore durante l\'eliminazione' };
+    return { ok: false, error: "Errore durante l'eliminazione" };
   }
 }

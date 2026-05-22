@@ -22,7 +22,10 @@ export default async function RunDetailPage({ params, searchParams }: PageProps)
   if (!run) notFound();
 
   const sp = await searchParams;
-  const stage = Array.isArray(sp.stage) ? sp.stage[0] : sp.stage;
+  const VALID_STAGES = ['discovery', 'enrichment', 'filter', 'qualification', 'meta'] as const;
+  type ValidStage = (typeof VALID_STAGES)[number];
+  const rawStage = Array.isArray(sp.stage) ? sp.stage[0] : sp.stage;
+  const stage = VALID_STAGES.includes(rawStage as ValidStage) ? rawStage : undefined;
   const channelId = Array.isArray(sp.channelId) ? sp.channelId[0] : sp.channelId;
 
   const events = await listEventsForRun(id, { stage, channelId });
