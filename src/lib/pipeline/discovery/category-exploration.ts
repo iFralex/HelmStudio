@@ -3,8 +3,9 @@ import { getDb } from '../../db/client';
 import { channels, pipelineRuns, pipelineEvents } from '../../db/schema';
 import { getMostPopularByCategory } from '../../youtube/operations';
 import { QuotaExhausted } from '../../youtube/quota';
-import { IN_SCOPE_CATEGORY_IDS } from '../../seeds/categories';
+import { IN_SCOPE_CATEGORY_IDS, CATEGORY_EXCLUSIONS_BY_REGION } from '../../seeds/categories';
 import { childLogger } from '../../logger';
+import { env } from '../../env';
 
 type Db = ReturnType<typeof getDb>;
 
@@ -23,7 +24,13 @@ export async function runCategoryExploration(
   let candidatesAlreadyKnown = 0;
   let quotaExhausted: QuotaExhausted | null = null;
 
+  const excluded = new Set(CATEGORY_EXCLUSIONS_BY_REGION[env.PIPELINE_TARGET_COUNTRY] ?? []);
+
   for (const categoryId of IN_SCOPE_CATEGORY_IDS) {
+    if (excluded.has(categoryId)) {
+      log.debug({ categoryId }, 'category excluded for this region, skipping');
+      continue;
+    }
     let result: Awaited<ReturnType<typeof getMostPopularByCategory>>;
     try {
       result = await getMostPopularByCategory({ categoryId, runId: args.runId }, db);

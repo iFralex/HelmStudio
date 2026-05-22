@@ -13,3 +13,9 @@ export const IN_SCOPE_CATEGORY_IDS = [
 ] as const;
 
 export type CategoryId = (typeof IN_SCOPE_CATEGORY_IDS)[number];
+
+// Categories that return 404 from the mostPopular chart for a given region.
+// Add entries here when a category is confirmed unavailable to avoid wasting quota.
+export const CATEGORY_EXCLUSIONS_BY_REGION: Record<string, string[]> = {
+  IT: ['19', '27'], // Travel & Events, Education — no mostPopular chart in Italy
+};
