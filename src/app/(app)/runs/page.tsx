@@ -21,7 +21,7 @@ export default async function RunsPage({ searchParams }: PageProps) {
   const raw = await searchParams;
   const beforeRaw = Array.isArray(raw.before) ? raw.before[0] : raw.before;
   const beforeNum = beforeRaw !== undefined ? Number(beforeRaw) : undefined;
-  const before = beforeNum !== undefined && !Number.isNaN(beforeNum) ? beforeNum : undefined;
+  const before = beforeNum !== undefined && !Number.isNaN(beforeNum) && beforeNum > 0 ? beforeNum : undefined;
 
   const runs = await listRuns({ limit: 50, before });
 

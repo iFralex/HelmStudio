@@ -17,6 +17,7 @@ function csvRow(values: (string | number | Date | null | undefined)[]): string {
 
 const CSV_HEADERS = [
   'id',
+  'youtubeChannelId',
   'titolo',
   'handle',
   'iscritti',
@@ -58,6 +59,7 @@ export async function GET(request: NextRequest) {
       const q = ch.latestQualification;
       lines.push(
         csvRow([
+          ch.id,
           ch.id,
           ch.title,
           ch.handle,

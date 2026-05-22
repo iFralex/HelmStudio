@@ -97,7 +97,7 @@ export function EventsTable({
           </TableHeader>
           <TableBody>
             {events.map((ev) => (
-              <TableRow key={ev.id} className={LEVEL_ROW_CLASSES[ev.level]}>
+              <TableRow key={ev.id} className={LEVEL_ROW_CLASSES[ev.level] ?? ''}>
                 <TableCell className="text-xs">
                   <span title={formatDateTime(ev.createdAt)}>{formatDateTime(ev.createdAt)}</span>
                 </TableCell>

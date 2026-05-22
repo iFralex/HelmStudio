@@ -50,9 +50,9 @@ function AddKeywordForm() {
         toast.success(copy.settings.keywordAdded);
         formRef.current?.reset();
       } else if (result.error === 'duplicate') {
-        toast.error(`"${keyword}" è già presente.`);
+        toast.error(copy.settings.keywordDuplicate(keyword));
       } else {
-        toast.error('Errore durante l\'aggiunta.');
+        toast.error(copy.settings.keywordAddError);
       }
     });
   }
@@ -197,7 +197,7 @@ function KeywordRow({ kw }: { kw: SeedKeyword }) {
               <p className="text-sm text-muted-foreground">{kw.keyword}</p>
               <div className="flex justify-end gap-2 pt-2">
                 <Button variant="outline" onClick={() => setDeleteOpen(false)} disabled={isPending}>
-                  Annulla
+                  {copy.settings.cancel}
                 </Button>
                 <Button variant="destructive" onClick={handleDelete} disabled={isPending}>
                   {copy.settings.deleteKeyword}

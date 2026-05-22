@@ -38,9 +38,9 @@ export async function applyPreQualificationFilter(
       rejectionReason = 'below_min_subscribers';
     } else if (row.subscriberCount > filters.maxSubscribers) {
       rejectionReason = 'above_max_subscribers';
-    } else if (row.country !== null && row.country !== filters.country) {
+    } else if (filters.country !== '' && row.country !== null && row.country !== filters.country) {
       rejectionReason = 'wrong_country';
-    } else if (row.defaultLanguage !== null && row.defaultLanguage !== filters.language) {
+    } else if (filters.language !== '' && row.defaultLanguage !== null && row.defaultLanguage !== filters.language) {
       rejectionReason = 'wrong_language';
     } else if ((row.videoCount ?? 0) < 20) {
       rejectionReason = 'too_few_videos';

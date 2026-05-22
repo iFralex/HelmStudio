@@ -303,8 +303,10 @@ export const copy = {
     exportTitle: 'Esporta dati',
     exportDescription: 'Esporta tutti i canali (con i filtri applicabili) in CSV.',
     exportButton: 'Scarica CSV dei canali',
-    exportRunning: 'Generazione in corso…',
     saving: 'Salvataggio in corso…',
+    cancel: 'Annulla',
+    keywordDuplicate: (kw: string) => `"${kw}" è già presente.`,
+    keywordAddError: "Errore durante l'aggiunta.",
 
     // Read-only section footnotes
     modelsFootnote: 'Modificare nel file `.env` e riavviare il worker.',
