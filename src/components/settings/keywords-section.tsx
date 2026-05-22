@@ -134,7 +134,7 @@ function KeywordRow({ kw }: { kw: SeedKeyword }) {
       <TableCell className="font-medium">{kw.keyword}</TableCell>
       <TableCell>
         <Badge variant={kw.isActive ? 'default' : 'secondary'}>
-          {kw.isActive ? copy.settings.activate : copy.settings.keywordInactive}
+          {kw.isActive ? copy.settings.keywordActive : copy.settings.keywordInactive}
         </Badge>
       </TableCell>
       <TableCell className="text-muted-foreground text-sm">

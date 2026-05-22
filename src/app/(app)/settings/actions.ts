@@ -81,13 +81,19 @@ export async function updatePipelineConfigAction(
   }
 }
 
+const CreateKeywordSchema = z.object({
+  keyword: z.string().min(1).max(200).trim(),
+  notes: z.string().max(1000).optional(),
+});
+
 export async function createKeywordAction(input: {
   keyword: string;
   notes?: string;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (!input.keyword.trim()) return { ok: false, error: 'empty' };
+  const parsed = CreateKeywordSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: 'empty' };
   try {
-    await createKeyword(input);
+    await createKeyword(parsed.data);
     revalidatePath('/settings');
     return { ok: true };
   } catch (err) {

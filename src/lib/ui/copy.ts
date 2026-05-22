@@ -274,6 +274,7 @@ export const copy = {
     newKeywordNotesPlaceholder: 'Note opzionali…',
     deactivate: 'Disattiva',
     activate: 'Attiva',
+    keywordActive: 'Attiva',
     keywordInactive: 'Inattiva',
     deleteKeyword: 'Elimina',
     deleteKeywordConfirm: 'Eliminare definitivamente questa keyword?',

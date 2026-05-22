@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { listRuns } from '@/lib/db/queries';
 import { copy } from '@/lib/ui/copy';
-import { formatCompact, formatDate, formatRelative, statusColor, STATUS_COLOR_CLASSES } from '@/lib/ui/format';
+import { formatCompact, formatDateTime, formatRelative, statusColor, STATUS_COLOR_CLASSES } from '@/lib/ui/format';
 import {
   Table,
   TableBody,
@@ -60,13 +60,13 @@ export default async function RunsPage({ searchParams }: PageProps) {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <span title={formatDate(run.startedAt)}>
+                      <span title={formatDateTime(run.startedAt)}>
                         {formatRelative(run.startedAt)}
                       </span>
                     </TableCell>
                     <TableCell>
                       {run.finishedAt ? (
-                        <span title={formatDate(run.finishedAt)}>
+                        <span title={formatDateTime(run.finishedAt)}>
                           {formatRelative(run.finishedAt)}
                         </span>
                       ) : (

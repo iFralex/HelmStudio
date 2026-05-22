@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getRunById, listEventsForRun } from '@/lib/db/queries';
 import { copy } from '@/lib/ui/copy';
-import { formatDate, formatNumber, formatRelative, statusColor, STATUS_COLOR_CLASSES } from '@/lib/ui/format';
+import { formatDateTime, formatNumber, formatRelative, statusColor, STATUS_COLOR_CLASSES } from '@/lib/ui/format';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { EventsTable } from '@/components/runs/events-table';
@@ -71,12 +71,12 @@ export default async function RunDetailPage({ params, searchParams }: PageProps)
           <Badge variant="secondary">{copy.runs.triggeredByLabel[run.triggeredBy]}</Badge>
           <div className="text-sm">
             <span className="text-muted-foreground">{copy.runs.columnStartedAt}: </span>
-            <span title={formatDate(run.startedAt)}>{formatRelative(run.startedAt)}</span>
+            <span title={formatDateTime(run.startedAt)}>{formatRelative(run.startedAt)}</span>
           </div>
           {run.finishedAt && (
             <div className="text-sm">
               <span className="text-muted-foreground">{copy.runs.columnFinishedAt}: </span>
-              <span title={formatDate(run.finishedAt)}>{formatRelative(run.finishedAt)}</span>
+              <span title={formatDateTime(run.finishedAt)}>{formatRelative(run.finishedAt)}</span>
             </div>
           )}
           {duration !== null && (
