@@ -17,7 +17,6 @@ function csvRow(values: (string | number | Date | null | undefined)[]): string {
 
 const CSV_HEADERS = [
   'id',
-  'youtubeChannelId',
   'titolo',
   'handle',
   'iscritti',
@@ -60,7 +59,6 @@ export async function GET(request: NextRequest) {
       lines.push(
         csvRow([
           ch.id,
-          ch.id,
           ch.title,
           ch.handle,
           ch.subscriberCount,
@@ -84,6 +82,7 @@ export async function GET(request: NextRequest) {
 
     if (result.rows.length < 500) break;
     page++;
+    if (page > 1000) break;
   }
 
   const csv = lines.join('\r\n') + '\r\n';

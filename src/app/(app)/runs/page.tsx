@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { listRuns } from '@/lib/db/queries';
 import { copy } from '@/lib/ui/copy';
-import { formatCompact, formatDate, formatRelative, statusColor } from '@/lib/ui/format';
+import { formatCompact, formatDate, formatRelative, statusColor, STATUS_COLOR_CLASSES } from '@/lib/ui/format';
 import {
   Table,
   TableBody,
@@ -13,13 +13,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-const STATUS_COLOR_CLASSES: Record<'green' | 'blue' | 'red' | 'gray', string> = {
-  green: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
-  blue: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
-  red: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
-  gray: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-};
-
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
@@ -27,7 +20,8 @@ interface PageProps {
 export default async function RunsPage({ searchParams }: PageProps) {
   const raw = await searchParams;
   const beforeRaw = Array.isArray(raw.before) ? raw.before[0] : raw.before;
-  const before = beforeRaw !== undefined ? Number(beforeRaw) : undefined;
+  const beforeNum = beforeRaw !== undefined ? Number(beforeRaw) : undefined;
+  const before = beforeNum !== undefined && !Number.isNaN(beforeNum) ? beforeNum : undefined;
 
   const runs = await listRuns({ limit: 50, before });
 

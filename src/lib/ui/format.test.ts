@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatCompact, formatNumber, scoreColor, formatRelative } from './format';
+import { formatCompact, formatNumber, scoreColor, formatRelative, statusColor } from './format';
 
 describe('formatCompact', () => {
   it('formats thousands as K', () => {
@@ -47,6 +47,13 @@ describe('scoreColor', () => {
   it('returns gray for null', () => {
     expect(scoreColor(null)).toBe('gray');
   });
+});
+
+describe('statusColor', () => {
+  it('returns green for completed', () => expect(statusColor('completed')).toBe('green'));
+  it('returns blue for running', () => expect(statusColor('running')).toBe('blue'));
+  it('returns red for failed', () => expect(statusColor('failed')).toBe('red'));
+  it('returns gray for cancelled', () => expect(statusColor('cancelled')).toBe('gray'));
 });
 
 describe('formatRelative', () => {

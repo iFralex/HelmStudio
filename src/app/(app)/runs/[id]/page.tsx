@@ -2,18 +2,11 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getRunById, listEventsForRun } from '@/lib/db/queries';
 import { copy } from '@/lib/ui/copy';
-import { formatDate, formatNumber, formatRelative, statusColor } from '@/lib/ui/format';
+import { formatDate, formatNumber, formatRelative, statusColor, STATUS_COLOR_CLASSES } from '@/lib/ui/format';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { EventsTable } from '@/components/runs/events-table';
 import { RunPoller } from './run-poller';
-
-const STATUS_COLOR_CLASSES: Record<'green' | 'blue' | 'red' | 'gray', string> = {
-  green: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
-  blue: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
-  red: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
-  gray: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-};
 
 interface PageProps {
   params: Promise<{ id: string }>;

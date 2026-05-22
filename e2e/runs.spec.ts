@@ -58,10 +58,6 @@ test.beforeEach(async ({ page }) => {
   await login(page);
 });
 
-test('skip all when DB unavailable', async () => {
-  test.skip(!db, 'DB not available for seeding');
-});
-
 test('runs list shows both seeded run rows', async ({ page }) => {
   test.skip(!db, 'DB not available for seeding');
   await page.goto('/runs');

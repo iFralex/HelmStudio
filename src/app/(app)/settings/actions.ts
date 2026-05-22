@@ -18,12 +18,10 @@ const FiltersSchema = z
     maxSubscribers: z.coerce.number().int().min(0),
     country: z
       .string()
-      .max(2)
-      .regex(/^[A-Za-z]{0,2}$/, 'Deve essere un codice ISO di 2 lettere o vuoto'),
+      .regex(/^([A-Za-z]{2})?$/, 'Deve essere un codice ISO di 2 lettere o vuoto'),
     language: z
       .string()
-      .max(2)
-      .regex(/^[A-Za-z]{0,2}$/, 'Deve essere un codice ISO di 2 lettere o vuoto'),
+      .regex(/^([A-Za-z]{2})?$/, 'Deve essere un codice ISO di 2 lettere o vuoto'),
     requalifyAfterDays: z.coerce.number().int().min(1),
     inactiveDays: z.coerce.number().int().min(1),
   })
@@ -87,6 +85,7 @@ export async function createKeywordAction(input: {
   keyword: string;
   notes?: string;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (!input.keyword.trim()) return { ok: false, error: 'empty' };
   try {
     await createKeyword(input);
     revalidatePath('/settings');
@@ -102,14 +101,24 @@ export async function createKeywordAction(input: {
 export async function updateKeywordAction(input: {
   id: number;
   isActive?: boolean;
-  notes?: string;
-}): Promise<void> {
-  const { id, ...patch } = input;
-  await updateKeyword(id, patch);
-  revalidatePath('/settings');
+  notes?: string | null;
+}): Promise<ActionResult> {
+  try {
+    const { id, ...patch } = input;
+    await updateKeyword(id, patch);
+    revalidatePath('/settings');
+    return { ok: true };
+  } catch {
+    return { ok: false, error: 'Errore durante l\'aggiornamento' };
+  }
 }
 
-export async function deleteKeywordAction(input: { id: number }): Promise<void> {
-  await deleteKeyword(input.id);
-  revalidatePath('/settings');
+export async function deleteKeywordAction(input: { id: number }): Promise<ActionResult> {
+  try {
+    await deleteKeyword(input.id);
+    revalidatePath('/settings');
+    return { ok: true };
+  } catch {
+    return { ok: false, error: 'Errore durante l\'eliminazione' };
+  }
 }

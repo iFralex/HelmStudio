@@ -274,6 +274,7 @@ export const copy = {
     newKeywordNotesPlaceholder: 'Note opzionali…',
     deactivate: 'Disattiva',
     activate: 'Attiva',
+    keywordInactive: 'Inattiva',
     deleteKeyword: 'Elimina',
     deleteKeywordConfirm: 'Eliminare definitivamente questa keyword?',
     keywordAdded: 'Keyword aggiunta.',
@@ -302,5 +303,10 @@ export const copy = {
     exportDescription: 'Esporta tutti i canali (con i filtri applicabili) in CSV.',
     exportButton: 'Scarica CSV dei canali',
     exportRunning: 'Generazione in corso…',
+    saving: 'Salvataggio in corso…',
+
+    // Read-only section footnotes
+    modelsFootnote: 'Modificare nel file `.env` e riavviare il worker.',
+    promptsFootnote: 'I prompt sono versionati nel codice (`src/lib/llm/prompts/`).',
   },
 };

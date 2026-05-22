@@ -16,7 +16,7 @@ async function login(page: Page) {
 }
 
 const CSV_HEADER =
-  'id,youtubeChannelId,titolo,handle,iscritti,paese,lingua,videoTotali,nicchia,format,score,confidence,linguaPitch,email,statoOutreach,qualificatoIl,discoveredIl,discoverySource,urlYoutube';
+  'id,titolo,handle,iscritti,paese,lingua,videoTotali,nicchia,format,score,confidence,linguaPitch,email,statoOutreach,qualificatoIl,discoveredIl,discoverySource,urlYoutube';
 
 let db: TestDb | null = null;
 let runId = 0;
@@ -59,10 +59,6 @@ test.afterAll(() => {
 
 test.beforeEach(async ({ page }) => {
   await login(page);
-});
-
-test('skip all when DB unavailable', async () => {
-  test.skip(!db, 'DB not available for seeding');
 });
 
 test('CSV export returns 200 with correct content-type and header row', async ({ page }) => {

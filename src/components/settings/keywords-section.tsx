@@ -99,24 +99,33 @@ function KeywordRow({ kw }: { kw: SeedKeyword }) {
 
   function handleToggle() {
     startTransition(async () => {
-      await updateKeywordAction({ id: kw.id, isActive: !kw.isActive });
-      toast.success(copy.settings.keywordUpdated);
+      const result = await updateKeywordAction({ id: kw.id, isActive: !kw.isActive });
+      if (result.ok) toast.success(copy.settings.keywordUpdated);
+      else toast.error(result.error);
     });
   }
 
   function handleSaveNotes() {
     startTransition(async () => {
-      await updateKeywordAction({ id: kw.id, notes: notesValue || undefined });
-      toast.success(copy.settings.keywordUpdated);
-      setEditingNotes(false);
+      const result = await updateKeywordAction({ id: kw.id, notes: notesValue || null });
+      if (result.ok) {
+        toast.success(copy.settings.keywordUpdated);
+        setEditingNotes(false);
+      } else {
+        toast.error(result.error);
+      }
     });
   }
 
   function handleDelete() {
     startTransition(async () => {
-      await deleteKeywordAction({ id: kw.id });
-      toast.success(copy.settings.keywordDeleted);
-      setDeleteOpen(false);
+      const result = await deleteKeywordAction({ id: kw.id });
+      if (result.ok) {
+        toast.success(copy.settings.keywordDeleted);
+        setDeleteOpen(false);
+      } else {
+        toast.error(result.error);
+      }
     });
   }
 
@@ -125,7 +134,7 @@ function KeywordRow({ kw }: { kw: SeedKeyword }) {
       <TableCell className="font-medium">{kw.keyword}</TableCell>
       <TableCell>
         <Badge variant={kw.isActive ? 'default' : 'secondary'}>
-          {kw.isActive ? copy.settings.activate : copy.settings.deactivate}
+          {kw.isActive ? copy.settings.activate : copy.settings.keywordInactive}
         </Badge>
       </TableCell>
       <TableCell className="text-muted-foreground text-sm">

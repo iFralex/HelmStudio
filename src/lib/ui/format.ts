@@ -18,6 +18,18 @@ export function formatDate(d: Date | number, locale = 'it-IT'): string {
   });
 }
 
+export function formatDateTime(d: Date | number, locale = 'it-IT'): string {
+  const date = typeof d === 'number' ? new Date(d) : d;
+  return date.toLocaleString(locale, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+}
+
 export function formatRelative(d: Date | number | string, locale = 'it-IT'): string {
   const date = typeof d === 'number' ? new Date(d) : typeof d === 'string' ? new Date(d) : d;
   const diffMs = date.getTime() - Date.now();
@@ -40,6 +52,13 @@ export function formatRelative(d: Date | number | string, locale = 'it-IT'): str
   if (absMs < 31_536_000_000) return rtf.format(diffMonths, 'month');
   return rtf.format(diffYears, 'year');
 }
+
+export const STATUS_COLOR_CLASSES: Record<'green' | 'blue' | 'red' | 'gray', string> = {
+  green: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+  blue: 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+  red: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+  gray: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
+};
 
 export function statusColor(
   s: 'running' | 'completed' | 'failed' | 'cancelled',

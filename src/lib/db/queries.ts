@@ -185,14 +185,10 @@ export async function listRuns(
   db: Db = getDb(),
 ): Promise<PipelineRun[]> {
   const { limit = 50, before } = opts ?? {};
-  const conditions: SQL<unknown>[] = [];
-  if (before !== undefined) {
-    conditions.push(lt(pipelineRuns.startedAt, new Date(before)));
-  }
   return db
     .select()
     .from(pipelineRuns)
-    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .where(before !== undefined ? lt(pipelineRuns.startedAt, new Date(before)) : undefined)
     .orderBy(desc(pipelineRuns.startedAt))
     .limit(limit)
     .all();

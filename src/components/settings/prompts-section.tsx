@@ -23,10 +23,7 @@ export function PromptsSection({ selectVersion, qualifyVersion, draftVersion }: 
           </div>
         ))}
       </dl>
-      <p className="text-xs text-muted-foreground">
-        I prompt sono versionati nel codice (<code className="font-mono">src/lib/llm/prompts/</code>
-        ).
-      </p>
+      <p className="text-xs text-muted-foreground">{copy.settings.promptsFootnote}</p>
     </div>
   );
 }

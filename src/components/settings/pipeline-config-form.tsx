@@ -18,7 +18,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? copy.settings.exportRunning : copy.settings.savePipelineConfig}
+      {pending ? copy.settings.saving : copy.settings.savePipelineConfig}
     </Button>
   );
 }

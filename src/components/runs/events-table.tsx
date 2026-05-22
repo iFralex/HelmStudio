@@ -1,6 +1,6 @@
 import { type PipelineEvent } from '@/lib/db/queries';
 import { copy } from '@/lib/ui/copy';
-import { formatDate } from '@/lib/ui/format';
+import { formatDateTime } from '@/lib/ui/format';
 import {
   Table,
   TableBody,
@@ -99,7 +99,7 @@ export function EventsTable({
             {events.map((ev) => (
               <TableRow key={ev.id} className={LEVEL_ROW_CLASSES[ev.level]}>
                 <TableCell className="text-xs">
-                  <span title={formatDate(ev.createdAt)}>{formatDate(ev.createdAt)}</span>
+                  <span title={formatDateTime(ev.createdAt)}>{formatDateTime(ev.createdAt)}</span>
                 </TableCell>
                 <TableCell className="text-xs">{ev.stage}</TableCell>
                 <TableCell className="text-xs">{ev.event}</TableCell>

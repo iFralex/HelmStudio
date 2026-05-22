@@ -23,9 +23,7 @@ export function ModelsSection({ modelThink, modelFast, llmBaseUrl }: Props) {
           </div>
         ))}
       </dl>
-      <p className="text-xs text-muted-foreground">
-        Modificare nel file <code className="font-mono">.env</code> e riavviare il worker.
-      </p>
+      <p className="text-xs text-muted-foreground">{copy.settings.modelsFootnote}</p>
     </div>
   );
 }
