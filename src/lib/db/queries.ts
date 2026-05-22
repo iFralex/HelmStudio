@@ -497,18 +497,19 @@ export async function createKeyword(
   db: Db = getDb(),
 ): Promise<SeedKeyword> {
   const trimmed = input.keyword.trim();
-  const existing = await db
-    .select()
-    .from(seedKeywords)
-    .where(sql`lower(${seedKeywords.keyword}) = lower(${trimmed})`)
-    .get();
-  if (existing) throw new KeywordAlreadyExists(trimmed);
-  const row = await db
-    .insert(seedKeywords)
-    .values({ keyword: trimmed, notes: input.notes ?? null })
-    .returning()
-    .get();
-  return row!
+  try {
+    const row = await db
+      .insert(seedKeywords)
+      .values({ keyword: trimmed, notes: input.notes ?? null })
+      .returning()
+      .get();
+    return row!;
+  } catch (err: unknown) {
+    if (err instanceof Error && err.message.includes('UNIQUE constraint failed')) {
+      throw new KeywordAlreadyExists(trimmed);
+    }
+    throw err;
+  }
 }
 
 export async function updateKeyword(

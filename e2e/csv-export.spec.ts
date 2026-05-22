@@ -16,7 +16,7 @@ async function login(page: Page) {
 }
 
 const CSV_HEADER =
-  'id,titolo,handle,iscritti,paese,lingua,videoTotali,nicchia,format,score,confidence,linguaPitch,email,statoOutreach,qualificatoIl,discoveredIl,discoverySource,urlYoutube';
+  'id,youtubeChannelId,titolo,handle,iscritti,paese,lingua,videoTotali,nicchia,format,score,confidence,linguaPitch,email,statoOutreach,qualificatoIl,discoveredIl,discoverySource,urlYoutube';
 
 let db: TestDb | null = null;
 let runId = 0;

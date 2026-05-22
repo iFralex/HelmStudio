@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition, useRef } from 'react';
+import { useState, useTransition, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
 import type { SeedKeyword } from '@/lib/db/queries';
 import { copy } from '@/lib/ui/copy';
@@ -96,6 +96,12 @@ function KeywordRow({ kw }: { kw: SeedKeyword }) {
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesValue, setNotesValue] = useState(kw.notes ?? '');
   const [deleteOpen, setDeleteOpen] = useState(false);
+
+  useEffect(() => {
+    if (!editingNotes) {
+      setNotesValue(kw.notes ?? '');
+    }
+  }, [kw.notes, editingNotes]);
 
   function handleToggle() {
     startTransition(async () => {
