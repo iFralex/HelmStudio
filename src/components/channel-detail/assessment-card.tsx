@@ -11,7 +11,10 @@ type AutomatableWorkflow = {
   name: string;
   description: string;
   automationApproach: string;
+  evidenceTier?: 'TIER_1' | 'TIER_2' | 'TIER_3';
+  evidenceBasis?: string;
   estimatedTimeSavedPerVideoMinutes: number;
+  timeSavedReasoning?: string;
 };
 
 type Signal = {
@@ -26,10 +29,39 @@ const SCORE_CLASSES: Record<'green' | 'yellow' | 'gray', string> = {
   gray: 'bg-gray-100 text-gray-600 dark:bg-gray-900/30 dark:text-gray-400',
 };
 
-const PITCH_LANG_FLAG: Record<string, string> = {
-  it: '🇮🇹',
-  en: '🇬🇧',
+const TIER_CLASSES: Record<string, string> = {
+  TIER_1: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+  TIER_2: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+  TIER_3: 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400',
 };
+
+const TIER_LABELS: Record<string, string> = {
+  TIER_1: 'T1 — esplicito',
+  TIER_2: 'T2 — osservato',
+  TIER_3: 'T3 — inferito',
+};
+
+interface SubScoreBarProps {
+  label: string;
+  value: number | null | undefined;
+}
+
+function SubScoreBar({ label, value }: SubScoreBarProps) {
+  if (value === null || value === undefined) return null;
+  const color =
+    value >= 70 ? 'bg-green-500' : value >= 40 ? 'bg-yellow-500' : 'bg-gray-400';
+  return (
+    <div className="space-y-0.5">
+      <div className="flex justify-between text-xs">
+        <span className="text-muted-foreground">{label}</span>
+        <span className="font-medium tabular-nums">{value}</span>
+      </div>
+      <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+        <div className={cn('h-full rounded-full', color)} style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  );
+}
 
 interface AssessmentCardProps {
   qualification: Qualification | null;
@@ -71,6 +103,11 @@ export function AssessmentCard({
   const positiveSignals = signals.filter((s) => s.type === 'positive');
   const negativeSignals = signals.filter((s) => s.type === 'negative');
 
+  const analysisMode = qualification.analysisMode as 'evidence_driven' | 'inferred' | null;
+  const hasSubScores =
+    qualification.workflowRepeatabilityScore !== null &&
+    qualification.workflowRepeatabilityScore !== undefined;
+
   return (
     <div className="space-y-5">
       <h2 className="text-sm font-medium">{copy.channelDetail.assessmentTitle}</h2>
@@ -92,10 +129,18 @@ export function AssessmentCard({
           {qualification.formatType && (
             <Badge variant="outline">{qualification.formatType}</Badge>
           )}
-          {qualification.pitchLanguage && (
-            <span className="text-sm">
-              {PITCH_LANG_FLAG[qualification.pitchLanguage] ?? ''}{' '}
-              {qualification.pitchLanguage.toUpperCase()}
+          {analysisMode && (
+            <span
+              className={cn(
+                'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
+                analysisMode === 'evidence_driven'
+                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                  : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+              )}
+            >
+              {analysisMode === 'evidence_driven'
+                ? copy.channelDetail.analysisModeEvidenceDriven
+                : copy.channelDetail.analysisModeInferred}
             </span>
           )}
           {qualification.confidence !== null && qualification.confidence !== undefined && (
@@ -105,6 +150,27 @@ export function AssessmentCard({
           )}
         </div>
       </div>
+
+      {/* Sub-score breakdown */}
+      {hasSubScores && (
+        <section className="rounded-lg border p-3 space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {copy.channelDetail.scoreBreakdown}
+          </p>
+          <SubScoreBar
+            label={copy.channelDetail.scoreWorkflowRepeatability}
+            value={qualification.workflowRepeatabilityScore}
+          />
+          <SubScoreBar
+            label={copy.channelDetail.scoreEvidenceStrength}
+            value={qualification.evidenceStrengthScore}
+          />
+          <SubScoreBar
+            label={copy.channelDetail.scoreCommercialViability}
+            value={qualification.commercialViabilityScore}
+          />
+        </section>
+      )}
 
       {/* Razionale */}
       {qualification.rationale && (
@@ -144,15 +210,43 @@ export function AssessmentCard({
           </h3>
           <div className="space-y-2">
             {workflows.map((wf, i) => (
-              <div key={i} className="rounded-lg border p-3 text-sm space-y-1">
-                <div className="flex items-center justify-between gap-2">
+              <div key={i} className="rounded-lg border p-3 text-sm space-y-1.5">
+                <div className="flex items-center justify-between gap-2 flex-wrap">
                   <span className="font-medium">{wf.name}</span>
-                  <Badge variant="secondary" className="shrink-0 text-xs">
-                    {copy.channelDetail.timeSavedPerVideo(wf.estimatedTimeSavedPerVideoMinutes)}
-                  </Badge>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {wf.evidenceTier && (
+                      <span
+                        className={cn(
+                          'inline-flex items-center rounded-full px-1.5 py-0.5 text-xs font-medium',
+                          TIER_CLASSES[wf.evidenceTier] ?? TIER_CLASSES['TIER_3'],
+                        )}
+                      >
+                        {TIER_LABELS[wf.evidenceTier] ?? wf.evidenceTier}
+                      </span>
+                    )}
+                    <Badge variant="secondary" className="text-xs">
+                      {copy.channelDetail.timeSavedPerVideo(wf.estimatedTimeSavedPerVideoMinutes)}
+                    </Badge>
+                  </div>
                 </div>
                 <p className="text-muted-foreground text-xs">{wf.description}</p>
                 <p className="text-xs">{wf.automationApproach}</p>
+                {wf.evidenceBasis && (
+                  <p className="text-xs text-muted-foreground italic">
+                    <span className="font-medium not-italic">
+                      {copy.channelDetail.evidenceBasisLabel}:{' '}
+                    </span>
+                    {wf.evidenceBasis}
+                  </p>
+                )}
+                {wf.timeSavedReasoning && (
+                  <details className="text-xs text-muted-foreground">
+                    <summary className="cursor-pointer hover:text-foreground">
+                      {copy.channelDetail.timeSavedReasoning}
+                    </summary>
+                    <p className="mt-1 pl-2 border-l">{wf.timeSavedReasoning}</p>
+                  </details>
+                )}
               </div>
             ))}
           </div>
@@ -238,12 +332,22 @@ export function AssessmentCard({
           {copy.channelDetail.disqualifiers}
         </h3>
         {disqualifiers.length > 0 ? (
-          <div className="rounded-lg bg-destructive/10 text-destructive px-3 py-2 text-sm">
-            <ul className="list-disc list-inside space-y-1">
-              {disqualifiers.map((d, i) => (
-                <li key={i}>{d}</li>
-              ))}
-            </ul>
+          <div className="space-y-2">
+            <div className="rounded-lg bg-destructive/10 text-destructive px-3 py-2 text-sm">
+              <ul className="list-disc list-inside space-y-1">
+                {disqualifiers.map((d, i) => (
+                  <li key={i}>{d}</li>
+                ))}
+              </ul>
+            </div>
+            {qualification.disqualifierScoreImpact && (
+              <p className="text-xs text-muted-foreground">
+                <span className="font-medium">
+                  {copy.channelDetail.disqualifierScoreImpact}:{' '}
+                </span>
+                {qualification.disqualifierScoreImpact}
+              </p>
+            )}
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">{copy.channelDetail.noDisqualifiers}</p>

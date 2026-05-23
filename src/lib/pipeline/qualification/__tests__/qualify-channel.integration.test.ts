@@ -100,23 +100,33 @@ function makeQualifyOutputJson(): string {
   return JSON.stringify({
     nicheClassification: 'Tech Review',
     formatType: 'structured_review',
-    automationPotentialScore: 75,
+    scores: {
+      workflowRepeatability: 80,
+      evidenceStrength: 70,
+      commercialViability: 65,
+      final: 73,
+    },
+    analysisMode: 'evidence_driven',
+    analysisModeReasoning: 'Two TIER_1 workflows found.',
     automatableWorkflows: [
       {
         name: 'Research compilation',
         description: 'Aggregate product specs from multiple sources',
         automationApproach: 'LLM-based summarization',
-        estimatedTimeSavedPerVideoMinutes: 120,
+        evidenceTier: 'TIER_1',
+        evidenceBasis: 'Creator states it takes a long time in vid001',
+        estimatedTimeSavedPerVideoMinutes: 45,
+        timeSavedReasoning: '~1h research per video, 75% automatable = 45 min saved.',
       },
     ],
     suggestedSolution: 'AI research assistant',
     pitchAngle: 'Streamline your review prep',
-    pitchLanguage: 'it',
     signals: [
       { type: 'positive', evidence: 'Consistent format', videoId: 'vid001' },
       { type: 'negative', evidence: 'Some hands-on testing', videoId: null },
     ],
     disqualifiers: [],
+    disqualifierScoreImpact: 'No disqualifiers applied.',
     confidence: 0.82,
     rationale: 'Strong automation potential.',
   });
@@ -236,14 +246,18 @@ describe.skipIf(!sqlite3Available)('qualifyChannel integration', () => {
     expect(quals[0]!.channelId).toBe(CHANNEL_ID);
     expect(quals[0]!.runId).toBe(RUN_ID);
     expect(quals[0]!.videoSelectionId).toBe(selections[0]!.id);
-    expect(quals[0]!.automationPotentialScore).toBe(75);
+    expect(quals[0]!.automationPotentialScore).toBe(73);
+    expect(quals[0]!.workflowRepeatabilityScore).toBe(80);
+    expect(quals[0]!.evidenceStrengthScore).toBe(70);
+    expect(quals[0]!.commercialViabilityScore).toBe(65);
+    expect(quals[0]!.analysisMode).toBe('evidence_driven');
     expect(quals[0]!.confidence).toBeCloseTo(0.82);
     expect(quals[0]!.rawResponsePath).toBeTruthy();
 
     const channel = db.select().from(schema.channels).where(eq(schema.channels.id, CHANNEL_ID)).get();
     expect(channel!.discoveryStatus).toBe('qualified');
     expect(channel!.latestQualificationId).toBe(result.qualificationId);
-    expect(channel!.latestAutomationScore).toBe(75);
+    expect(channel!.latestAutomationScore).toBe(73);
     expect(channel!.lastQualifiedAt).toBeTruthy();
 
     const events = db.select().from(schema.pipelineEvents).all();
@@ -251,7 +265,7 @@ describe.skipIf(!sqlite3Available)('qualifyChannel integration', () => {
     const qualifiedEvent = events.find((e) => e.event === 'channel_qualified');
     expect(qualifiedEvent).toBeDefined();
     const qDetails = qualifiedEvent!.details as Record<string, number>;
-    expect(qDetails.score).toBe(75);
+    expect(qDetails.score).toBe(73);
     expect(qDetails.transcriptsSuccessful).toBe(3);
     expect(qDetails.transcriptsFailed).toBe(2);
 

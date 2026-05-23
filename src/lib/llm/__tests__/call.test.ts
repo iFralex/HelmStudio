@@ -101,7 +101,7 @@ describe('callLLM', () => {
     const result = await callLLM(baseArgs);
 
     expect(result.parsed).toEqual({ ok: true });
-    expect(result.usage).toEqual({ inputTokens: 10, outputTokens: 5 });
+    expect(result.usage).toEqual({ inputTokens: 10, outputTokens: 5, costUsd: null });
     expect(result.modelUsed).toBe('claude-test-think');
     expect(result.rawPath).toContain('placeholder');
     expect(result.latencyMs).toBeGreaterThanOrEqual(0);
@@ -146,7 +146,7 @@ describe('callLLM', () => {
 
     const result = await callLLM(baseArgs);
 
-    expect(result.usage).toEqual({ inputTokens: 30, outputTokens: 13 });
+    expect(result.usage).toEqual({ inputTokens: 30, outputTokens: 13, costUsd: null });
   });
 
   it('throws LlmCallError when retry API call fails after first parse failure', async () => {

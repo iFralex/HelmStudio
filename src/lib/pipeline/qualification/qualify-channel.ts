@@ -110,7 +110,7 @@ export async function qualifyChannel(
     db.update(channels)
       .set({
         latestQualificationId: qualificationId,
-        latestAutomationScore: qualOutput.automationPotentialScore,
+        latestAutomationScore: qualOutput.scores.final,
         lastQualifiedAt: new Date(),
         discoveryStatus: 'qualified',
       })
@@ -124,7 +124,7 @@ export async function qualifyChannel(
         stage: 'qualification',
         event: 'channel_qualified',
         details: {
-          score: qualOutput.automationPotentialScore,
+          score: qualOutput.scores.final,
           transcriptsSuccessful: successfulTranscripts.length,
           transcriptsFailed: failedTranscripts.length,
         },

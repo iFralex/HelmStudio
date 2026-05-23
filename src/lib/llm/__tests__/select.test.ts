@@ -176,7 +176,7 @@ describe.skipIf(!sqlite3Available)('runVideoSelection', () => {
     expect(result.selectionId).toBeTypeOf('number');
     expect(result.output.selectedVideoIds).toEqual(selectedIds);
     expect(result.output.videoClassifications).toHaveLength(20);
-    expect(result.usage).toEqual({ inputTokens: 100, outputTokens: 50 });
+    expect(result.usage).toEqual({ inputTokens: 100, outputTokens: 50, costUsd: null });
 
     const rows = db.select().from(schema.videoSelections).all();
     expect(rows).toHaveLength(1);

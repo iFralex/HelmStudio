@@ -34,7 +34,10 @@ export const AutomatableWorkflowSchema = z.object({
   name: z.string(),
   description: z.string(),
   automationApproach: z.string(),
+  evidenceTier: z.enum(['TIER_1', 'TIER_2', 'TIER_3']),
+  evidenceBasis: z.string(),
   estimatedTimeSavedPerVideoMinutes: z.number().int().nonnegative(),
+  timeSavedReasoning: z.string(),
 });
 
 export const SignalSchema = z.object({
@@ -43,16 +46,25 @@ export const SignalSchema = z.object({
   videoId: z.string().nullable(),
 });
 
+export const QualifyScoresSchema = z.object({
+  workflowRepeatability: z.number().int().min(0).max(100),
+  evidenceStrength: z.number().int().min(0).max(100),
+  commercialViability: z.number().int().min(0).max(100),
+  final: z.number().int().min(0).max(100),
+});
+
 export const QualifyOutputSchema = z.object({
   nicheClassification: z.string(),
   formatType: z.string(),
-  automationPotentialScore: z.number().int().min(0).max(100),
+  scores: QualifyScoresSchema,
+  analysisMode: z.enum(['evidence_driven', 'inferred']),
+  analysisModeReasoning: z.string(),
   automatableWorkflows: z.array(AutomatableWorkflowSchema).max(5),
   suggestedSolution: z.string(),
   pitchAngle: z.string(),
-  pitchLanguage: z.enum(['it', 'en']),
   signals: z.array(SignalSchema).min(2).max(8),
   disqualifiers: z.array(z.string()),
+  disqualifierScoreImpact: z.string(),
   confidence: z.number().min(0).max(1),
   rationale: z.string(),
 });

@@ -43,14 +43,21 @@ function rowToQualifyOutput(
   return {
     nicheClassification: qual.nicheClassification ?? '',
     formatType: qual.formatType ?? '',
-    automationPotentialScore: qual.automationPotentialScore ?? 0,
+    scores: {
+      workflowRepeatability: qual.workflowRepeatabilityScore ?? 0,
+      evidenceStrength: qual.evidenceStrengthScore ?? 0,
+      commercialViability: qual.commercialViabilityScore ?? 0,
+      final: qual.automationPotentialScore ?? 0,
+    },
+    analysisMode: (qual.analysisMode ?? 'inferred') as QualifyOutput['analysisMode'],
+    analysisModeReasoning: '',
     automatableWorkflows:
       (qual.automatableWorkflows as QualifyOutput['automatableWorkflows']) ?? [],
     suggestedSolution: qual.suggestedSolution ?? '',
     pitchAngle: qual.pitchAngle ?? '',
-    pitchLanguage: qual.pitchLanguage ?? 'it',
     signals: (qual.signals as QualifyOutput['signals']) ?? [],
     disqualifiers: (qual.disqualifiers as string[]) ?? [],
+    disqualifierScoreImpact: qual.disqualifierScoreImpact ?? '',
     confidence: qual.confidence ?? 0,
     rationale: qual.rationale ?? '',
   };
@@ -80,7 +87,7 @@ export async function generateDraftForChannel(
 
   const channelDetail = rowToChannelDetail(channel);
   const qualification = rowToQualifyOutput(qualRow);
-  const language = qualification.pitchLanguage;
+  const language: 'it' | 'en' = (qualRow.pitchLanguage as 'it' | 'en' | null) ?? 'en';
 
   const recentVideos: VideoDetail[] = videoRows.map((v) => ({
     id: v.id,

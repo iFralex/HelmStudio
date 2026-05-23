@@ -78,23 +78,33 @@ function makeQualifyOutputJson(): string {
   return JSON.stringify({
     nicheClassification: 'Tech Review',
     formatType: 'structured_review',
-    automationPotentialScore: 75,
+    scores: {
+      workflowRepeatability: 80,
+      evidenceStrength: 70,
+      commercialViability: 65,
+      final: 73,
+    },
+    analysisMode: 'evidence_driven',
+    analysisModeReasoning: 'Two TIER_1 workflows found in transcripts.',
     automatableWorkflows: [
       {
         name: 'Research compilation',
         description: 'Aggregate product specs from multiple sources',
         automationApproach: 'LLM-based web scraping and summarization',
-        estimatedTimeSavedPerVideoMinutes: 120,
+        evidenceTier: 'TIER_1',
+        evidenceBasis: 'Creator states "ci vuole un sacco di tempo a trovare i dati" in vid001',
+        estimatedTimeSavedPerVideoMinutes: 45,
+        timeSavedReasoning: 'Creator spends ~1h on research per video; automation handles 75% = ~45 min saved.',
       },
     ],
     suggestedSolution: 'AI research assistant that compiles specs and pricing',
     pitchAngle: 'Streamline your review prep with AI',
-    pitchLanguage: 'it',
     signals: [
       { type: 'positive', evidence: 'Consistent structured format across videos', videoId: 'vid001' },
       { type: 'negative', evidence: 'Some videos rely on hands-on testing', videoId: null },
     ],
     disqualifiers: [],
+    disqualifierScoreImpact: 'No disqualifiers applied.',
     confidence: 0.82,
     rationale: 'Channel shows strong automation potential via research phase.',
   });
@@ -229,18 +239,22 @@ describe.skipIf(!sqlite3Available)('runFinalQualification', () => {
     );
 
     expect(result.qualificationId).toBeTypeOf('number');
-    expect(result.output.automationPotentialScore).toBe(75);
-    expect(result.output.pitchLanguage).toBe('it');
-    expect(result.usage).toEqual({ inputTokens: 200, outputTokens: 100 });
+    expect(result.output.scores.final).toBe(73);
+    expect(result.output.analysisMode).toBe('evidence_driven');
+    expect(result.usage).toEqual({ inputTokens: 200, outputTokens: 100, costUsd: null });
 
     const rows = db.select().from(schema.qualifications).all();
     expect(rows).toHaveLength(1);
     expect(rows[0]!.channelId).toBe(CHANNEL_ID);
     expect(rows[0]!.runId).toBe(RUN_ID);
     expect(rows[0]!.videoSelectionId).toBe(1);
-    expect(rows[0]!.promptVersion).toBe('qualify-v2');
+    expect(rows[0]!.promptVersion).toBe('qualify-v3');
     expect(rows[0]!.modelUsed).toBe('claude-test-think');
-    expect(rows[0]!.automationPotentialScore).toBe(75);
+    expect(rows[0]!.automationPotentialScore).toBe(73);
+    expect(rows[0]!.workflowRepeatabilityScore).toBe(80);
+    expect(rows[0]!.evidenceStrengthScore).toBe(70);
+    expect(rows[0]!.commercialViabilityScore).toBe(65);
+    expect(rows[0]!.analysisMode).toBe('evidence_driven');
     expect(rows[0]!.confidence).toBe(0.82);
     expect(rows[0]!.rawResponsePath).toBeTruthy();
     expect(rows[0]!.rawPromptPath).toBeTruthy();
