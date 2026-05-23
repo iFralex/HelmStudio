@@ -110,7 +110,7 @@ function makeQualifyOutputJson(): string {
     disqualifiers: [],
     disqualifierScoreImpact: 'No disqualifiers applied.',
     salesObjections: ['Il mio processo è già rodato e veloce'],
-    confidence: 0.82,
+    confidence: 82,
     rationale: 'Channel shows strong automation potential via research phase.',
   });
 }
@@ -260,7 +260,7 @@ describe.skipIf(!sqlite3Available)('runFinalQualification', () => {
     expect(rows[0]!.evidenceStrengthScore).toBe(70);
     expect(rows[0]!.commercialViabilityScore).toBe(65);
     expect(rows[0]!.analysisMode).toBe('evidence_driven');
-    expect(rows[0]!.confidence).toBe(0.82);
+    expect(rows[0]!.confidence).toBe(82);
     expect(rows[0]!.rawResponsePath).toBeTruthy();
     expect(rows[0]!.rawPromptPath).toBeTruthy();
   });

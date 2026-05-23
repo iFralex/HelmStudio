@@ -393,7 +393,7 @@ Output a single JSON object conforming to this schema:
   "disqualifiers": [string],
   "disqualifierScoreImpact": string,
   "salesObjections": [string (1–3 realistic objections this creator would raise)],
-  "confidence": number (0–1),
+  "confidence": number (0–100),
   "rationale": string
 }
 
