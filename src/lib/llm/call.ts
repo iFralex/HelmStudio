@@ -83,6 +83,12 @@ function buildRawPath(
   }
 }
 
+const REPAIR_SYSTEM =
+  'You are a JSON repair assistant. ' +
+  'You receive broken or schema-invalid JSON output and a description of the problem. ' +
+  'Fix the JSON so it is valid and matches the required schema. ' +
+  'Return ONLY the corrected JSON. No markdown fences. No explanations.';
+
 export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>> {
   return withLlmLimit(async () => {
     const {
@@ -126,89 +132,78 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
       return response.choices[0]?.message?.content ?? '';
     }
 
-    function tryParse(text: string): { ok: true; parsed: T } | { ok: false; error: unknown } {
+    function tryParse(text: string): { ok: true; parsed: T } | { ok: false; errorHint: string } {
       try {
         const obj = JSON.parse(stripMarkdownFences(text));
         const result = schema.safeParse(obj);
         if (result.success) return { ok: true, parsed: result.data };
-        return { ok: false, error: result.error };
-      } catch (e) {
-        return { ok: false, error: e };
+        return { ok: false, errorHint: `Schema validation failed: ${result.error.message}` };
+      } catch {
+        return { ok: false, errorHint: 'The output is not valid JSON — it cannot be parsed.' };
       }
     }
-
-    const systemMsg = { role: 'system' as const, content: system };
 
     const buildUsage = (): TokenUsage => ({
       ...rawTokens,
       costUsd: computeCostUsd(modelUsed, rawTokens.inputTokens, rawTokens.outputTokens),
     });
 
-    // First attempt
+    async function dump(extra: Record<string, unknown>): Promise<void> {
+      await dumpRaw(rawPath, {
+        promptVersion,
+        system,
+        user,
+        attempts: attemptTexts,
+        usage: buildUsage(),
+        latencyMs: performance.now() - start,
+        timestamp: new Date().toISOString(),
+        model: modelUsed,
+        ...extra,
+      });
+    }
+
+    // Attempt 1: original prompt
     let firstText: string;
     try {
-      firstText = await doApiCall([systemMsg, { role: 'user', content: user }]);
+      firstText = await doApiCall([{ role: 'system', content: system }, { role: 'user', content: user }]);
     } catch (err) {
-      const latencyMs = performance.now() - start;
-      const usage = buildUsage();
-      await dumpRaw(rawPath, {
-        promptVersion, system, user, attempts: [],
-        usage, latencyMs, timestamp: new Date().toISOString(), model: modelUsed, error: String(err),
-      });
+      await dump({ error: String(err) });
       throw new LlmCallError(`LLM API call failed: ${String(err)}`, rawPath);
     }
     attemptTexts.push(firstText);
 
     const firstResult = tryParse(firstText);
     if (firstResult.ok) {
-      const latencyMs = performance.now() - start;
-      const usage = buildUsage();
-      await dumpRaw(rawPath, {
-        promptVersion, system, user, attempts: attemptTexts,
-        parsed: firstResult.parsed, usage, latencyMs,
-        timestamp: new Date().toISOString(), model: modelUsed,
-      });
-      return { parsed: firstResult.parsed, usage, latencyMs, modelUsed, rawPath };
+      await dump({ parsed: firstResult.parsed });
+      return { parsed: firstResult.parsed, usage: buildUsage(), latencyMs: performance.now() - start, modelUsed, rawPath };
     }
 
-    // Retry once with correction message
-    let secondText: string;
-    try {
-      secondText = await doApiCall([
-        systemMsg,
-        { role: 'user', content: user },
-        { role: 'assistant', content: firstText },
-        { role: 'user', content: 'Your previous response did not match the required JSON schema. Reply with the JSON only.' },
-      ]);
-    } catch (err) {
-      const latencyMs = performance.now() - start;
-      const usage = buildUsage();
-      await dumpRaw(rawPath, {
-        promptVersion, system, user, attempts: attemptTexts,
-        usage, latencyMs, timestamp: new Date().toISOString(), model: modelUsed, error: String(err),
-      });
-      throw new LlmCallError(`LLM API call failed on retry: ${String(err)}`, rawPath);
-    }
-    attemptTexts.push(secondText);
+    // Attempts 2–3: dedicated JSON repair calls
+    let lastErrorHint = firstResult.errorHint;
+    for (let i = 0; i < 2; i++) {
+      const brokenText = attemptTexts[attemptTexts.length - 1]!;
+      let repairText: string;
+      try {
+        repairText = await doApiCall([
+          { role: 'system', content: REPAIR_SYSTEM },
+          { role: 'user', content: `Problem: ${lastErrorHint}\n\nBroken JSON:\n${brokenText}` },
+        ]);
+      } catch (err) {
+        await dump({ error: String(err) });
+        throw new LlmCallError(`LLM repair call failed: ${String(err)}`, rawPath);
+      }
+      attemptTexts.push(repairText);
 
-    const secondResult = tryParse(secondText);
-    const latencyMs = performance.now() - start;
-    const usage = buildUsage();
-
-    if (secondResult.ok) {
-      await dumpRaw(rawPath, {
-        promptVersion, system, user, attempts: attemptTexts,
-        parsed: secondResult.parsed, usage, latencyMs,
-        timestamp: new Date().toISOString(), model: modelUsed,
-      });
-      return { parsed: secondResult.parsed, usage, latencyMs, modelUsed, rawPath };
+      const repairResult = tryParse(repairText);
+      if (repairResult.ok) {
+        await dump({ parsed: repairResult.parsed });
+        return { parsed: repairResult.parsed, usage: buildUsage(), latencyMs: performance.now() - start, modelUsed, rawPath };
+      }
+      lastErrorHint = repairResult.errorHint;
     }
 
-    // Both attempts failed
-    await dumpRaw(rawPath, {
-      promptVersion, system, user, attempts: attemptTexts,
-      usage, latencyMs, timestamp: new Date().toISOString(), model: modelUsed, error: String(secondResult.error),
-    });
-    throw new LlmFormatError('LLM response failed schema validation after 2 attempts', rawPath);
+    // All 3 attempts failed
+    await dump({ error: lastErrorHint });
+    throw new LlmFormatError('LLM response failed schema validation after 3 attempts', rawPath);
   });
 }

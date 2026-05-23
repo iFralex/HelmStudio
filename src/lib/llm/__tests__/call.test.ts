@@ -112,7 +112,7 @@ describe('callLLM', () => {
     expect(payload.parsed).toEqual({ ok: true });
   });
 
-  it('retries once on JSON parse failure and succeeds on retry', async () => {
+  it('retries with a repair call on JSON parse failure and succeeds on retry', async () => {
     const fakeClient = makeFakeClient(['not valid json', '{"ok": true}']);
     __setLlmForTest(fakeClient);
 
@@ -123,10 +123,12 @@ describe('callLLM', () => {
     const createFn = fakeClient.chat.completions.create as ReturnType<typeof vi.fn>;
     expect(createFn).toHaveBeenCalledTimes(2);
 
-    const secondCallArgs = createFn.mock.calls[1]![0] as { messages: Array<{ role: string; content: string }> };
-    expect(secondCallArgs.messages).toHaveLength(4);
-    expect(secondCallArgs.messages[2]).toMatchObject({ role: 'assistant', content: 'not valid json' });
-    expect(secondCallArgs.messages[3]!.content).toContain('did not match the required JSON schema');
+    // Second call is a dedicated repair call: 2 messages (repair-system + broken-JSON user)
+    const repairCallArgs = createFn.mock.calls[1]![0] as { messages: Array<{ role: string; content: string }> };
+    expect(repairCallArgs.messages).toHaveLength(2);
+    expect(repairCallArgs.messages[0]).toMatchObject({ role: 'system' });
+    expect(repairCallArgs.messages[0]!.content).toContain('repair');
+    expect(repairCallArgs.messages[1]!.content).toContain('not valid json');
   });
 
   it('accumulates token usage across retry attempts', async () => {
@@ -168,14 +170,14 @@ describe('callLLM', () => {
     expect(payload.attempts).toContain('not valid json');
   });
 
-  it('throws LlmFormatError after two consecutive format failures', async () => {
+  it('throws LlmFormatError after three consecutive format failures (1 original + 2 repairs)', async () => {
     const fakeClient = makeFakeClient(['not json', 'also not json']);
     __setLlmForTest(fakeClient);
 
     await expect(callLLM(baseArgs)).rejects.toThrow(LlmFormatError);
 
     const createFn = fakeClient.chat.completions.create as ReturnType<typeof vi.fn>;
-    expect(createFn).toHaveBeenCalledTimes(2);
+    expect(createFn).toHaveBeenCalledTimes(3);
   });
 
   it('validation error triggers retry', async () => {
@@ -216,7 +218,7 @@ describe('callLLM', () => {
     });
   });
 
-  it('raw blob includes both failed attempts when LlmFormatError is thrown', async () => {
+  it('raw blob includes all three failed attempts when LlmFormatError is thrown', async () => {
     const fakeClient = makeFakeClient(['attempt1', 'attempt2']);
     __setLlmForTest(fakeClient);
 
@@ -225,9 +227,11 @@ describe('callLLM', () => {
     expect(mockDumpRaw).toHaveBeenCalledOnce();
     const payload = mockDumpRaw.mock.calls[0]![1] as Record<string, unknown>;
     const attempts = payload.attempts as string[];
-    expect(attempts).toHaveLength(2);
+    // 1 original + 2 repair attempts
+    expect(attempts).toHaveLength(3);
     expect(attempts[0]).toBe('attempt1');
     expect(attempts[1]).toBe('attempt2');
+    expect(attempts[2]).toBe('attempt2');
   });
 
   it('strips markdown fences from JSON response', async () => {
