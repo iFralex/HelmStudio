@@ -3,7 +3,7 @@ import type { SelectOutput } from '@/lib/llm/schemas';
 import type { TranscriptFetchResult } from '@/lib/transcripts/fetcher';
 import { escapeXml } from './xml-helpers';
 
-export const version = 'qualify-v10';
+export const version = 'qualify-v11';
 
 export const system = `You are an expert evaluator of YouTube creators' workflow automation potential.
 You analyze public channel data — channel metadata, recent video metadata,
@@ -36,6 +36,8 @@ You produce THREE independent sub-scores plus a weighted final score.
 **workflowRepeatability (0–100):** How mechanical and scriptable is this creator's production process? High = identical structure every video, template-driven, heavy research/scripting load. Low = fully improvised, purely physical/performance-driven.
 
 **Delegation rule:** Lower WR only when the creator **explicitly names a person or role** that handles the repetitive work ("il mio montatore Gianca fa i rough cut", "mando le clip al mio editor"). Saying "non riesco a farcela da sola" or "faccio tutto io e mi esaurisce" means the creator IS doing the work — that is pain, not delegation, and does NOT reduce WR.
+
+**Core content type rule:** The WR anchor applies to the **core content type**, not the wrapper format. A "scripted challenge show" played inside a video game is still gaming — apply the 30-49 anchor. Any channel whose primary activity is playing video games, reacting to others' content, or documenting real-life unscripted events must score in the 30-49 range, regardless of how structured or consistent the format metadata appears. A repeatable thumbnail style or consistent title pattern does NOT raise WR above 55 for these content types.
 
 Score anchors for workflowRepeatability:
 - 90–100: creator personally follows the same script/template every video; heavy structured research or data-collection phase done by the creator themselves
@@ -88,6 +90,8 @@ Every workflow in \`automatableWorkflows\` must declare its evidence tier:
 - Mentioning they work with an editor or team → TIER_2 (outsourcing implies the task exists, not that it is painful)
 - Isolated hyperbolic statements without corroborating context ("ci ho messo 40 ore") → TIER_2
 - A single instance of skipping a task ("non avevo voglia oggi di censurare le targhe, l'ho saltato") — this shows the task exists but not that it is a recurring pain; requires at least one statement of systematic time cost or repeated difficulty to qualify as TIER_1
+- One-time workarounds where the creator sidesteps a task by choosing an easier alternative ("non avevo voglia di sfocarla quindi l'ho tagliata" — cutting the scene instead of blurring it solves the immediate problem but does not establish a recurring workflow burden). A single workaround only confirms the task exists; it requires corroborating statements of repeated effort or time cost to become TIER_1
+- Self-critical asides about forgetting or skipping something in a single video ("avrei dovuto creare una grafichina per questa cosa, lo ammetto", "mi sono dimenticato di fare l'intro") without any indication of recurring time cost — these are momentary self-observations, not evidence of a workflow the creator regularly struggles with
 - General adjectives describing overall effort or emotional experience of a project ("è stato intenso", "è stato impegnativo", "non è stato facile") without quantifying time cost or expressing desire to change — these describe how something felt, not how long it took or that the creator wants to fix it
 - Expressions of frustration toward the audience (toxic comments, criticism) without a statement that the creator spends significant time managing them → emotional distress is not workflow pain
 
