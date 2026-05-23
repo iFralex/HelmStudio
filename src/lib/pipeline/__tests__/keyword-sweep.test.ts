@@ -173,7 +173,7 @@ describe.runIf(sqlite3Available)('runKeywordSweep', () => {
     expect(calls[1]).toBe('old-used');
   });
 
-  it('stops gracefully on QuotaExhausted mid-sweep and returns partial totals', async () => {
+  it('stops gracefully on QuotaExhausted mid-sweep and writes partial state to DB', async () => {
     const db = makeDb();
     const runId = seedRun(db);
     seedKeyword(db, 'kw-first');
@@ -182,10 +182,8 @@ describe.runIf(sqlite3Available)('runKeywordSweep', () => {
       .mockResolvedValueOnce(makeSearchResult(['UCfirst']))
       .mockRejectedValueOnce(new QuotaExhausted(9500, 9500));
 
-    const result = await runKeywordSweep({ runId, keywordCount: 5 }, db);
+    await expect(runKeywordSweep({ runId, keywordCount: 5 }, db)).rejects.toBeInstanceOf(QuotaExhausted);
 
-    expect(result.searchesPerformed).toBe(1);
-    expect(result.candidatesInserted).toBe(1);
     const rows = db.select().from(schema.channels).all();
     expect(rows).toHaveLength(1);
   });

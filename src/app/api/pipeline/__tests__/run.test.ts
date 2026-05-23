@@ -64,6 +64,8 @@ describe('POST /api/pipeline/run', () => {
     const spawnArgs = mockSpawn.mock.calls[0]!;
     expect(spawnArgs[0]).toBe(process.execPath);
     expect(spawnArgs[1]).toEqual(['--import', 'tsx', 'src/worker/run.ts', '--manual']);
-    expect(spawnArgs[2]).toMatchObject({ detached: true, stdio: 'ignore' });
+    // In non-production envs, stdio inherits stdout/stderr for debugging
+    const expectedStdio = process.env.NODE_ENV === 'production' ? 'ignore' : ['ignore', 'inherit', 'inherit'];
+    expect(spawnArgs[2]).toMatchObject({ detached: true, stdio: expectedStdio });
   });
 });

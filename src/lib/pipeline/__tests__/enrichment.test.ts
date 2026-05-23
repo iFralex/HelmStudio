@@ -217,7 +217,7 @@ describe.runIf(sqlite3Available)('enrichCandidateChannels', () => {
     );
   });
 
-  it('stops gracefully on QuotaExhausted and returns partial totals', async () => {
+  it('stops gracefully on QuotaExhausted and writes partial totals to DB', async () => {
     const db = makeDb();
     const runId = seedRun(db);
     // Seed 55 candidates to force 2 batches (50 + 5)
@@ -230,9 +230,8 @@ describe.runIf(sqlite3Available)('enrichCandidateChannels', () => {
       .mockResolvedValueOnce(makeGetChannelsResult(firstBatchIds))
       .mockRejectedValueOnce(new QuotaExhausted(9500, 9500));
 
-    const result = await enrichCandidateChannels({ runId }, db);
+    await expect(enrichCandidateChannels({ runId }, db)).rejects.toBeInstanceOf(QuotaExhausted);
 
-    expect(result.enrichedCount).toBe(50);
     expect(mockGetChannels).toHaveBeenCalledTimes(2);
 
     const run = db.select().from(schema.pipelineRuns).get()!;

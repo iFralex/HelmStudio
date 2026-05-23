@@ -93,6 +93,9 @@ describe.runIf(sqlite3Available)('runPipeline', () => {
 
   beforeEach(() => {
     db = makeDb();
+    mockTodayUnitsSpent.mockReset();
+    mockRunDiscovery.mockReset();
+    mockRunQualification.mockReset();
     mockTodayUnitsSpent.mockReturnValue(0);
     mockRunDiscovery.mockResolvedValue(discoverySummary);
     mockRunQualification.mockResolvedValue(qualificationSummary);
@@ -119,7 +122,7 @@ describe.runIf(sqlite3Available)('runPipeline', () => {
   it('passes runId to both stage functions', async () => {
     const result = await runPipeline({ triggeredBy: 'cron' }, db);
 
-    expect(mockRunDiscovery).toHaveBeenCalledWith(result.runId, db);
+    expect(mockRunDiscovery).toHaveBeenCalledWith(result.runId, {}, db);
     expect(mockRunQualification).toHaveBeenCalledWith({ runId: result.runId }, db);
   });
 

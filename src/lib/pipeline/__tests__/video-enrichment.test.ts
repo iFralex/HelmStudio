@@ -268,7 +268,7 @@ describe.runIf(sqlite3Available)('fetchVideosForSurvivingChannels', () => {
     expect(rows).toHaveLength(1);
   });
 
-  it('stops gracefully on QuotaExhausted during playlist fetch', async () => {
+  it('stops gracefully on QuotaExhausted during playlist fetch and writes partial state to DB', async () => {
     const db = makeDb();
     const runId = seedRun(db);
     seedEnrichedChannel(db, 'UCaaa');
@@ -282,13 +282,14 @@ describe.runIf(sqlite3Available)('fetchVideosForSurvivingChannels', () => {
       rawPath: 'raw/videos.json',
     });
 
-    const result = await fetchVideosForSurvivingChannels({ runId, limit: 50 }, db);
+    await expect(fetchVideosForSurvivingChannels({ runId, limit: 50 }, db)).rejects.toBeInstanceOf(QuotaExhausted);
 
-    expect(result.channelsWithVideos).toBe(1);
-    expect(result.videosFetched).toBe(1);
+    const videoRows = db.select().from(schema.videos).all();
+    expect(videoRows).toHaveLength(1);
+    expect(videoRows[0]?.channelId).toBe('UCaaa');
   });
 
-  it('stops gracefully on QuotaExhausted during video fetch', async () => {
+  it('stops gracefully on QuotaExhausted during video fetch and writes no videos to DB', async () => {
     const db = makeDb();
     const runId = seedRun(db);
     seedEnrichedChannel(db, 'UCaaa');
@@ -296,10 +297,10 @@ describe.runIf(sqlite3Available)('fetchVideosForSurvivingChannels', () => {
     mockGetUploadsPlaylistItems.mockResolvedValueOnce({ videoIds: ['vid1'], rawPath: 'raw/uploads.json' });
     mockGetVideos.mockRejectedValueOnce(new QuotaExhausted(9500, 9500));
 
-    const result = await fetchVideosForSurvivingChannels({ runId, limit: 50 }, db);
+    await expect(fetchVideosForSurvivingChannels({ runId, limit: 50 }, db)).rejects.toBeInstanceOf(QuotaExhausted);
 
-    expect(result.channelsWithVideos).toBe(0);
-    expect(result.videosFetched).toBe(0);
+    const videoRows = db.select().from(schema.videos).all();
+    expect(videoRows).toHaveLength(0);
   });
 
   it('respects the limit parameter', async () => {
