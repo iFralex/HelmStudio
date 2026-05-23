@@ -9,20 +9,22 @@ import { qualifyChannel } from './qualify-channel';
 type Db = ReturnType<typeof getDb>;
 
 export async function runQualification(
-  args: { runId: number },
+  args: { runId: number; limit?: number },
   db: Db = getDb(),
 ): Promise<{ qualified: number; skipped: number; rejected: number }> {
-  const { runId } = args;
+  const { runId, limit: channelLimit } = args;
   const log = childLogger({ module: 'qualification', runId });
 
-  const enrichedChannels = db
+  const allEnriched = db
     .select({ id: channels.id })
     .from(channels)
     .where(or(eq(channels.discoveryStatus, 'enriched'), eq(channels.discoveryStatus, 'qualified')))
     .orderBy(desc(channels.discoveredAt))
     .all();
 
-  log.info({ total: enrichedChannels.length }, 'starting qualification batch');
+  const enrichedChannels = channelLimit !== undefined ? allEnriched.slice(0, channelLimit) : allEnriched;
+
+  log.info({ total: allEnriched.length, limit: channelLimit ?? 'none', processing: enrichedChannels.length }, 'starting qualification batch');
 
   const limit = pLimit(3);
   let qualified = 0;

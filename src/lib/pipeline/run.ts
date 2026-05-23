@@ -14,6 +14,7 @@ export type QualificationSummary = Awaited<ReturnType<typeof runQualification>>;
 export type RunPipelineOptions = {
   triggeredBy: 'cron' | 'manual';
   stages?: Array<'discovery' | 'videos' | 'qualification'>;
+  qualificationLimit?: number;
 };
 
 const log = childLogger({ module: 'pipeline' });
@@ -30,7 +31,7 @@ export async function runPipeline(
     qualification?: QualificationSummary;
   };
 }> {
-  const { triggeredBy, stages } = opts;
+  const { triggeredBy, stages, qualificationLimit } = opts;
   const runStages = stages ?? ['discovery', 'qualification'];
   const needsYoutubeQuota = runStages.includes('discovery') || runStages.includes('videos');
 
@@ -67,7 +68,7 @@ export async function runPipeline(
     }
 
     if (runStages.includes('qualification')) {
-      summary.qualification = await runQualification({ runId }, db);
+      summary.qualification = await runQualification({ runId, limit: qualificationLimit }, db);
     }
 
     await closeRun(runId, 'completed', undefined, undefined, db);

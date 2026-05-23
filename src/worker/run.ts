@@ -40,9 +40,11 @@ async function main() {
     : process.argv.includes('--videos-and-qualify')
       ? ['videos', 'qualification']
       : ['discovery', 'qualification'];
-  logger.info({ triggeredBy, stages }, 'worker starting');
+  const limitIdx = process.argv.indexOf('--limit');
+  const qualificationLimit = limitIdx !== -1 ? parseInt(process.argv[limitIdx + 1] ?? '', 10) || undefined : undefined;
+  logger.info({ triggeredBy, stages, qualificationLimit }, 'worker starting');
   try {
-    const result = await runPipeline({ triggeredBy, stages }, undefined, (runId) => {
+    const result = await runPipeline({ triggeredBy, stages, qualificationLimit }, undefined, (runId) => {
       activeRunId = runId;
     });
     activeRunId = undefined;

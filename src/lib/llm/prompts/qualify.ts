@@ -3,7 +3,7 @@ import type { SelectOutput } from '@/lib/llm/schemas';
 import type { TranscriptFetchResult } from '@/lib/transcripts/fetcher';
 import { escapeXml } from './xml-helpers';
 
-export const version = 'qualify-v8';
+export const version = 'qualify-v9';
 
 export const system = `You are an expert evaluator of YouTube creators' workflow automation potential.
 You analyze public channel data — channel metadata, recent video metadata,
@@ -33,15 +33,15 @@ one signal entry — split them.
 
 You produce THREE independent sub-scores plus a weighted final score.
 
-**workflowRepeatability (0–100):** How mechanical and scriptable is this creator's
-production process? High = identical structure every video, template-driven, heavy
-research/scripting load. Low = fully improvised, purely physical/performance-driven.
+**workflowRepeatability (0–100):** How mechanical and scriptable is the **creator's own direct production work**? Score only what the creator personally does — not work already delegated to editors, assistants, or team members. If the repetitive tasks are handled by a team, those tasks are already solved and WR reflects only the creator's remaining personal workload.
+
+High = creator personally does identical structured work every video (research, scripting, data collection). Low = creator improvises, or repetitive work is fully delegated.
 
 Score anchors for workflowRepeatability:
-- 90–100: same script template every video, fully predictable segment structure, heavy data-collection or research phase (e.g. weekly benchmark review, scripted news roundup)
-- 70–89: highly repeatable format with some variable segments; consistent scripting or research load visible across transcripts
-- 50–69: semi-structured; creator improvises a significant portion of each video; format is recognizable but not templated
-- 30–49: gaming, prank, react, or vlog channels — the format wrapper is simple but **the core content is inherently unscriptable** (spontaneous gameplay, unscripted reactions, real-life events). Score here even if the channel has consistent metadata workflows.
+- 90–100: creator personally follows the same script/template every video; heavy structured research or data-collection phase done by the creator themselves
+- 70–89: highly repeatable format; creator does consistent scripting or research work; some variable segments
+- 50–69: semi-structured; creator improvises a significant portion; format is recognizable but not templated
+- 30–49: gaming, prank, react, or vlog channels — the format wrapper is simple but **the core content is inherently unscriptable** (spontaneous gameplay, unscripted reactions, real-life events). Score here even if the channel has consistent metadata workflows. Also applies when the creator has delegated most repetitive work to a team.
 - 10–29: fully improvised; performance- or physical-skill-driven; no scripting or research phase
 - 0–9: purely visual/physical with no spoken editorial content
 
@@ -88,6 +88,7 @@ Every workflow in \`automatableWorkflows\` must declare its evidence tier:
 - Mentioning they work with an editor or team → TIER_2 (outsourcing implies the task exists, not that it is painful)
 - Isolated hyperbolic statements without corroborating context ("ci ho messo 40 ore") → TIER_2
 - A single instance of skipping a task ("non avevo voglia oggi di censurare le targhe, l'ho saltato") — this shows the task exists but not that it is a recurring pain; requires at least one statement of systematic time cost or repeated difficulty to qualify as TIER_1
+- General adjectives describing overall effort or emotional experience of a project ("è stato intenso", "è stato impegnativo", "non è stato facile") without quantifying time cost or expressing desire to change — these describe how something felt, not how long it took or that the creator wants to fix it
 - Expressions of frustration toward the audience (toxic comments, criticism) without a statement that the creator spends significant time managing them → emotional distress is not workflow pain
 
 **For gaming, live streaming, and react channels:** TIER_1 quotes must clearly refer to the creator's production or editing process — not to in-game or in-stream activity. Statements made *during* gameplay or a live stream that use time-related language ("devo guadagnare tempo", "ci sto provando in tutti i modi") almost certainly describe in-stream events, not production pain. Only accept as TIER_1 if the creator explicitly frames the statement as being about their video-making workflow (e.g. "quando edito", "per montare questo video", "la mia routine di produzione").
