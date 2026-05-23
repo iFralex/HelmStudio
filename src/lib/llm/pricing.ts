@@ -11,7 +11,7 @@ const PRICING: Array<[string, ModelPricing]> = [
   ['gemini-1.5-pro',       { inputPer1M: 1.25,  outputPer1M: 5.00  }],
   ['gemini-1.5-flash',     { inputPer1M: 0.075, outputPer1M: 0.30  }],
   ['gemini-3.1-flash',     { inputPer1M: 0.075, outputPer1M: 0.30  }],
-  ['gemini-3-flash',       { inputPer1M: 0.15,  outputPer1M: 0.60  }],
+  ['gemini-3-flash',       { inputPer1M: 0.30,  outputPer1M: 2.50  }],
   // Claude
   ['claude-opus-4',        { inputPer1M: 15.00, outputPer1M: 75.00 }],
   ['claude-sonnet-4',      { inputPer1M: 3.00,  outputPer1M: 15.00 }],
