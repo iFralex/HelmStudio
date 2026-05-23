@@ -369,24 +369,40 @@ export async function todayLlmStats(db: Db = getDb()): Promise<{
 }> {
   const todayStart = new Date();
   todayStart.setUTCHours(0, 0, 0, 0);
-  const todayStartSec = Math.floor(todayStart.getTime() / 1000);
 
-  const row = db
+  // Query video_selections and qualifications directly by created_at so the
+  // stats are accurate even when a run is interrupted before runQualification
+  // can flush aggregate counters back to pipeline_runs.
+  const vsRow = db
     .select({
-      callsCount: sql<number>`coalesce(sum(${pipelineRuns.llmCallsCount}), 0)`,
-      inputTokens: sql<number>`coalesce(sum(${pipelineRuns.llmTokensInput}), 0)`,
-      outputTokens: sql<number>`coalesce(sum(${pipelineRuns.llmTokensOutput}), 0)`,
-      costUsd: sql<number | null>`sum(${pipelineRuns.llmCostUsd})`,
+      calls: sql<number>`coalesce(count(*), 0)`,
+      tokensIn: sql<number>`coalesce(sum(${videoSelections.inputTokens}), 0)`,
+      tokensOut: sql<number>`coalesce(sum(${videoSelections.outputTokens}), 0)`,
+      cost: sql<number | null>`sum(${videoSelections.costUsd})`,
     })
-    .from(pipelineRuns)
-    .where(gte(pipelineRuns.startedAt, new Date(todayStartSec * 1000)))
+    .from(videoSelections)
+    .where(gte(videoSelections.createdAt, todayStart))
     .get();
 
+  const qRow = db
+    .select({
+      calls: sql<number>`coalesce(count(*), 0)`,
+      tokensIn: sql<number>`coalesce(sum(${qualifications.inputTokens}), 0)`,
+      tokensOut: sql<number>`coalesce(sum(${qualifications.outputTokens}), 0)`,
+      cost: sql<number | null>`sum(${qualifications.costUsd})`,
+    })
+    .from(qualifications)
+    .where(gte(qualifications.createdAt, todayStart))
+    .get();
+
+  const vsCost = vsRow?.cost != null ? Number(vsRow.cost) : null;
+  const qCost = qRow?.cost != null ? Number(qRow.cost) : null;
+
   return {
-    callsCount: row?.callsCount ?? 0,
-    inputTokens: row?.inputTokens ?? 0,
-    outputTokens: row?.outputTokens ?? 0,
-    costUsd: row?.costUsd ?? null,
+    callsCount: (vsRow?.calls ?? 0) + (qRow?.calls ?? 0),
+    inputTokens: (vsRow?.tokensIn ?? 0) + (qRow?.tokensIn ?? 0),
+    outputTokens: (vsRow?.tokensOut ?? 0) + (qRow?.tokensOut ?? 0),
+    costUsd: vsCost === null && qCost === null ? null : (vsCost ?? 0) + (qCost ?? 0),
   };
 }
 
