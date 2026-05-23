@@ -63,7 +63,7 @@ export const QualifyOutputSchema = z.object({
   automatableWorkflows: z.array(AutomatableWorkflowSchema).max(5),
   suggestedSolution: z.string(),
   pitchAngle: z.string(),
-  signals: z.array(SignalSchema).min(2).max(15),
+  signals: z.array(SignalSchema).min(4).max(15),
   disqualifiers: z.array(z.string()),
   disqualifierScoreImpact: z.string(),
   salesObjections: z.array(z.string()).min(1).max(3),

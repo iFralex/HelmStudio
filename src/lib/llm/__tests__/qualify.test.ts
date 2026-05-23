@@ -103,6 +103,8 @@ function makeQualifyOutputJson(): string {
     pitchAngle: 'Streamline your review prep with AI',
     signals: [
       { type: 'positive', evidence: 'Consistent structured format across videos', videoId: 'vid001' },
+      { type: 'positive', evidence: 'Creator states research takes a lot of time', videoId: 'vid001' },
+      { type: 'positive', evidence: 'Repeated intro/outro formula across all videos', videoId: null },
       { type: 'negative', evidence: 'Some videos rely on hands-on testing', videoId: null },
     ],
     disqualifiers: [],
@@ -251,7 +253,7 @@ describe.skipIf(!sqlite3Available)('runFinalQualification', () => {
     expect(rows[0]!.channelId).toBe(CHANNEL_ID);
     expect(rows[0]!.runId).toBe(RUN_ID);
     expect(rows[0]!.videoSelectionId).toBe(1);
-    expect(rows[0]!.promptVersion).toBe('qualify-v4');
+    expect(rows[0]!.promptVersion).toBe('qualify-v5');
     expect(rows[0]!.modelUsed).toBe('claude-test-think');
     expect(rows[0]!.automationPotentialScore).toBe(73);
     expect(rows[0]!.workflowRepeatabilityScore).toBe(80);

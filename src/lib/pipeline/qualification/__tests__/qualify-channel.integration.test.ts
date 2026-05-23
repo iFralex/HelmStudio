@@ -124,6 +124,8 @@ function makeQualifyOutputJson(): string {
     pitchAngle: 'Streamline your review prep',
     signals: [
       { type: 'positive', evidence: 'Consistent format', videoId: 'vid001' },
+      { type: 'positive', evidence: 'Creator states research takes a long time', videoId: 'vid001' },
+      { type: 'positive', evidence: 'Repeated intro/outro formula across all videos', videoId: null },
       { type: 'negative', evidence: 'Some hands-on testing', videoId: null },
     ],
     disqualifiers: [],

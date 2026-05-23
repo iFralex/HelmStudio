@@ -3,7 +3,7 @@ import type { SelectOutput } from '@/lib/llm/schemas';
 import type { TranscriptFetchResult } from '@/lib/transcripts/fetcher';
 import { escapeXml } from './xml-helpers';
 
-export const version = 'qualify-v4';
+export const version = 'qualify-v5';
 
 export const system = `You are an expert evaluator of YouTube creators' workflow automation potential.
 You analyze public channel data — channel metadata, recent video metadata,
@@ -20,6 +20,14 @@ freshness needs, and language.
 
 When you cite evidence from transcripts in your \`signals\`, set the \`videoId\`
 field so the operator can verify against the source.
+
+## Signal requirements
+
+You must include **at least 4 signals**. For channels scoring above 60, aim for
+**5–8 signals** to build a robust evidence base. Read the transcripts carefully:
+every explicit statement, repeated verbal formula, or observed tool/workflow
+counts as a separate signal. Do not bundle multiple distinct observations into
+one signal entry — split them.
 
 ## Scoring rules
 
@@ -168,6 +176,45 @@ Copyright risk (−25 commercialViability). No original spoken content (−30 ev
 }
 \`\`\`
 
+### Example D — final 62, evidence_driven with weak evidence
+
+Channel: "AutoMeccanica Roberto", 72k subs, Italian car repair tutorials.
+Format: problem diagnosis → parts lookup → repair steps → road test. Consistent across all videos.
+No TIER_1 pain-point statements in any transcript. TIER_2 evidence: descriptions always include
+parts lists with affiliate links to external suppliers; transcripts show Roberto manually
+cross-referencing two parts catalogues on-screen without AI tools.
+Physical repair work caps workflowRepeatability (−25 applied).
+
+\`\`\`json
+{
+  "scores": { "workflowRepeatability": 70, "evidenceStrength": 52, "commercialViability": 65, "final": 62 },
+  "analysisMode": "evidence_driven",
+  "automatableWorkflows": [
+    {
+      "name": "Parts compatibility research & sourcing briefing",
+      "evidenceTier": "TIER_2",
+      "evidenceBasis": "Roberto cross-references two supplier catalogues on-screen in every tutorial; descriptions include manually curated affiliate links per video",
+      "estimatedTimeSavedPerVideoMinutes": 40,
+      "timeSavedReasoning": "Catalogue lookup + affiliate link writing estimated at ~60 min/video based on visible on-screen time; automation handles 65% of lookups = ~40 min saved.",
+      "productReadiness": "off_the_shelf"
+    }
+  ],
+  "signals": [
+    { "type": "positive", "evidence": "Consistent 4-part format (diagnosis→parts→repair→test) across all 20 analyzed videos", "videoId": null },
+    { "type": "positive", "evidence": "Parts affiliate links manually added to every description — repetitive structured task visible in descriptions", "videoId": null },
+    { "type": "positive", "evidence": "Visible on-screen use of two separate supplier catalogues for cross-referencing parts in each repair video", "videoId": null },
+    { "type": "negative", "evidence": "Core content requires physical hands-on repair work with tools — main value cannot be automated", "videoId": null },
+    { "type": "negative", "evidence": "No TIER_1 evidence: creator never verbally states a workflow is painful or time-consuming in any transcript", "videoId": null }
+  ],
+  "disqualifiers": ["Physical repair steps require hands-on work — workflowRepeatability capped at 70"],
+  "disqualifierScoreImpact": "hands-on physical work: workflowRepeatability −25 (from 95 → 70)",
+  "salesObjections": [
+    "Devo verificare personalmente ogni ricambio — non posso fidarmi di un AI che non ha mai smontato un motore",
+    "I miei iscritti si aspettano che io sappia tutto a memoria, non che usi strumenti"
+  ]
+}
+\`\`\`
+
 You answer ONLY in JSON, conforming exactly to the schema in the user message.
 No prose outside the JSON. No markdown fences.`;
 
@@ -301,9 +348,10 @@ Output a single JSON object conforming to this schema:
   "signals": [
     {
       "type": "positive" | "negative",
-      "evidence": string,
+      "evidence": string,        // one distinct observation per entry; split bundled observations
       "videoId": string | null
     }
+    // minimum 4 signals required; aim for 5–8 for channels scoring above 60
   ],
   "disqualifiers": [string],
   "disqualifierScoreImpact": string,
