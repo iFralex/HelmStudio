@@ -155,7 +155,7 @@ export function AssessmentCard({
           )}
           {qualification.confidence !== null && qualification.confidence !== undefined && (
             <span className="text-sm text-muted-foreground">
-              {copy.channelDetail.confidence}: {Math.round(qualification.confidence * 100)}%
+              {copy.channelDetail.confidence}: {Math.round(qualification.confidence)}%
             </span>
           )}
         </div>
