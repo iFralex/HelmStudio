@@ -58,6 +58,7 @@ function rowToQualifyOutput(
     signals: (qual.signals as QualifyOutput['signals']) ?? [],
     disqualifiers: (qual.disqualifiers as string[]) ?? [],
     disqualifierScoreImpact: qual.disqualifierScoreImpact ?? '',
+    salesObjections: (qual.salesObjections as string[] | null) ?? [''],
     confidence: qual.confidence ?? 0,
     rationale: qual.rationale ?? '',
   };

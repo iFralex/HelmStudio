@@ -38,6 +38,7 @@ export const AutomatableWorkflowSchema = z.object({
   evidenceBasis: z.string(),
   estimatedTimeSavedPerVideoMinutes: z.number().int().nonnegative(),
   timeSavedReasoning: z.string(),
+  productReadiness: z.enum(['off_the_shelf', 'buildable_6mo', 'research_phase']),
 });
 
 export const SignalSchema = z.object({
@@ -65,11 +66,64 @@ export const QualifyOutputSchema = z.object({
   signals: z.array(SignalSchema).min(2).max(8),
   disqualifiers: z.array(z.string()),
   disqualifierScoreImpact: z.string(),
+  salesObjections: z.array(z.string()).min(1).max(3),
   confidence: z.number().min(0).max(1),
   rationale: z.string(),
 });
 
 export type QualifyOutput = z.infer<typeof QualifyOutputSchema>;
+
+export function validateQualifyOutput(
+  output: QualifyOutput,
+): { valid: true } | { valid: false; reason: string } {
+  const { scores, automatableWorkflows, analysisMode, disqualifiers } = output;
+
+  // Copyright / third-party disqualifier → commercialViability must be < 40
+  const hasCopyrightDisqualifier = disqualifiers.some((d) =>
+    /copyright|third.party|terzi/i.test(d),
+  );
+  if (hasCopyrightDisqualifier && scores.commercialViability >= 40) {
+    return {
+      valid: false,
+      reason: `Copyright/third-party disqualifier present but commercialViability is ${scores.commercialViability} (must be < 40)`,
+    };
+  }
+
+  // final > 75 requires at least one TIER_1 workflow
+  const hasTier1 = automatableWorkflows.some((w) => w.evidenceTier === 'TIER_1');
+  if (scores.final > 75 && !hasTier1) {
+    return {
+      valid: false,
+      reason: `final score ${scores.final} > 75 requires at least one TIER_1 workflow (none found)`,
+    };
+  }
+
+  // analysisMode=inferred → final must be < 60
+  if (analysisMode === 'inferred' && scores.final >= 60) {
+    return {
+      valid: false,
+      reason: `analysisMode=inferred requires final score < 60, got ${scores.final}`,
+    };
+  }
+
+  // no workflows → final must be < 45
+  if (automatableWorkflows.length === 0 && scores.final >= 45) {
+    return {
+      valid: false,
+      reason: `No automatable workflows requires final score < 45, got ${scores.final}`,
+    };
+  }
+
+  return { valid: true };
+}
+
+export const AdvocateOutputSchema = z.object({
+  approved: z.boolean(),
+  revisedFinal: z.number().int().min(0).max(100).nullable(),
+  concerns: z.array(z.string()),
+});
+
+export type AdvocateOutput = z.infer<typeof AdvocateOutputSchema>;
 
 export const DraftOutputSchema = z.object({
   subject: z.string().min(5).max(80), // hard cap > 60 to allow minor overruns

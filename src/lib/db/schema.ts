@@ -180,8 +180,13 @@ export const qualifications = sqliteTable(
     signals: text('signals', { mode: 'json' }),
     disqualifiers: text('disqualifiers', { mode: 'json' }),
     disqualifierScoreImpact: text('disqualifier_score_impact'),
+    salesObjections: text('sales_objections', { mode: 'json' }),
     confidence: real('confidence'),
     rationale: text('rationale'),
+
+    advocateApproved: integer('advocate_approved', { mode: 'boolean' }),
+    advocateRevisedFinal: integer('advocate_revised_final'),
+    advocateConcerns: text('advocate_concerns', { mode: 'json' }),
 
     rawResponsePath: text('raw_response_path').notNull(),
     rawPromptPath: text('raw_prompt_path').notNull(),

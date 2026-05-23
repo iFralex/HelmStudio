@@ -15,6 +15,7 @@ type AutomatableWorkflow = {
   evidenceBasis?: string;
   estimatedTimeSavedPerVideoMinutes: number;
   timeSavedReasoning?: string;
+  productReadiness?: 'off_the_shelf' | 'buildable_6mo' | 'research_phase';
 };
 
 type Signal = {
@@ -39,6 +40,12 @@ const TIER_LABELS: Record<string, string> = {
   TIER_1: 'T1 — esplicito',
   TIER_2: 'T2 — osservato',
   TIER_3: 'T3 — inferito',
+};
+
+const READINESS_CLASSES: Record<string, string> = {
+  off_the_shelf: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  buildable_6mo: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+  research_phase: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
 };
 
 interface SubScoreBarProps {
@@ -107,6 +114,9 @@ export function AssessmentCard({
   const hasSubScores =
     qualification.workflowRepeatabilityScore !== null &&
     qualification.workflowRepeatabilityScore !== undefined;
+  const salesObjections = (qualification.salesObjections as string[] | null) ?? [];
+  const advocateConcerns = (qualification.advocateConcerns as string[] | null) ?? [];
+  const hasAdvocateReview = qualification.advocateApproved !== null && qualification.advocateApproved !== undefined;
 
   return (
     <div className="space-y-5">
@@ -213,7 +223,7 @@ export function AssessmentCard({
               <div key={i} className="rounded-lg border p-3 text-sm space-y-1.5">
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                   <span className="font-medium">{wf.name}</span>
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
                     {wf.evidenceTier && (
                       <span
                         className={cn(
@@ -222,6 +232,16 @@ export function AssessmentCard({
                         )}
                       >
                         {TIER_LABELS[wf.evidenceTier] ?? wf.evidenceTier}
+                      </span>
+                    )}
+                    {wf.productReadiness && (
+                      <span
+                        className={cn(
+                          'inline-flex items-center rounded-full px-1.5 py-0.5 text-xs font-medium',
+                          READINESS_CLASSES[wf.productReadiness],
+                        )}
+                      >
+                        {copy.channelDetail.productReadiness[wf.productReadiness]}
                       </span>
                     )}
                     <Badge variant="secondary" className="text-xs">
@@ -353,6 +373,72 @@ export function AssessmentCard({
           <p className="text-sm text-muted-foreground">{copy.channelDetail.noDisqualifiers}</p>
         )}
       </section>
+
+      {/* Obiezioni di vendita previste */}
+      {salesObjections.length > 0 && (
+        <section>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            {copy.channelDetail.salesObjections}
+          </h3>
+          <ul className="space-y-1">
+            {salesObjections.map((obj, i) => (
+              <li key={i} className="text-sm flex items-start gap-2">
+                <span className="text-muted-foreground shrink-0 mt-0.5">–</span>
+                <span>{obj}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Revisione avvocato del diavolo */}
+      {hasAdvocateReview && (
+        <section className="rounded-lg border p-3 space-y-2">
+          <div className="flex items-center gap-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {copy.channelDetail.advocateTitle}
+            </p>
+            <span
+              className={cn(
+                'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
+                qualification.advocateApproved
+                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                  : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+              )}
+            >
+              {qualification.advocateApproved
+                ? copy.channelDetail.advocateApproved
+                : copy.channelDetail.advocateRejected}
+            </span>
+            {!qualification.advocateApproved && qualification.advocateRevisedFinal !== null && (
+              <span className="text-xs text-muted-foreground">
+                {copy.channelDetail.advocateOriginalScore(
+                  qualification.workflowRepeatabilityScore
+                    ? Math.round(
+                        (qualification.workflowRepeatabilityScore * 0.4 +
+                          (qualification.evidenceStrengthScore ?? 0) * 0.35 +
+                          (qualification.commercialViabilityScore ?? 0) * 0.25),
+                      )
+                    : (qualification.automationPotentialScore ?? 0),
+                )}{' '}
+                → {copy.channelDetail.advocateRevisedScore(qualification.advocateRevisedFinal)}
+              </span>
+            )}
+          </div>
+          {advocateConcerns.length > 0 ? (
+            <ul className="space-y-1">
+              {advocateConcerns.map((c, i) => (
+                <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                  <span className="shrink-0 mt-0.5">•</span>
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-xs text-muted-foreground">{copy.channelDetail.advocateNoConcerns}</p>
+          )}
+        </section>
+      )}
 
       {/* Footer */}
       <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground border-t pt-3">

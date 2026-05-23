@@ -117,6 +117,7 @@ function makeQualifyOutputJson(): string {
         evidenceBasis: 'Creator states it takes a long time in vid001',
         estimatedTimeSavedPerVideoMinutes: 45,
         timeSavedReasoning: '~1h research per video, 75% automatable = 45 min saved.',
+        productReadiness: 'off_the_shelf',
       },
     ],
     suggestedSolution: 'AI research assistant',
@@ -127,6 +128,7 @@ function makeQualifyOutputJson(): string {
     ],
     disqualifiers: [],
     disqualifierScoreImpact: 'No disqualifiers applied.',
+    salesObjections: ['Il mio processo è già rodato e veloce'],
     confidence: 0.82,
     rationale: 'Strong automation potential.',
   });

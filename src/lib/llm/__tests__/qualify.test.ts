@@ -22,6 +22,7 @@ vi.mock('@/lib/env', () => ({
     LLM_MODEL_FAST: 'claude-test-fast',
     DATA_DIR: '/tmp/llm-qualify-test',
     DATABASE_PATH: ':memory:',
+    LOG_LEVEL: 'silent',
   },
 }));
 
@@ -95,6 +96,7 @@ function makeQualifyOutputJson(): string {
         evidenceBasis: 'Creator states "ci vuole un sacco di tempo a trovare i dati" in vid001',
         estimatedTimeSavedPerVideoMinutes: 45,
         timeSavedReasoning: 'Creator spends ~1h on research per video; automation handles 75% = ~45 min saved.',
+        productReadiness: 'off_the_shelf',
       },
     ],
     suggestedSolution: 'AI research assistant that compiles specs and pricing',
@@ -105,6 +107,7 @@ function makeQualifyOutputJson(): string {
     ],
     disqualifiers: [],
     disqualifierScoreImpact: 'No disqualifiers applied.',
+    salesObjections: ['Il mio processo è già rodato e veloce'],
     confidence: 0.82,
     rationale: 'Channel shows strong automation potential via research phase.',
   });
@@ -248,7 +251,7 @@ describe.skipIf(!sqlite3Available)('runFinalQualification', () => {
     expect(rows[0]!.channelId).toBe(CHANNEL_ID);
     expect(rows[0]!.runId).toBe(RUN_ID);
     expect(rows[0]!.videoSelectionId).toBe(1);
-    expect(rows[0]!.promptVersion).toBe('qualify-v3');
+    expect(rows[0]!.promptVersion).toBe('qualify-v4');
     expect(rows[0]!.modelUsed).toBe('claude-test-think');
     expect(rows[0]!.automationPotentialScore).toBe(73);
     expect(rows[0]!.workflowRepeatabilityScore).toBe(80);

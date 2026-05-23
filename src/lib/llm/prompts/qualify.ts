@@ -3,7 +3,7 @@ import type { SelectOutput } from '@/lib/llm/schemas';
 import type { TranscriptFetchResult } from '@/lib/transcripts/fetcher';
 import { escapeXml } from './xml-helpers';
 
-export const version = 'qualify-v3';
+export const version = 'qualify-v4';
 
 export const system = `You are an expert evaluator of YouTube creators' workflow automation potential.
 You analyze public channel data — channel metadata, recent video metadata,
@@ -81,6 +81,92 @@ evidenceStrength ≥ 60. Otherwise set to "inferred".
 ## Pitch language
 
 Always write \`pitchAngle\` and \`suggestedSolution\` in English regardless of channel language.
+
+## productReadiness per workflow
+
+For each workflow, rate how close to market a solution is:
+- **off_the_shelf**: existing tools can be composed right now (e.g. Zapier + GPT-4, existing API wrappers)
+- **buildable_6mo**: requires custom development but with standard techniques; 3–6 months to MVP
+- **research_phase**: depends on capabilities not yet reliable enough for production (real-time hallucination-free summarization at scale, etc.)
+
+## salesObjections
+
+List 1–3 realistic objections this specific creator would raise when pitched AI workflow tools.
+Derive these from the channel evidence — e.g. "mio abbonati si aspettano contenuti autentici, non AI-generated",
+"il mio processo è già rapido perché conosco bene la nicchia", "non ho budget per tool SaaS".
+Do NOT use generic placeholders; ground each objection in what you know about this channel.
+
+## Few-shot calibration examples
+
+### Example A — final 78, evidence_driven
+
+Channel: "TechStudio IT", 110k subs, solo creator, weekly software tool reviews (Italian).
+Transcript evidence: "ogni settimana mi ci vogliono 3–4 ore a raccogliere i benchmark e i prezzi da siti diversi" (TIER_1), consistent intro→review→verdict→verdict structure (TIER_2).
+
+\`\`\`json
+{
+  "scores": { "workflowRepeatability": 84, "evidenceStrength": 76, "commercialViability": 70, "final": 78 },
+  "analysisMode": "evidence_driven",
+  "automatableWorkflows": [
+    {
+      "name": "Benchmark & pricing aggregation",
+      "evidenceTier": "TIER_1",
+      "evidenceBasis": "Creator states 3–4 hours/week gathering benchmarks and prices",
+      "estimatedTimeSavedPerVideoMinutes": 120,
+      "timeSavedReasoning": "Creator stated 3–4 h; automation handles 80% of data collection = ~3 h saved = 180 min, capped at 120 to be conservative.",
+      "productReadiness": "off_the_shelf"
+    }
+  ],
+  "salesObjections": [
+    "I benchmarks devono essere precisi al 100%, non posso rischiare errori dell'AI",
+    "Ho già il mio metodo rodato e funziona — cambiare richiede tempo"
+  ]
+}
+\`\`\`
+
+### Example B — final 41, inferred
+
+Channel: "Cucina con Marta", 38k subs, Italian recipe tutorials, no explicit workflow complaints.
+No TIER_1 evidence. Some repeatable structure (intro→ingredients→steps→tasting).
+
+\`\`\`json
+{
+  "scores": { "workflowRepeatability": 58, "evidenceStrength": 30, "commercialViability": 42, "final": 44 },
+  "analysisMode": "inferred",
+  "automatableWorkflows": [
+    {
+      "name": "Recipe description & SEO tags",
+      "evidenceTier": "TIER_2",
+      "evidenceBasis": "All video descriptions follow identical boilerplate structure with recipe name and timestamps",
+      "estimatedTimeSavedPerVideoMinutes": 20,
+      "timeSavedReasoning": "Description template + keyword research estimated at ~30 min; automation covers ~65% = ~20 min.",
+      "productReadiness": "off_the_shelf"
+    }
+  ],
+  "salesObjections": [
+    "Le mie ricette le scrive io di petto, il tono personale è tutto",
+    "Non ho dimestichezza con strumenti tecnici SaaS"
+  ]
+}
+\`\`\`
+
+### Example C — final 9, disqualified
+
+Channel: "SerieA Highlights TV", 320k subs, soccer highlight clips, third-party broadcast footage, corporate-owned.
+Copyright risk (−25 commercialViability). No original spoken content (−30 evidenceStrength). Corporate (−20 commercialViability).
+
+\`\`\`json
+{
+  "scores": { "workflowRepeatability": 20, "evidenceStrength": 5, "commercialViability": 0, "final": 9 },
+  "analysisMode": "inferred",
+  "automatableWorkflows": [],
+  "disqualifiers": ["third-party broadcast footage — copyright risk", "corporate/network ownership"],
+  "disqualifierScoreImpact": "copyright: commercialViability −25; corporate: commercialViability −20 (floored at 0); no spoken content: evidenceStrength −30",
+  "salesObjections": [
+    "Non decidiamo noi gli acquisti software, tutto passa dall'ufficio IT"
+  ]
+}
+\`\`\`
 
 You answer ONLY in JSON, conforming exactly to the schema in the user message.
 No prose outside the JSON. No markdown fences.`;
@@ -206,7 +292,8 @@ Output a single JSON object conforming to this schema:
       "evidenceTier": "TIER_1" | "TIER_2" | "TIER_3",
       "evidenceBasis": string,
       "estimatedTimeSavedPerVideoMinutes": integer,
-      "timeSavedReasoning": string
+      "timeSavedReasoning": string,
+      "productReadiness": "off_the_shelf" | "buildable_6mo" | "research_phase"
     }
   ],
   "suggestedSolution": string,
@@ -220,6 +307,7 @@ Output a single JSON object conforming to this schema:
   ],
   "disqualifiers": [string],
   "disqualifierScoreImpact": string,
+  "salesObjections": [string (1–3 realistic objections this creator would raise)],
   "confidence": number (0–1),
   "rationale": string
 }
@@ -228,8 +316,10 @@ Remember:
 - Do NOT include TIER_3-only workflows. If you have no TIER_1 or TIER_2 workflows, leave automatableWorkflows empty.
 - Apply disqualifier score deductions before computing final.
 - timeSavedReasoning must show your calculation, not just a number.
-- pitchAngle must be in English.
+- pitchAngle and suggestedSolution must be in English.
 - Let the transcripts inform the SPECIFICITY of automatableWorkflows and suggestedSolution.
+- salesObjections must be grounded in THIS channel's evidence, not generic AI-skepticism.
+- productReadiness must be set for every workflow.
 </task>
 </channel_analysis_request>`;
 }

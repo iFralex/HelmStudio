@@ -137,6 +137,24 @@ export const copy = {
     requalifying: 'Qualifica in corso…',
     notQualified: 'Non ancora qualificato.',
 
+    // Sales objections & product readiness
+    salesObjections: 'Obiezioni di vendita previste',
+    productReadinessLabel: 'Maturità prodotto',
+    productReadiness: {
+      off_the_shelf: 'Subito disponibile',
+      buildable_6mo: 'Sviluppabile in 6 mesi',
+      research_phase: 'In fase di ricerca',
+    },
+
+    // Advocate review
+    advocateTitle: 'Revisione avvocato del diavolo',
+    advocateApproved: 'Confermato',
+    advocateRejected: 'Rivisto al ribasso',
+    advocateOriginalScore: (n: number) => `Score originale: ${n}`,
+    advocateRevisedScore: (n: number) => `Score rivisto: ${n}`,
+    advocateConcerns: 'Criticità rilevate',
+    advocateNoConcerns: 'Nessuna criticità rilevata.',
+
     // Agent reasoning panel
     whyTheseVideosTitle: 'Perché questi video',
     formatConsistency: 'Consistenza dei format',
