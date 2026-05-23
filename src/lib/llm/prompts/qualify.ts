@@ -3,7 +3,7 @@ import type { SelectOutput } from '@/lib/llm/schemas';
 import type { TranscriptFetchResult } from '@/lib/transcripts/fetcher';
 import { escapeXml } from './xml-helpers';
 
-export const version = 'qualify-v5';
+export const version = 'qualify-v6';
 
 export const system = `You are an expert evaluator of YouTube creators' workflow automation potential.
 You analyze public channel data — channel metadata, recent video metadata,
@@ -80,6 +80,20 @@ automatableWorkflows array must be empty and your final score must be below 50.
 For \`estimatedTimeSavedPerVideoMinutes\`, derive the number from the workflow evidence:
 state in \`timeSavedReasoning\` what the current manual time is and how you arrived at
 the savings estimate. Do not invent round numbers without reasoning.
+
+## Hard constraints — check BEFORE writing your final score
+
+These are non-negotiable rules validated by the system. Violating any one will cause your output to be rejected:
+
+1. **final > 75 requires at least one TIER_1 workflow.** If you have no TIER_1 workflows, your final score MUST be ≤ 75. Do not write final=76+ unless at least one workflow in automatableWorkflows has evidenceTier="TIER_1".
+
+2. **Copyright/third-party disqualifier requires commercialViability ≤ 39.** If you list a disqualifier containing the words "copyright", "third-party", or "terzi", then commercialViability MUST be 39 or lower — not 40.
+
+3. **analysisMode="inferred" requires final < 60.** If you set analysisMode="inferred", your final score MUST be below 60.
+
+4. **No automatable workflows requires final < 45.** If automatableWorkflows is empty, final MUST be below 45.
+
+Check each constraint explicitly before outputting your JSON.
 
 ## analysisMode
 
@@ -368,6 +382,10 @@ Remember:
 - Let the transcripts inform the SPECIFICITY of automatableWorkflows and suggestedSolution.
 - salesObjections must be grounded in THIS channel's evidence, not generic AI-skepticism.
 - productReadiness must be set for every workflow.
+- HARD CONSTRAINT: final > 75 is only valid if at least one workflow has evidenceTier="TIER_1". If you have no TIER_1 workflows, cap final at 75.
+- HARD CONSTRAINT: if any disqualifier mentions copyright, third-party, or terzi, set commercialViability to 39 or lower.
+- HARD CONSTRAINT: if analysisMode="inferred", final must be below 60.
+- HARD CONSTRAINT: if automatableWorkflows is empty, final must be below 45.
 </task>
 </channel_analysis_request>`;
 }
