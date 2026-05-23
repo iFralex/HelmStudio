@@ -58,7 +58,7 @@ export async function runFinalQualification(
     system,
     user,
     schema: QualifyOutputSchema,
-    maxTokens: 8192,
+    maxTokens: 24576,
     context: { channelId, runId, kind: 'qualification' },
   });
 
