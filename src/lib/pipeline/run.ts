@@ -34,7 +34,7 @@ export async function runPipeline(
   const runStages = stages ?? ['discovery', 'qualification'];
 
   try {
-    await preflightChecks(db);
+    await preflightChecks({ skipYoutubeCheck: !runStages.includes('discovery') }, db);
   } catch (err) {
     if (err instanceof InsufficientQuotaHeadroom) {
       log.info({ spent: err.spent, required: err.required }, 'preflight failed, run cancelled');

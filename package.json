@@ -24,7 +24,8 @@
     "seed:keywords": "tsx scripts/seed-keywords.ts",
     "bootstrap": "tsx scripts/bootstrap.ts",
     "worker:run": "tsx src/worker/run.ts",
-    "worker:manual": "tsx src/worker/run.ts --manual"
+    "worker:manual": "tsx src/worker/run.ts --manual",
+    "worker:qualify": "tsx src/worker/run.ts --manual --qualify-only"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

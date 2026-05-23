@@ -17,7 +17,11 @@ export class InsufficientQuotaHeadroom extends Error {
   }
 }
 
-export async function preflightChecks(db: Db = getDb()): Promise<void> {
+export async function preflightChecks(
+  opts: { skipYoutubeCheck?: boolean } = {},
+  db: Db = getDb(),
+): Promise<void> {
+  if (opts.skipYoutubeCheck) return;
   const spent = todayUnitsSpent(db);
   const cap =
     env.PIPELINE_YOUTUBE_QUOTA_DAILY_LIMIT - env.PIPELINE_YOUTUBE_QUOTA_SAFETY_BUFFER;
