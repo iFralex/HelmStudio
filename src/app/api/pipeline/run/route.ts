@@ -12,10 +12,11 @@ export async function POST() {
       );
     }
 
+    const isDev = process.env.NODE_ENV !== 'production';
     const child = spawn(process.execPath, ['--import', 'tsx', 'src/worker/run.ts', '--manual'], {
       cwd: process.cwd(),
       detached: true,
-      stdio: 'ignore',
+      stdio: isDev ? ['ignore', 'inherit', 'inherit'] : 'ignore',
       env: process.env,
     });
     child.unref();

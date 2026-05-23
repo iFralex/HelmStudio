@@ -52,6 +52,7 @@ export async function runQualification(
         calls: count(),
         tokensIn: sum(videoSelections.inputTokens),
         tokensOut: sum(videoSelections.outputTokens),
+        costUsd: sum(videoSelections.costUsd),
       })
       .from(videoSelections)
       .where(eq(videoSelections.runId, runId))
@@ -62,6 +63,7 @@ export async function runQualification(
         calls: count(),
         tokensIn: sum(qualifications.inputTokens),
         tokensOut: sum(qualifications.outputTokens),
+        costUsd: sum(qualifications.costUsd),
       })
       .from(qualifications)
       .where(eq(qualifications.runId, runId))
@@ -72,6 +74,10 @@ export async function runQualification(
       Number(selectionStats?.tokensIn ?? 0) + Number(qualStats?.tokensIn ?? 0);
     const llmTokensOutput =
       Number(selectionStats?.tokensOut ?? 0) + Number(qualStats?.tokensOut ?? 0);
+    const selCost = selectionStats?.costUsd != null ? Number(selectionStats.costUsd) : null;
+    const qualCost = qualStats?.costUsd != null ? Number(qualStats.costUsd) : null;
+    const llmCostUsd =
+      selCost === null && qualCost === null ? null : (selCost ?? 0) + (qualCost ?? 0);
 
     db.update(pipelineRuns)
       .set({
@@ -80,6 +86,7 @@ export async function runQualification(
         llmCallsCount,
         llmTokensInput,
         llmTokensOutput,
+        llmCostUsd,
       })
       .where(eq(pipelineRuns.id, runId))
       .run();
@@ -89,20 +96,23 @@ export async function runQualification(
     return { qualified, skipped, rejected };
   } catch (err) {
     const selectionStats = db
-      .select({ calls: count(), tokensIn: sum(videoSelections.inputTokens), tokensOut: sum(videoSelections.outputTokens) })
+      .select({ calls: count(), tokensIn: sum(videoSelections.inputTokens), tokensOut: sum(videoSelections.outputTokens), costUsd: sum(videoSelections.costUsd) })
       .from(videoSelections)
       .where(eq(videoSelections.runId, runId))
       .get();
     const qualStats = db
-      .select({ calls: count(), tokensIn: sum(qualifications.inputTokens), tokensOut: sum(qualifications.outputTokens) })
+      .select({ calls: count(), tokensIn: sum(qualifications.inputTokens), tokensOut: sum(qualifications.outputTokens), costUsd: sum(qualifications.costUsd) })
       .from(qualifications)
       .where(eq(qualifications.runId, runId))
       .get();
+    const scPartial = selectionStats?.costUsd != null ? Number(selectionStats.costUsd) : null;
+    const qcPartial = qualStats?.costUsd != null ? Number(qualStats.costUsd) : null;
     db.update(pipelineRuns)
       .set({
         llmCallsCount: (selectionStats?.calls ?? 0) + (qualStats?.calls ?? 0),
         llmTokensInput: Number(selectionStats?.tokensIn ?? 0) + Number(qualStats?.tokensIn ?? 0),
         llmTokensOutput: Number(selectionStats?.tokensOut ?? 0) + Number(qualStats?.tokensOut ?? 0),
+        llmCostUsd: scPartial === null && qcPartial === null ? null : (scPartial ?? 0) + (qcPartial ?? 0),
       })
       .where(eq(pipelineRuns.id, runId))
       .run();

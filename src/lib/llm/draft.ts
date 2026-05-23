@@ -51,9 +51,14 @@ export async function runDraftGeneration(
       context: { channelId, kind: 'draft' },
     });
 
+    const retryCost = retryResult.usage.costUsd;
     usage = {
       inputTokens: usage.inputTokens + retryResult.usage.inputTokens,
       outputTokens: usage.outputTokens + retryResult.usage.outputTokens,
+      costUsd:
+        usage.costUsd === null && retryCost === null
+          ? null
+          : (usage.costUsd ?? 0) + (retryCost ?? 0),
     };
     modelUsed = retryResult.modelUsed;
     rawPath = retryResult.rawPath;
@@ -90,6 +95,7 @@ export async function runDraftGeneration(
         promptVersion,
         inputTokens: usage.inputTokens,
         outputTokens: usage.outputTokens,
+        costUsd: usage.costUsd,
         rawResponsePath: rawPath,
         isCurrent: true,
       })

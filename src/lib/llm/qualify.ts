@@ -60,6 +60,7 @@ export async function runFinalQualification(
       promptVersion,
       inputTokens: usage.inputTokens,
       outputTokens: usage.outputTokens,
+      costUsd: usage.costUsd,
       latencyMs: Math.round(latencyMs),
       nicheClassification: output.nicheClassification,
       formatType: output.formatType,

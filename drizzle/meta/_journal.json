@@ -15,6 +15,13 @@
       "when": 1779291174061,
       "tag": "0001_fluffy_mindworm",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1779514846709,
+      "tag": "0002_careful_psylocke",
+      "breakpoints": true
     }
   ]
 }

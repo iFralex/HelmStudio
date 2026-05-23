@@ -40,6 +40,7 @@ export async function runVideoSelection(
       promptVersion,
       inputTokens: usage.inputTokens,
       outputTokens: usage.outputTokens,
+      costUsd: usage.costUsd,
       latencyMs: Math.round(latencyMs),
       rawResponsePath: rawPath,
     })

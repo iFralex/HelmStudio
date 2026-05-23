@@ -3,6 +3,7 @@ import { getLlm, MODELS, ModelTier } from './client';
 import { withLlmLimit } from './limiter';
 import { paths, tsForFilename } from '@/lib/storage/paths';
 import { dumpRaw } from '@/lib/storage/raw';
+import { computeCostUsd } from './pricing';
 
 export class LlmFormatError extends Error {
   constructor(
@@ -34,7 +35,7 @@ export class LlmBusinessRuleError extends Error {
   }
 }
 
-export type TokenUsage = { inputTokens: number; outputTokens: number };
+export type TokenUsage = { inputTokens: number; outputTokens: number; costUsd: number | null };
 
 export type CallLlmArgs<T> = {
   tier: ModelTier;
@@ -53,7 +54,7 @@ export type CallLlmArgs<T> = {
 
 export type CallLlmResult<T> = {
   parsed: T;
-  usage: { inputTokens: number; outputTokens: number };
+  usage: TokenUsage;
   latencyMs: number;
   modelUsed: string;
   rawPath: string;
@@ -102,7 +103,7 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
     const start = performance.now();
 
     const attemptTexts: string[] = [];
-    let usage = { inputTokens: 0, outputTokens: 0 };
+    let rawTokens = { inputTokens: 0, outputTokens: 0 };
     let modelUsed = model;
 
     async function doApiCall(
@@ -117,9 +118,9 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
       });
       modelUsed = response.model ?? model;
       if (response.usage) {
-        usage = {
-          inputTokens: usage.inputTokens + response.usage.prompt_tokens,
-          outputTokens: usage.outputTokens + response.usage.completion_tokens,
+        rawTokens = {
+          inputTokens: rawTokens.inputTokens + response.usage.prompt_tokens,
+          outputTokens: rawTokens.outputTokens + response.usage.completion_tokens,
         };
       }
       return response.choices[0]?.message?.content ?? '';
@@ -138,22 +139,21 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
 
     const systemMsg = { role: 'system' as const, content: system };
 
+    const buildUsage = (): TokenUsage => ({
+      ...rawTokens,
+      costUsd: computeCostUsd(modelUsed, rawTokens.inputTokens, rawTokens.outputTokens),
+    });
+
     // First attempt
     let firstText: string;
     try {
       firstText = await doApiCall([systemMsg, { role: 'user', content: user }]);
     } catch (err) {
       const latencyMs = performance.now() - start;
+      const usage = buildUsage();
       await dumpRaw(rawPath, {
-        promptVersion,
-        system,
-        user,
-        attempts: [],
-        usage,
-        latencyMs,
-        timestamp: new Date().toISOString(),
-        model: modelUsed,
-        error: String(err),
+        promptVersion, system, user, attempts: [],
+        usage, latencyMs, timestamp: new Date().toISOString(), model: modelUsed, error: String(err),
       });
       throw new LlmCallError(`LLM API call failed: ${String(err)}`, rawPath);
     }
@@ -162,16 +162,11 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
     const firstResult = tryParse(firstText);
     if (firstResult.ok) {
       const latencyMs = performance.now() - start;
+      const usage = buildUsage();
       await dumpRaw(rawPath, {
-        promptVersion,
-        system,
-        user,
-        attempts: attemptTexts,
-        parsed: firstResult.parsed,
-        usage,
-        latencyMs,
-        timestamp: new Date().toISOString(),
-        model: modelUsed,
+        promptVersion, system, user, attempts: attemptTexts,
+        parsed: firstResult.parsed, usage, latencyMs,
+        timestamp: new Date().toISOString(), model: modelUsed,
       });
       return { parsed: firstResult.parsed, usage, latencyMs, modelUsed, rawPath };
     }
@@ -183,24 +178,14 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
         systemMsg,
         { role: 'user', content: user },
         { role: 'assistant', content: firstText },
-        {
-          role: 'user',
-          content:
-            'Your previous response did not match the required JSON schema. Reply with the JSON only.',
-        },
+        { role: 'user', content: 'Your previous response did not match the required JSON schema. Reply with the JSON only.' },
       ]);
     } catch (err) {
       const latencyMs = performance.now() - start;
+      const usage = buildUsage();
       await dumpRaw(rawPath, {
-        promptVersion,
-        system,
-        user,
-        attempts: attemptTexts,
-        usage,
-        latencyMs,
-        timestamp: new Date().toISOString(),
-        model: modelUsed,
-        error: String(err),
+        promptVersion, system, user, attempts: attemptTexts,
+        usage, latencyMs, timestamp: new Date().toISOString(), model: modelUsed, error: String(err),
       });
       throw new LlmCallError(`LLM API call failed on retry: ${String(err)}`, rawPath);
     }
@@ -208,37 +193,22 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
 
     const secondResult = tryParse(secondText);
     const latencyMs = performance.now() - start;
+    const usage = buildUsage();
 
     if (secondResult.ok) {
       await dumpRaw(rawPath, {
-        promptVersion,
-        system,
-        user,
-        attempts: attemptTexts,
-        parsed: secondResult.parsed,
-        usage,
-        latencyMs,
-        timestamp: new Date().toISOString(),
-        model: modelUsed,
+        promptVersion, system, user, attempts: attemptTexts,
+        parsed: secondResult.parsed, usage, latencyMs,
+        timestamp: new Date().toISOString(), model: modelUsed,
       });
       return { parsed: secondResult.parsed, usage, latencyMs, modelUsed, rawPath };
     }
 
     // Both attempts failed
     await dumpRaw(rawPath, {
-      promptVersion,
-      system,
-      user,
-      attempts: attemptTexts,
-      usage,
-      latencyMs,
-      timestamp: new Date().toISOString(),
-      model: modelUsed,
-      error: String(secondResult.error),
+      promptVersion, system, user, attempts: attemptTexts,
+      usage, latencyMs, timestamp: new Date().toISOString(), model: modelUsed, error: String(secondResult.error),
     });
-    throw new LlmFormatError(
-      'LLM response failed schema validation after 2 attempts',
-      rawPath,
-    );
+    throw new LlmFormatError('LLM response failed schema validation after 2 attempts', rawPath);
   });
 }

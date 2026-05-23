@@ -106,6 +106,7 @@ export const videoSelections = sqliteTable(
     promptVersion: text('prompt_version').notNull(),
     inputTokens: integer('input_tokens'),
     outputTokens: integer('output_tokens'),
+    costUsd: real('cost_usd'),
     latencyMs: integer('latency_ms'),
     rawResponsePath: text('raw_response_path').notNull(),
 
@@ -162,6 +163,7 @@ export const qualifications = sqliteTable(
     promptVersion: text('prompt_version').notNull(),
     inputTokens: integer('input_tokens'),
     outputTokens: integer('output_tokens'),
+    costUsd: real('cost_usd'),
     latencyMs: integer('latency_ms'),
 
     nicheClassification: text('niche_classification'),
@@ -206,6 +208,7 @@ export const outreachDrafts = sqliteTable(
     promptVersion: text('prompt_version').notNull(),
     inputTokens: integer('input_tokens'),
     outputTokens: integer('output_tokens'),
+    costUsd: real('cost_usd'),
     rawResponsePath: text('raw_response_path').notNull(),
 
     isCurrent: integer('is_current', { mode: 'boolean' }).notNull().default(true),
@@ -240,6 +243,7 @@ export const pipelineRuns = sqliteTable('pipeline_runs', {
   llmCallsCount: integer('llm_calls_count').notNull().default(0),
   llmTokensInput: integer('llm_tokens_input').notNull().default(0),
   llmTokensOutput: integer('llm_tokens_output').notNull().default(0),
+  llmCostUsd: real('llm_cost_usd'),
 
   errorMessage: text('error_message'),
   errorStack: text('error_stack'),
