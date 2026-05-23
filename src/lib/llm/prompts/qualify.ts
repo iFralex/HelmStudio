@@ -3,7 +3,7 @@ import type { SelectOutput } from '@/lib/llm/schemas';
 import type { TranscriptFetchResult } from '@/lib/transcripts/fetcher';
 import { escapeXml } from './xml-helpers';
 
-export const version = 'qualify-v6';
+export const version = 'qualify-v7';
 
 export const system = `You are an expert evaluator of YouTube creators' workflow automation potential.
 You analyze public channel data — channel metadata, recent video metadata,
@@ -70,9 +70,15 @@ List all deductions you applied in \`disqualifierScoreImpact\`.
 ## Evidence tier rules for workflows
 
 Every workflow in \`automatableWorkflows\` must declare its evidence tier:
-- **TIER_1**: creator explicitly states a pain point in a transcript (e.g. "il tool è rotto", "è un lavoraccio")
-- **TIER_2**: observable behavior that strongly implies the problem (uses external tools, asks community for tips, outsources specific tasks)
-- **TIER_3**: inferred from format structure alone — no direct evidence
+- **TIER_1**: creator explicitly **expresses pain, difficulty, or time cost** about a workflow step. They must use complaint language, state the task takes significant time, or express a desire to change. Valid examples: "il tool è rotto", "è un lavoraccio", "ci vogliono 3 ore solo per questo", "odio dover fare X ogni volta", "non riesco a stare dietro a tutto".
+- **TIER_2**: observable behavior that strongly implies the problem (uses external tools on-screen, asks the community for tips, outsources specific tasks, visible on-screen struggle with a tool).
+- **TIER_3**: inferred from format structure alone — no direct evidence.
+
+**TIER_1 requires pain language — workflow descriptions are NOT TIER_1.** The following do NOT qualify as TIER_1 evidence, regardless of how explicit they are:
+- Instructions to a collaborator ("Gianca metterà gli ingredienti", "mando le clip al montatore") → TIER_2 at most, as they imply an outsourced task exists
+- Describing process steps without complaint ("poi aggiungiamo la musica", "faccio il color grading") → TIER_2 or TIER_3
+- Mentioning they work with an editor or team → TIER_2 (outsourcing implies the task exists, not that it is painful)
+- Isolated hyperbolic statements without corroborating context ("ci ho messo 40 ore") → TIER_2
 
 **Do not include TIER_3-only workflows.** If every candidate workflow is TIER_3, your
 automatableWorkflows array must be empty and your final score must be below 50.
@@ -382,7 +388,7 @@ Remember:
 - Let the transcripts inform the SPECIFICITY of automatableWorkflows and suggestedSolution.
 - salesObjections must be grounded in THIS channel's evidence, not generic AI-skepticism.
 - productReadiness must be set for every workflow.
-- HARD CONSTRAINT: final > 75 is only valid if at least one workflow has evidenceTier="TIER_1". If you have no TIER_1 workflows, cap final at 75.
+- HARD CONSTRAINT: final > 75 is only valid if at least one workflow has evidenceTier="TIER_1". If you have no TIER_1 workflows, cap final at 75. Remember: TIER_1 requires the creator to express pain or difficulty, not merely describe what they or their team does.
 - HARD CONSTRAINT: if any disqualifier mentions copyright, third-party, or terzi, set commercialViability to 39 or lower.
 - HARD CONSTRAINT: if analysisMode="inferred", final must be below 60.
 - HARD CONSTRAINT: if automatableWorkflows is empty, final must be below 45.

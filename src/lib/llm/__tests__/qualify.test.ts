@@ -253,7 +253,7 @@ describe.skipIf(!sqlite3Available)('runFinalQualification', () => {
     expect(rows[0]!.channelId).toBe(CHANNEL_ID);
     expect(rows[0]!.runId).toBe(RUN_ID);
     expect(rows[0]!.videoSelectionId).toBe(1);
-    expect(rows[0]!.promptVersion).toBe('qualify-v6');
+    expect(rows[0]!.promptVersion).toBe('qualify-v7');
     expect(rows[0]!.modelUsed).toBe('claude-test-think');
     expect(rows[0]!.automationPotentialScore).toBe(73);
     expect(rows[0]!.workflowRepeatabilityScore).toBe(80);
