@@ -25,7 +25,8 @@
     "bootstrap": "tsx scripts/bootstrap.ts",
     "worker:run": "tsx src/worker/run.ts",
     "worker:manual": "tsx src/worker/run.ts --manual",
-    "worker:qualify": "tsx src/worker/run.ts --manual --qualify-only"
+    "worker:qualify": "tsx src/worker/run.ts --manual --qualify-only",
+    "worker:videos-and-qualify": "tsx src/worker/run.ts --manual --videos-and-qualify"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

@@ -2,7 +2,7 @@ import { getDb } from '../db/client';
 import { childLogger } from '../logger';
 import { preflightChecks, InsufficientQuotaHeadroom } from './preflight';
 import { openRun, closeRun } from './lifecycle';
-import { runDiscovery } from './discovery/run';
+import { runDiscovery, type DiscoveryStep } from './discovery/run';
 import { runQualification } from './qualification/run';
 import { QuotaExhausted } from '../youtube/quota';
 
@@ -13,7 +13,7 @@ export type QualificationSummary = Awaited<ReturnType<typeof runQualification>>;
 
 export type RunPipelineOptions = {
   triggeredBy: 'cron' | 'manual';
-  stages?: Array<'discovery' | 'qualification'>;
+  stages?: Array<'discovery' | 'videos' | 'qualification'>;
 };
 
 const log = childLogger({ module: 'pipeline' });
@@ -32,9 +32,10 @@ export async function runPipeline(
 }> {
   const { triggeredBy, stages } = opts;
   const runStages = stages ?? ['discovery', 'qualification'];
+  const needsYoutubeQuota = runStages.includes('discovery') || runStages.includes('videos');
 
   try {
-    await preflightChecks({ skipYoutubeCheck: !runStages.includes('discovery') }, db);
+    await preflightChecks({ skipYoutubeCheck: !needsYoutubeQuota }, db);
   } catch (err) {
     if (err instanceof InsufficientQuotaHeadroom) {
       log.info({ spent: err.spent, required: err.required }, 'preflight failed, run cancelled');
@@ -49,10 +50,18 @@ export async function runPipeline(
 
   try {
     if (runStages.includes('discovery')) {
-      summary.discovery = await runDiscovery(runId, db);
+      summary.discovery = await runDiscovery(runId, {}, db);
       if (summary.discovery.cancelled) {
         await closeRun(runId, 'cancelled', 'quota exhausted during discovery', undefined, db);
         log.info({ runId, summary }, 'pipeline run cancelled due to quota exhaustion during discovery');
+        return { runId, status: 'cancelled', summary };
+      }
+    } else if (runStages.includes('videos')) {
+      const videoSteps: DiscoveryStep[] = ['filter', 'video-enrichment'];
+      summary.discovery = await runDiscovery(runId, { steps: videoSteps }, db);
+      if (summary.discovery.cancelled) {
+        await closeRun(runId, 'cancelled', 'quota exhausted during video enrichment', undefined, db);
+        log.info({ runId, summary }, 'pipeline run cancelled due to quota exhaustion during video enrichment');
         return { runId, status: 'cancelled', summary };
       }
     }

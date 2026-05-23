@@ -22,7 +22,7 @@ async function main() {
 
   let summary;
   try {
-    summary = await runDiscovery(runId, db);
+    summary = await runDiscovery(runId, {}, db);
     await closeRun(runId, summary.cancelled ? 'cancelled' : 'completed', undefined, undefined, db);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

@@ -35,9 +35,11 @@ async function main() {
   // Ensure env is validated at startup
   void env;
   const triggeredBy = process.argv.includes('--manual') ? 'manual' : 'cron';
-  const stages: Array<'discovery' | 'qualification'> = process.argv.includes('--qualify-only')
+  const stages: Array<'discovery' | 'videos' | 'qualification'> = process.argv.includes('--qualify-only')
     ? ['qualification']
-    : ['discovery', 'qualification'];
+    : process.argv.includes('--videos-and-qualify')
+      ? ['videos', 'qualification']
+      : ['discovery', 'qualification'];
   logger.info({ triggeredBy, stages }, 'worker starting');
   try {
     const result = await runPipeline({ triggeredBy, stages }, undefined, (runId) => {

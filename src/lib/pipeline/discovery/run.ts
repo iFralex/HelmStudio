@@ -12,8 +12,12 @@ import { fetchVideosForSurvivingChannels } from './video-enrichment';
 
 type Db = ReturnType<typeof getDb>;
 
+export type DiscoveryStep = 'keyword-sweep' | 'category-exploration' | 'enrichment' | 'filter' | 'video-enrichment';
+const ALL_STEPS: DiscoveryStep[] = ['keyword-sweep', 'category-exploration', 'enrichment', 'filter', 'video-enrichment'];
+
 export async function runDiscovery(
   runId: number,
+  opts: { steps?: DiscoveryStep[] } = {},
   db: Db = getDb(),
 ): Promise<{
   searchesPerformed: number;
@@ -25,10 +29,11 @@ export async function runDiscovery(
 }> {
   const log = childLogger({ module: 'discovery', runId });
   const config = await getPipelineConfig(db);
+  const activeSteps = new Set(opts.steps ?? ALL_STEPS);
   let cancelled = false;
 
-  const runStep = async <T>(name: string, fn: () => Promise<T>): Promise<T | null> => {
-    if (cancelled) return null;
+  const runStep = async <T>(name: DiscoveryStep, fn: () => Promise<T>): Promise<T | null> => {
+    if (cancelled || !activeSteps.has(name)) return null;
     try {
       return await fn();
     } catch (err) {

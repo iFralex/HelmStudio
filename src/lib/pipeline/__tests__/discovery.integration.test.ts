@@ -218,7 +218,7 @@ describe.runIf(sqlite3Available)('runDiscovery integration', () => {
 
     setupAllMocks();
 
-    const summary = await runDiscovery(runId, db);
+    const summary = await runDiscovery(runId, {}, db);
 
     // Orchestrator summary
     expect(summary.searchesPerformed).toBe(3);
@@ -287,7 +287,7 @@ describe.runIf(sqlite3Available)('runDiscovery integration', () => {
     seedKeyword(db, 'cucina sana');
 
     setupAllMocks();
-    await runDiscovery(runId1, db);
+    await runDiscovery(runId1, {}, db);
 
     // Second run: same keywords return the same channel IDs (all already known)
     const runId2 = seedRun(db);
@@ -325,7 +325,7 @@ describe.runIf(sqlite3Available)('runDiscovery integration', () => {
       return { videos: [], rawPath: null };
     });
 
-    await runDiscovery(runId2, db);
+    await runDiscovery(runId2, {}, db);
 
     // channels table still has exactly 8 rows (no duplicates)
     const allChannels = db.select().from(schema.channels).all();
