@@ -5,6 +5,7 @@ import { QuotaCard } from '@/components/dashboard/quota-card';
 import { QueuesCard } from '@/components/dashboard/queues-card';
 import { LlmCard } from '@/components/dashboard/llm-card';
 import { TopRecentGrid } from '@/components/dashboard/top-recent-grid';
+import { DashboardPoller } from '@/components/dashboard/dashboard-poller';
 import { copy } from '@/lib/ui/copy';
 
 export default async function DashboardPage() {
@@ -16,6 +17,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
+      <DashboardPoller active={runStatus.active} />
       <h1 className="text-2xl font-semibold">{copy.dashboard.title}</h1>
       <RunStatusCard
         initialRun={snapshot.latestRun}
