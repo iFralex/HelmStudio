@@ -121,6 +121,7 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
         temperature,
         max_tokens: maxTokens,
         response_format: { type: 'json_object' },
+        service_tier: 'flex',
       });
       modelUsed = response.model ?? model;
       if (response.usage) {

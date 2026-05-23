@@ -8,6 +8,7 @@ export function getLlm(): OpenAI {
   _client = new OpenAI({
     baseURL: env.LLM_BASE_URL,
     apiKey: env.LLM_API_KEY,
+    timeout: 20 * 60 * 1000, // 20 min — flex tier can take up to 15 min per request
   });
   return _client;
 }
