@@ -3,7 +3,7 @@ import type { SelectOutput } from '@/lib/llm/schemas';
 import type { TranscriptFetchResult } from '@/lib/transcripts/fetcher';
 import { escapeXml } from './xml-helpers';
 
-export const version = 'qualify-v11';
+export const version = 'qualify-v12';
 
 export const system = `You are an expert evaluator of YouTube creators' workflow automation potential.
 You analyze public channel data — channel metadata, recent video metadata,
@@ -37,7 +37,9 @@ You produce THREE independent sub-scores plus a weighted final score.
 
 **Delegation rule:** Lower WR only when the creator **explicitly names a person or role** that handles the repetitive work ("il mio montatore Gianca fa i rough cut", "mando le clip al mio editor"). Saying "non riesco a farcela da sola" or "faccio tutto io e mi esaurisce" means the creator IS doing the work — that is pain, not delegation, and does NOT reduce WR.
 
-**Core content type rule:** The WR anchor applies to the **core content type**, not the wrapper format. A "scripted challenge show" played inside a video game is still gaming — apply the 30-49 anchor. Any channel whose primary activity is playing video games, reacting to others' content, or documenting real-life unscripted events must score in the 30-49 range, regardless of how structured or consistent the format metadata appears. A repeatable thumbnail style or consistent title pattern does NOT raise WR above 55 for these content types.
+**Core content type rule:** The WR anchor applies to the **core content type**, not the wrapper format. A "scripted challenge show" played inside a video game is still gaming — apply the 30-49 anchor. Any channel whose primary activity is playing video games, reacting to others' content live and unscripted, or documenting real-life unscripted events must score in the 30-49 range, regardless of how structured or consistent the format metadata appears. A repeatable thumbnail style or consistent title pattern does NOT raise WR above 55 for these content types.
+
+**Exception — scripted narration over third-party footage:** "Faceless" channels that write a fixed script and narrate it over third-party footage (sports documentaries, viral clip listicles, true crime commentary, football biography channels) are NOT react channels. Their core activity is scripted narration, not live reaction. The footage is merely the visual backdrop for a pre-written script. Apply the 50-69 or 70-89 anchor based on how templated the script structure is across videos.
 
 Score anchors for workflowRepeatability:
 - 90–100: creator personally follows the same script/template every video; heavy structured research or data-collection phase done by the creator themselves
