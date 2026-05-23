@@ -67,7 +67,7 @@ export const QualifyOutputSchema = z.object({
   disqualifiers: z.array(z.string()),
   disqualifierScoreImpact: z.string(),
   salesObjections: z.array(z.string()).min(1).max(3),
-  confidence: z.number().min(0).max(1),
+  confidence: z.number().transform(v => (v > 1 ? v / 100 : v)).pipe(z.number().min(0).max(1)),
   rationale: z.string(),
 });
 
