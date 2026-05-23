@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getRunById, listEventsForRun } from '@/lib/db/queries';
 import { copy } from '@/lib/ui/copy';
-import { formatDateTime, formatNumber, formatRelative, statusColor, STATUS_COLOR_CLASSES } from '@/lib/ui/format';
+import { formatCostUsd, formatDateTime, formatNumber, formatRelative, statusColor, STATUS_COLOR_CLASSES } from '@/lib/ui/format';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { EventsTable } from '@/components/runs/events-table';
@@ -37,17 +37,18 @@ export default async function RunDetailPage({ params, searchParams }: PageProps)
       ? Math.round((run.finishedAt.getTime() - run.startedAt.getTime()) / 1000)
       : null;
 
-  const counters = [
-    { label: copy.runs.counterSearches, value: run.searchesPerformed },
-    { label: copy.runs.counterCandidates, value: run.candidatesFound },
-    { label: copy.runs.counterEnriched, value: run.channelsEnriched },
-    { label: copy.runs.counterPreRejected, value: run.channelsPreRejected },
-    { label: copy.runs.counterQualified, value: run.channelsQualified },
-    { label: copy.runs.counterPostRejected, value: run.channelsPostRejected },
-    { label: copy.runs.counterQuota, value: run.youtubeQuotaUsed },
-    { label: copy.runs.counterLlmCalls, value: run.llmCallsCount },
-    { label: copy.runs.counterLlmTokensInput, value: run.llmTokensInput },
-    { label: copy.runs.counterLlmTokensOutput, value: run.llmTokensOutput },
+  const counters: Array<{ label: string; formatted: string }> = [
+    { label: copy.runs.counterSearches, formatted: formatNumber(run.searchesPerformed) },
+    { label: copy.runs.counterCandidates, formatted: formatNumber(run.candidatesFound) },
+    { label: copy.runs.counterEnriched, formatted: formatNumber(run.channelsEnriched) },
+    { label: copy.runs.counterPreRejected, formatted: formatNumber(run.channelsPreRejected) },
+    { label: copy.runs.counterQualified, formatted: formatNumber(run.channelsQualified) },
+    { label: copy.runs.counterPostRejected, formatted: formatNumber(run.channelsPostRejected) },
+    { label: copy.runs.counterQuota, formatted: formatNumber(run.youtubeQuotaUsed) },
+    { label: copy.runs.counterLlmCalls, formatted: formatNumber(run.llmCallsCount) },
+    { label: copy.runs.counterLlmTokensInput, formatted: formatNumber(run.llmTokensInput) },
+    { label: copy.runs.counterLlmTokensOutput, formatted: formatNumber(run.llmTokensOutput) },
+    { label: copy.runs.counterLlmCost, formatted: formatCostUsd(run.llmCostUsd ?? null) },
   ];
 
   return (
@@ -110,10 +111,10 @@ export default async function RunDetailPage({ params, searchParams }: PageProps)
       <div className="space-y-3">
         <h2 className="text-lg font-semibold">{copy.runs.countersTitle}</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {counters.map(({ label, value }) => (
+          {counters.map(({ label, formatted }) => (
             <div key={label} className="rounded-lg border bg-card p-4">
               <p className="text-xs text-muted-foreground">{label}</p>
-              <p className="mt-1 text-xl font-semibold tabular-nums">{formatNumber(value)}</p>
+              <p className="mt-1 text-xl font-semibold tabular-nums">{formatted}</p>
             </div>
           ))}
         </div>

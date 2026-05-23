@@ -33,6 +33,7 @@ export const copy = {
     llmCalls: 'Chiamate',
     llmTokensInput: 'Token input',
     llmTokensOutput: 'Token output',
+    llmCostToday: 'Costo stimato',
     quotaNoUsage: 'Nessun utilizzo oggi',
     toastPipelineStarted: 'Pipeline avviata',
     toastPipelineAlreadyRunning: (runId: number | string) =>
@@ -228,6 +229,7 @@ export const copy = {
     counterLlmCalls: 'Chiamate LLM',
     counterLlmTokensInput: 'Token input',
     counterLlmTokensOutput: 'Token output',
+    counterLlmCost: 'Costo LLM',
     errorTitle: 'Errore',
     eventsTitle: 'Eventi',
     noEvents: 'Nessun evento registrato.',

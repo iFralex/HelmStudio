@@ -9,6 +9,7 @@ export type LlmRunStats = {
   inputTokens: number;
   outputTokens: number;
   avgLatencyMs: number;
+  costUsd: number | null;
 };
 
 export async function llmStatsForRun(runId: number, db: Db = getDb()): Promise<LlmRunStats> {
@@ -18,6 +19,7 @@ export async function llmStatsForRun(runId: number, db: Db = getDb()): Promise<L
       inputTokens: sql<number>`coalesce(sum(${videoSelections.inputTokens}), 0)`,
       outputTokens: sql<number>`coalesce(sum(${videoSelections.outputTokens}), 0)`,
       totalLatency: sql<number>`coalesce(sum(${videoSelections.latencyMs}), 0)`,
+      costUsd: sql<number | null>`sum(${videoSelections.costUsd})`,
     })
     .from(videoSelections)
     .where(eq(videoSelections.runId, runId))
@@ -29,6 +31,7 @@ export async function llmStatsForRun(runId: number, db: Db = getDb()): Promise<L
       inputTokens: sql<number>`coalesce(sum(${qualifications.inputTokens}), 0)`,
       outputTokens: sql<number>`coalesce(sum(${qualifications.outputTokens}), 0)`,
       totalLatency: sql<number>`coalesce(sum(${qualifications.latencyMs}), 0)`,
+      costUsd: sql<number | null>`sum(${qualifications.costUsd})`,
     })
     .from(qualifications)
     .where(eq(qualifications.runId, runId))
@@ -41,6 +44,7 @@ export async function llmStatsForRun(runId: number, db: Db = getDb()): Promise<L
       inputTokens: sql<number>`coalesce(sum(${outreachDrafts.inputTokens}), 0)`,
       outputTokens: sql<number>`coalesce(sum(${outreachDrafts.outputTokens}), 0)`,
       totalLatency: sql<number>`0`,
+      costUsd: sql<number | null>`sum(${outreachDrafts.costUsd})`,
     })
     .from(outreachDrafts)
     .innerJoin(qualifications, eq(outreachDrafts.qualificationId, qualifications.id))
@@ -52,6 +56,7 @@ export async function llmStatsForRun(runId: number, db: Db = getDb()): Promise<L
   let inputTokens = 0;
   let outputTokens = 0;
   let totalLatency = 0;
+  let costUsd: number | null = null;
 
   for (const row of sources) {
     if (!row) continue;
@@ -59,9 +64,10 @@ export async function llmStatsForRun(runId: number, db: Db = getDb()): Promise<L
     inputTokens += Number(row.inputTokens);
     outputTokens += Number(row.outputTokens);
     totalLatency += Number(row.totalLatency);
+    if (row.costUsd != null) costUsd = (costUsd ?? 0) + Number(row.costUsd);
   }
 
   const avgLatencyMs = callsCount > 0 ? totalLatency / callsCount : 0;
 
-  return { callsCount, inputTokens, outputTokens, avgLatencyMs };
+  return { callsCount, inputTokens, outputTokens, avgLatencyMs, costUsd };
 }

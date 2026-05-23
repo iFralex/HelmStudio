@@ -365,6 +365,7 @@ export async function todayLlmStats(db: Db = getDb()): Promise<{
   callsCount: number;
   inputTokens: number;
   outputTokens: number;
+  costUsd: number | null;
 }> {
   const todayStart = new Date();
   todayStart.setUTCHours(0, 0, 0, 0);
@@ -375,6 +376,7 @@ export async function todayLlmStats(db: Db = getDb()): Promise<{
       callsCount: sql<number>`coalesce(sum(${pipelineRuns.llmCallsCount}), 0)`,
       inputTokens: sql<number>`coalesce(sum(${pipelineRuns.llmTokensInput}), 0)`,
       outputTokens: sql<number>`coalesce(sum(${pipelineRuns.llmTokensOutput}), 0)`,
+      costUsd: sql<number | null>`sum(${pipelineRuns.llmCostUsd})`,
     })
     .from(pipelineRuns)
     .where(gte(pipelineRuns.startedAt, new Date(todayStartSec * 1000)))
@@ -384,6 +386,7 @@ export async function todayLlmStats(db: Db = getDb()): Promise<{
     callsCount: row?.callsCount ?? 0,
     inputTokens: row?.inputTokens ?? 0,
     outputTokens: row?.outputTokens ?? 0,
+    costUsd: row?.costUsd ?? null,
   };
 }
 

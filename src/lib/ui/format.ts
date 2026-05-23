@@ -9,6 +9,17 @@ export function formatNumber(n: number, locale = 'it-IT'): string {
   return new Intl.NumberFormat(locale).format(n);
 }
 
+export function formatCostUsd(usd: number | null): string {
+  if (usd === null) return '—';
+  if (usd < 0.001) return '< $0.001';
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 4,
+  }).format(usd);
+}
+
 export function formatDate(d: Date | number, locale = 'it-IT'): string {
   const date = typeof d === 'number' ? new Date(d) : d;
   return date.toLocaleDateString(locale, {

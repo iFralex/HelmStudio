@@ -1,11 +1,12 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { formatCompact } from '@/lib/ui/format';
+import { formatCompact, formatCostUsd } from '@/lib/ui/format';
 import { copy } from '@/lib/ui/copy';
 
 interface LlmStats {
   callsCount: number;
   inputTokens: number;
   outputTokens: number;
+  costUsd: number | null;
 }
 
 interface LlmCardProps {
@@ -31,6 +32,10 @@ export function LlmCard({ stats }: LlmCardProps) {
           <div className="flex justify-between">
             <dt className="text-muted-foreground">{copy.dashboard.llmTokensOutput}</dt>
             <dd className="font-medium tabular-nums">{formatCompact(stats.outputTokens)}</dd>
+          </div>
+          <div className="flex justify-between border-t pt-1.5 mt-0.5">
+            <dt className="text-muted-foreground">{copy.dashboard.llmCostToday}</dt>
+            <dd className="font-semibold tabular-nums">{formatCostUsd(stats.costUsd)}</dd>
           </div>
         </dl>
       </CardContent>
