@@ -1,9 +1,35 @@
+import OpenAI from 'openai';
 import { ZodSchema } from 'zod';
 import { getLlm, MODELS, ModelTier } from './client';
 import { withLlmLimit } from './limiter';
 import { paths, tsForFilename } from '@/lib/storage/paths';
 import { dumpRaw } from '@/lib/storage/raw';
 import { computeCostUsd } from './pricing';
+
+// Flex tier returns 503/429 when capacity is exhausted — retry with exponential backoff.
+const FLEX_RETRY_ATTEMPTS = 5;
+const FLEX_RETRY_BASE_MS = 15_000; // 15 s
+const FLEX_RETRY_MAX_MS = 3 * 60_000; // 3 min cap
+
+function isFlexCapacityError(err: unknown): boolean {
+  return err instanceof OpenAI.APIError && (err.status === 503 || err.status === 429);
+}
+
+async function withFlexRetry<T>(fn: () => Promise<T>): Promise<T> {
+  for (let attempt = 0; attempt < FLEX_RETRY_ATTEMPTS; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (!isFlexCapacityError(err) || attempt === FLEX_RETRY_ATTEMPTS - 1) throw err;
+      const ms = Math.min(
+        FLEX_RETRY_BASE_MS * Math.pow(2, attempt) + Math.random() * 2000,
+        FLEX_RETRY_MAX_MS,
+      );
+      await new Promise((resolve) => setTimeout(resolve, ms));
+    }
+  }
+  throw new Error('withFlexRetry: exhausted'); // unreachable
+}
 
 export class LlmFormatError extends Error {
   constructor(
@@ -115,14 +141,16 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
     async function doApiCall(
       messages: { role: 'system' | 'user' | 'assistant'; content: string }[],
     ): Promise<string> {
-      const response = await llm.chat.completions.create({
-        model,
-        messages,
-        temperature,
-        max_tokens: maxTokens,
-        response_format: { type: 'json_object' },
-        service_tier: 'flex',
-      });
+      const response = await withFlexRetry(() =>
+        llm.chat.completions.create({
+          model,
+          messages,
+          temperature,
+          max_tokens: maxTokens,
+          response_format: { type: 'json_object' },
+          service_tier: 'flex',
+        }),
+      );
       modelUsed = response.model ?? model;
       if (response.usage) {
         rawTokens = {
