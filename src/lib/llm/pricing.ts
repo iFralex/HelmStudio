@@ -26,10 +26,12 @@ export function computeCostUsd(
   model: string,
   inputTokens: number,
   outputTokens: number,
+  serviceTier?: string | null,
 ): number | null {
   const lower = model.toLowerCase();
   const entry = PRICING.find(([prefix]) => lower.startsWith(prefix));
   if (!entry) return null;
   const { inputPer1M, outputPer1M } = entry[1];
-  return (inputTokens * inputPer1M + outputTokens * outputPer1M) / 1_000_000;
+  const raw = (inputTokens * inputPer1M + outputTokens * outputPer1M) / 1_000_000;
+  return serviceTier === 'flex' ? raw * 0.5 : raw;
 }

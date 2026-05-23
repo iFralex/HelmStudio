@@ -138,6 +138,8 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
     let rawTokens = { inputTokens: 0, outputTokens: 0 };
     let modelUsed = model;
 
+    let serviceTier: string | null = null;
+
     async function doApiCall(
       messages: { role: 'system' | 'user' | 'assistant'; content: string }[],
     ): Promise<string> {
@@ -152,6 +154,7 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
         }),
       );
       modelUsed = response.model ?? model;
+      serviceTier = response.service_tier ?? null;
       if (response.usage) {
         rawTokens = {
           inputTokens: rawTokens.inputTokens + response.usage.prompt_tokens,
@@ -174,7 +177,7 @@ export async function callLLM<T>(args: CallLlmArgs<T>): Promise<CallLlmResult<T>
 
     const buildUsage = (): TokenUsage => ({
       ...rawTokens,
-      costUsd: computeCostUsd(modelUsed, rawTokens.inputTokens, rawTokens.outputTokens),
+      costUsd: computeCostUsd(modelUsed, rawTokens.inputTokens, rawTokens.outputTokens, serviceTier),
     });
 
     async function dump(extra: Record<string, unknown>): Promise<void> {
