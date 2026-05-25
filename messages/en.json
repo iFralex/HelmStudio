@@ -24,6 +24,24 @@
     "ctaSecondary": "How it works",
     "annotation": "no commitment"
   },
+  "HowItWorks": {
+    "badgeNumber": "02",
+    "badgeLabel": "How it works",
+    "title": "The [two-week] pilot.",
+    "intro": "No abstract quotes. No signed commitment. We build an automation stitched to your workflow, you use it free, you pay only if it actually saved you time on a real video.",
+    "step01Number": "01",
+    "step01Title": "A call with a technical lead",
+    "step01Body": "We figure out together which recurring task drains you most: setup, research, repurposing, descriptions, sponsor matching… We pick the starting point with you, not for you.",
+    "step01Annotation": "30 minutes, no commitment",
+    "step02Number": "02",
+    "step02Title": "Week 1, the team builds",
+    "step02Body": "Our technical team prepares the automation tailored to your specific flow — not a generic template, a solution stitched to the channel you actually run.",
+    "step02Annotation": "5 working days",
+    "step03Number": "03",
+    "step03Title": "Week 2, you use it free",
+    "step03Body": "You try the automation on a real video, end to end. At the end of the week, you decide: if it saved you time, you pay a flat fee to keep it. Otherwise, no hard feelings.",
+    "step03Annotation": "you decide, after the pilot"
+  },
   "Footer": {
     "company": "HELM Studio SRL",
     "address": "Via Giuseppe Mazzini 9 · 20123 Milan · Italy",

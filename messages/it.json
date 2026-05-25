@@ -24,6 +24,24 @@
     "ctaSecondary": "Come funziona",
     "annotation": "zero impegno"
   },
+  "HowItWorks": {
+    "badgeNumber": "02",
+    "badgeLabel": "Come funziona",
+    "title": "Il pilot di [due settimane].",
+    "intro": "Niente preventivi astratti. Niente impegno firmato. Costruiamo un'automazione cucita sul tuo workflow, la usi gratis, paghi solo se ti ha davvero risparmiato tempo su un video reale.",
+    "step01Number": "01",
+    "step01Title": "Una call con un tecnico",
+    "step01Body": "Capiamo insieme quale attività ricorrente ti pesa di più: setup, ricerca, repurposing, descrizioni, sponsor matching… Scegliamo il punto di partenza con te, non per te.",
+    "step01Annotation": "30 minuti, senza impegno",
+    "step02Number": "02",
+    "step02Title": "Settimana 1, il team costruisce",
+    "step02Body": "Il nostro team tecnico prepara l'automazione tarata sul tuo flusso specifico — non un template generico, una soluzione cucita sul canale che gestisci tu.",
+    "step02Annotation": "5 giorni lavorativi",
+    "step03Number": "03",
+    "step03Title": "Settimana 2, la usi gratis",
+    "step03Body": "Provi l'automazione su un video vero, dall'inizio alla fine. A fine settimana decidi tu: se ti ha fatto risparmiare tempo, paghi una flat fee per tenerla. Altrimenti ciao, e nessuno si offende.",
+    "step03Annotation": "decidi tu, a fine pilot"
+  },
   "Footer": {
     "company": "HELM Studio SRL",
     "address": "Via Giuseppe Mazzini 9 · 20123 Milano (MI)",

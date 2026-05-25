@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation';
 import { HazardStripe } from '@/components/public/hazard-stripe';
 import { SectionBadge } from '@/components/public/section-badge';
 import { HighlightedHeading } from '@/components/public/highlighted-heading';
+import { HowItWorks } from '@/components/public/how-it-works';
 
 export default async function HomePage({
   params,
@@ -88,6 +89,10 @@ export default async function HomePage({
       </section>
 
       <HazardStripe reverse delay={300} />
+
+      <HowItWorks />
+
+      <HazardStripe delay={0} />
     </>
   );
 }
