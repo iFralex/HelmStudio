@@ -44,7 +44,7 @@ export async function requalifyChannel(formData: FormData): Promise<void> {
   const { channelId } = parsed.data;
   logger.info({ channelId }, 'requalify channel requested');
   await forceRequalifyChannel(channelId);
-  revalidatePath(`/channels/${channelId}`);
+  revalidatePath(`/admin/channels/${channelId}`);
 }
 
 export async function saveEmailAndDraft(formData: FormData): Promise<void> {
@@ -81,12 +81,12 @@ export async function saveEmailAndDraft(formData: FormData): Promise<void> {
     });
   } catch (err) {
     logger.error({ channelId, err }, 'draft generation failed');
-    revalidatePath(`/channels/${channelId}`);
+    revalidatePath(`/admin/channels/${channelId}`);
     throw err;
   }
 
-  revalidatePath(`/channels/${channelId}`);
-  revalidatePath('/channels');
+  revalidatePath(`/admin/channels/${channelId}`);
+  revalidatePath('/admin/channels');
 }
 
 export async function regenerateDraft(formData: FormData): Promise<void> {
@@ -105,7 +105,7 @@ export async function regenerateDraft(formData: FormData): Promise<void> {
       .run();
   });
 
-  revalidatePath(`/channels/${channelId}`);
+  revalidatePath(`/admin/channels/${channelId}`);
 }
 
 export async function updateDraftSubject(formData: FormData): Promise<void> {
@@ -128,7 +128,7 @@ export async function updateDraftSubject(formData: FormData): Promise<void> {
         .run();
     }
   });
-  if (channelId) revalidatePath(`/channels/${channelId}`);
+  if (channelId) revalidatePath(`/admin/channels/${channelId}`);
 }
 
 export async function updateDraftBody(formData: FormData): Promise<void> {
@@ -151,7 +151,7 @@ export async function updateDraftBody(formData: FormData): Promise<void> {
         .run();
     }
   });
-  if (channelId) revalidatePath(`/channels/${channelId}`);
+  if (channelId) revalidatePath(`/admin/channels/${channelId}`);
 }
 
 export async function markOutreachStatus(formData: FormData): Promise<void> {
@@ -183,8 +183,8 @@ export async function markOutreachStatus(formData: FormData): Promise<void> {
   });
 
   logger.info({ channelId, status }, 'outreach status updated');
-  revalidatePath(`/channels/${channelId}`);
-  revalidatePath('/channels');
+  revalidatePath(`/admin/channels/${channelId}`);
+  revalidatePath('/admin/channels');
 }
 
 export async function updateOutreachNotes(formData: FormData): Promise<void> {
@@ -202,7 +202,7 @@ export async function updateOutreachNotes(formData: FormData): Promise<void> {
       .values({ channelId, stage: 'meta', level: 'info', event: 'outreach_notes_updated' })
       .run();
   });
-  revalidatePath(`/channels/${channelId}`);
+  revalidatePath(`/admin/channels/${channelId}`);
 }
 
 export async function deleteChannel(formData: FormData): Promise<void> {
@@ -234,7 +234,7 @@ export async function deleteChannel(formData: FormData): Promise<void> {
   });
 
   logger.info({ channelId }, 'channel deleted');
-  revalidatePath('/channels');
-  revalidatePath('/');
-  redirect('/channels');
+  revalidatePath('/admin/channels');
+  revalidatePath('/admin');
+  redirect('/admin/channels');
 }

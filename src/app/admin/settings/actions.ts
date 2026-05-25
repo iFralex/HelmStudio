@@ -48,7 +48,7 @@ export async function updateFiltersAction(
   }
   try {
     await updateFilters(parsed.data);
-    revalidatePath('/settings');
+    revalidatePath('/admin/settings');
     return { ok: true };
   } catch {
     return { ok: false, error: 'Errore durante il salvataggio' };
@@ -74,7 +74,7 @@ export async function updatePipelineConfigAction(
   }
   try {
     await updatePipelineConfig(parsed.data);
-    revalidatePath('/settings');
+    revalidatePath('/admin/settings');
     return { ok: true };
   } catch {
     return { ok: false, error: 'Errore durante il salvataggio' };
@@ -94,7 +94,7 @@ export async function createKeywordAction(input: {
   if (!parsed.success) return { ok: false, error: 'empty' };
   try {
     await createKeyword(parsed.data);
-    revalidatePath('/settings');
+    revalidatePath('/admin/settings');
     return { ok: true };
   } catch (err) {
     if (err instanceof KeywordAlreadyExists) {
@@ -120,7 +120,7 @@ export async function updateKeywordAction(input: {
   try {
     const { id, ...patch } = parsed.data;
     await updateKeyword(id, patch);
-    revalidatePath('/settings');
+    revalidatePath('/admin/settings');
     return { ok: true };
   } catch {
     return { ok: false, error: "Errore durante l'aggiornamento" };
@@ -132,7 +132,7 @@ export async function deleteKeywordAction(input: { id: number }): Promise<Action
   if (!parsed.success) return { ok: false, error: 'Input non valido' };
   try {
     await deleteKeyword(parsed.data.id);
-    revalidatePath('/settings');
+    revalidatePath('/admin/settings');
     return { ok: true };
   } catch {
     return { ok: false, error: "Errore durante l'eliminazione" };

@@ -1,0 +1,28 @@
+{
+  "Site": {
+    "name": "HELM Studio",
+    "tagline": "Bespoke AI automations for European creators."
+  },
+  "Nav": {
+    "home": "Home",
+    "howItWorks": "How it works",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "Home": {
+    "heroTitle": "We build bespoke AI automations for content creators.",
+    "heroSubtitle": "Week one: we build the automation tailored to one of your recurring chores. Week two: you use it for free. You pay only if it actually saved you time.",
+    "ctaPrimary": "Get in touch",
+    "ctaSecondary": "How it works"
+  },
+  "Footer": {
+    "company": "HELM Studio SRL",
+    "address": "Via Giuseppe Mazzini 9, 20123 Milano, Italy",
+    "rights": "All rights reserved",
+    "privacy": "Privacy",
+    "cookies": "Cookies"
+  },
+  "LanguageSwitcher": {
+    "label": "Language"
+  }
+}

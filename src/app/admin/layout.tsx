@@ -7,10 +7,10 @@ import { quotaSummary } from '@/lib/youtube/dashboard';
 import { formatCompact } from '@/lib/ui/format';
 
 const navLinks = [
-  { href: '/', label: copy.nav.dashboard },
-  { href: '/channels', label: copy.nav.channels },
-  { href: '/runs', label: copy.nav.runs },
-  { href: '/settings', label: copy.nav.settings },
+  { href: '/admin', label: copy.nav.dashboard },
+  { href: '/admin/channels', label: copy.nav.channels },
+  { href: '/admin/runs', label: copy.nav.runs },
+  { href: '/admin/settings', label: copy.nav.settings },
 ];
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -29,7 +29,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
           <div className="flex items-center gap-4">
             <Link
-              href="/"
+              href="/admin"
               className="text-xs text-muted-foreground hover:text-primary transition-colors"
               title={copy.dashboard.quotaToday}
             >

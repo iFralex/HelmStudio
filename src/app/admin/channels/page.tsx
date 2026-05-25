@@ -73,7 +73,7 @@ export default async function ChannelsPage({ searchParams }: PageProps) {
         <div className="py-12 text-center space-y-3">
           <p className="text-muted-foreground">{copy.channels.noResults}</p>
           {hasFilters && (
-            <Link href="/channels">
+            <Link href="/admin/channels">
               <Button variant="outline" size="sm">
                 {copy.channels.resetFilters}
               </Button>

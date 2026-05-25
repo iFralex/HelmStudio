@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -15,17 +16,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Creator Pipeline',
-  description: 'Scopri canali YouTube italiani, qualificali con LLM e prepara bozze di outreach.',
+  title: 'HELM Studio',
+  description: 'Automazioni AI su misura per creator europei.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // next-intl middleware sets this header on locale-prefixed routes;
+  // /admin and /login fall through to the default 'it'.
+  const h = await headers();
+  const locale = h.get('x-next-intl-locale') ?? 'it';
+
   return (
-    <html lang="it" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}

@@ -55,7 +55,7 @@ export default async function RunDetailPage({ params, searchParams }: PageProps)
     <div className="container mx-auto px-4 py-8 space-y-8">
       <div className="space-y-1">
         <Link
-          href="/runs"
+          href="/admin/runs"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           {copy.runs.backToRuns}

@@ -55,7 +55,7 @@ export default async function RunsPage({ searchParams }: PageProps) {
                 return (
                   <TableRow key={run.id}>
                     <TableCell>
-                      <Link href={`/runs/${run.id}`} className="text-primary hover:underline">
+                      <Link href={`/admin/runs/${run.id}`} className="text-primary hover:underline">
                         {run.id}
                       </Link>
                     </TableCell>
@@ -105,7 +105,7 @@ export default async function RunsPage({ searchParams }: PageProps) {
 
           {runs.length === 50 && earliestStartedAt !== undefined && (
             <div className="flex justify-center pt-4">
-              <Link href={`/runs?before=${earliestStartedAt}`}>
+              <Link href={`/admin/runs?before=${earliestStartedAt}`}>
                 <Button variant="outline" size="sm">
                   {copy.runs.loadPrevious}
                 </Button>

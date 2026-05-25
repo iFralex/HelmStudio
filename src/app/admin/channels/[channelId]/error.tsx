@@ -24,7 +24,7 @@ export default function ChannelDetailError({ error, reset }: ErrorProps) {
         <Button variant="outline" onClick={reset}>
           {copy.channelDetail.errorRetry}
         </Button>
-        <Link href="/channels" className={cn(buttonVariants({ variant: 'default' }))}>
+        <Link href="/admin/channels" className={cn(buttonVariants({ variant: 'default' }))}>
           {copy.channelDetail.errorBackToChannels}
         </Link>
       </div>
