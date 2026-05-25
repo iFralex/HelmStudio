@@ -403,6 +403,123 @@
     "ctaHome": "Zurück zur Startseite",
     "ctaContact": "Schreib uns, wenn du etwas Bestimmtes suchst"
   },
+  "Privacy": {
+    "badgeNumber": "06",
+    "badgeLabel": "Datenschutz",
+    "pageTitle": "[Datenschutz] in Klartext.",
+    "lastUpdatedLabel": "Zuletzt aktualisiert",
+    "lastUpdated": "25. Mai 2026",
+    "pageIntro": "Diese Seite erklärt, wie HELM Studio SRL deine personenbezogenen Daten verarbeitet, wenn du uns über das Formular oder per Direkt-E-Mail schreibst. Sie ist bewusst kurz, weil wir wenig sammeln und wenig nutzen.",
+    "sections": [
+      {
+        "number": "01",
+        "title": "Wer ist der Verantwortliche",
+        "body": "Verantwortlicher der Datenverarbeitung ist HELM Studio SRL, mit Sitz in Via Giuseppe Mazzini 9, 20123 Mailand (MI), Italien. Für jede Frage zu deinen Daten schreib an ciao@helmstudio.it."
+      },
+      {
+        "number": "02",
+        "title": "Welche Daten wir erheben",
+        "body": "Nur die, die du uns gibst, wenn du uns schreibst:",
+        "bullets": [
+          "Name",
+          "E-Mail (damit wir antworten können)",
+          "URL deines Channels, Podcasts oder Newsletters (optional)",
+          "Der Inhalt deiner Nachricht"
+        ],
+        "outro": "Wir verwenden keine Profiling-Cookies. Wir betreiben kein Werbe-Tracking. Wir verkaufen keine Daten an Dritte weiter. Nie."
+      },
+      {
+        "number": "03",
+        "title": "Warum wir diese Daten verarbeiten",
+        "body": "Um auf deine Anfrage zu antworten und — wenn du mit uns arbeiten möchtest — um die Geschäftsbeziehung zu verwalten. Rechtsgrundlage: berechtigtes Interesse des Verantwortlichen und Durchführung vorvertraglicher Maßnahmen auf deine Anfrage hin (Art. 6.1.b und 6.1.f DSGVO)."
+      },
+      {
+        "number": "04",
+        "title": "Wer sonst sie sieht",
+        "body": "Sie bleiben in unserem Posteingang. Für den E-Mail-Versand nutzen wir Resend (resend.com), unseren externen Auftragsverarbeiter gemäß Art. 28 DSGVO. Keine weiteren Dritten: kein proprietäres CRM, kein Mailchimp, keine Zapier-Verwandtschaft."
+      },
+      {
+        "number": "05",
+        "title": "Wie lange wir sie aufbewahren",
+        "body": "Aufbewahrungsfristen:",
+        "bullets": [
+          "Solange das Gespräch aktiv ist: so lange wie nötig.",
+          "Wenn du einmal schreibst und wir nichts mehr hören: 24 Monate, dann gelöscht.",
+          "Wenn du mit uns arbeitest: Dauer der Beziehung + 10 Jahre gemäß italienischem Steuerrecht."
+        ],
+        "outro": "Du kannst jederzeit eine vorzeitige Löschung verlangen."
+      },
+      {
+        "number": "06",
+        "title": "Deine Rechte",
+        "body": "Gemäß Art. 15–22 DSGVO hast du das Recht auf:",
+        "bullets": [
+          "Auskunft über deine Daten",
+          "Berichtigung, falls falsch",
+          "Löschung (Recht auf Vergessenwerden)",
+          "Einschränkung der Verarbeitung",
+          "Erhalt in einem portablen Format",
+          "Widerspruch gegen die Verarbeitung",
+          "Beschwerde bei der italienischen Datenschutzbehörde (garanteprivacy.it)"
+        ],
+        "outro": "Um eines dieser Rechte auszuüben, schreib an ciao@helmstudio.it mit Betreff \"DSGVO-Rechte\". Wir antworten innerhalb von 30 Tagen — meist 1 oder 2."
+      },
+      {
+        "number": "07",
+        "title": "Änderungen dieser Seite",
+        "body": "Wenn wir ändern, wie wir Daten verarbeiten, aktualisieren wir diese Seite und das Datum oben. Keine aufdringlichen Popups."
+      }
+    ]
+  },
+  "Cookie": {
+    "badgeNumber": "07",
+    "badgeLabel": "Cookies",
+    "pageTitle": "[Cookies] und Tracker.",
+    "lastUpdatedLabel": "Zuletzt aktualisiert",
+    "lastUpdated": "25. Mai 2026",
+    "pageIntro": "Wir nutzen fast keine. Diese Seite listet auf, was die Site in deinen Browser legt, warum, und wie du das abschalten kannst, was du abschalten willst.",
+    "sections": [
+      {
+        "number": "01",
+        "title": "Was wir NICHT verwenden",
+        "body": "Damit klar ist, was beim Besuch von helmstudio.it nicht in deinem Browser landet:",
+        "bullets": [
+          "Keine Profiling-Cookies",
+          "Kein Google Analytics oder Vergleichbares",
+          "Kein Meta Pixel oder Werbe-Tracker",
+          "Keine Social-Tracker (LinkedIn, X, usw.)",
+          "Kein Browser-Fingerprinting"
+        ],
+        "outro": "Falls du an endlose Cookie-Banner gewöhnt bist: hier gibt es keinen Banner, weil es nichts gibt, wofür wir deine Einwilligung bräuchten."
+      },
+      {
+        "number": "02",
+        "title": "Was wir verwenden (technische Cookies)",
+        "body": "Nur technische Cookies, zwingend notwendig für das Funktionieren der Site — sie benötigen keine vorherige Einwilligung gemäß Art. 122 des italienischen Datenschutzkodex.",
+        "bullets": [
+          "NEXT_LOCALE — merkt sich die von dir gewählte Sprache. First-Party, persistent, Dauer 1 Jahr. Enthält nur den Sprachcode (it / en / de / es).",
+          "session — nur im Admin-Bereich (/admin), betrifft die Besucher der öffentlichen Site nicht. First-Party, HttpOnly, sicher, Dauer 30 Tage. Enthält das Authentifizierungs-Token für internes Personal."
+        ]
+      },
+      {
+        "number": "03",
+        "title": "Wie du sie abschaltest",
+        "body": "Du kannst Cookies löschen und deren Speicherung in den Browser-Einstellungen blockieren:",
+        "bullets": [
+          "Chrome → Einstellungen → Datenschutz und Sicherheit → Cookies",
+          "Firefox → Einstellungen → Datenschutz & Sicherheit → Cookies und Website-Daten",
+          "Safari → Einstellungen → Datenschutz → Website-Daten verwalten",
+          "Edge → Einstellungen → Cookies und Websiteberechtigungen"
+        ],
+        "outro": "NEXT_LOCALE zu deaktivieren bedeutet nur, dass deine Sprachwahl zwischen den Besuchen nicht gespeichert wird."
+      },
+      {
+        "number": "04",
+        "title": "Aktualisierungen",
+        "body": "Wenn wir einen Cookie hinzufügen oder etwas ändern, aktualisieren wir diese Seite und das Datum oben. Bei Fragen schreib an ciao@helmstudio.it."
+      }
+    ]
+  },
   "Footer": {
     "company": "HELM Studio SRL",
     "address": "Via Giuseppe Mazzini 9 · 20123 Mailand (MI) · Italien",

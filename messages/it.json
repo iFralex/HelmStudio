@@ -403,6 +403,123 @@
     "ctaHome": "Torna alla home",
     "ctaContact": "Scrivici se cercavi qualcosa"
   },
+  "Privacy": {
+    "badgeNumber": "06",
+    "badgeLabel": "Privacy",
+    "pageTitle": "[Privacy] in chiaro.",
+    "lastUpdatedLabel": "Ultimo aggiornamento",
+    "lastUpdated": "25 maggio 2026",
+    "pageIntro": "Questa pagina spiega come HELM Studio SRL tratta i tuoi dati personali quando ci scrivi via form o email diretta. È volutamente breve perché raccogliamo poco e usiamo poco.",
+    "sections": [
+      {
+        "number": "01",
+        "title": "Chi è il titolare",
+        "body": "Il titolare del trattamento è HELM Studio SRL, con sede legale in Via Giuseppe Mazzini 9, 20123 Milano (MI), Italia. Per qualsiasi questione sui tuoi dati scrivi a ciao@helmstudio.it."
+      },
+      {
+        "number": "02",
+        "title": "Quali dati raccogliamo",
+        "body": "Solo quelli che ci dai tu, quando ci scrivi:",
+        "bullets": [
+          "Nome",
+          "Email (per risponderti)",
+          "URL del tuo canale, podcast o newsletter (opzionale)",
+          "Il contenuto del tuo messaggio"
+        ],
+        "outro": "Non usiamo cookie di profilazione. Non facciamo tracking pubblicitario. Non rivendiamo dati a terzi. Mai."
+      },
+      {
+        "number": "03",
+        "title": "Perché trattiamo questi dati",
+        "body": "Per rispondere alla tua richiesta e — se decidi di lavorare con noi — per gestire il rapporto commerciale. Base giuridica: legittimo interesse del titolare e esecuzione di misure precontrattuali su tua richiesta (art. 6.1.b e 6.1.f del GDPR)."
+      },
+      {
+        "number": "04",
+        "title": "A chi finiscono",
+        "body": "Restano nella nostra casella di posta. Per la consegna email usiamo Resend (resend.com), il nostro responsabile esterno del trattamento ai sensi dell'art. 28 GDPR. Niente altri terzi: niente CRM proprietario, niente Mailchimp, niente cugini di Zapier."
+      },
+      {
+        "number": "05",
+        "title": "Quanto tempo li teniamo",
+        "body": "I tempi di conservazione sono:",
+        "bullets": [
+          "Mentre la conversazione è attiva: finché serve.",
+          "Se ci scrivi una volta e non risentiamo più: 24 mesi, poi cancellati.",
+          "Se decidi di lavorare con noi: per la durata del rapporto + 10 anni come da obblighi fiscali italiani."
+        ],
+        "outro": "Puoi chiederci la cancellazione anticipata in qualsiasi momento."
+      },
+      {
+        "number": "06",
+        "title": "I tuoi diritti",
+        "body": "Ai sensi degli articoli 15–22 del GDPR hai diritto a:",
+        "bullets": [
+          "Accedere ai tuoi dati",
+          "Correggerli se sono sbagliati",
+          "Cancellarli (diritto all'oblio)",
+          "Limitarne il trattamento",
+          "Riceverli in formato portabile",
+          "Opporti al trattamento",
+          "Proporre reclamo al Garante per la protezione dei dati personali (garanteprivacy.it)"
+        ],
+        "outro": "Per esercitare uno di questi diritti scrivi a ciao@helmstudio.it con oggetto \"Diritti GDPR\". Rispondiamo entro 30 giorni — di solito 1 o 2."
+      },
+      {
+        "number": "07",
+        "title": "Modifiche a questa pagina",
+        "body": "Se cambiamo come trattiamo i dati, aggiorniamo questa pagina e la data in alto. Niente popup invadenti."
+      }
+    ]
+  },
+  "Cookie": {
+    "badgeNumber": "07",
+    "badgeLabel": "Cookie",
+    "pageTitle": "[Cookie] e tracker.",
+    "lastUpdatedLabel": "Ultimo aggiornamento",
+    "lastUpdated": "25 maggio 2026",
+    "pageIntro": "Quasi non ne usiamo. Questa pagina elenca cosa il sito mette nel tuo browser, perché, e come spegnere quello che vuoi spegnere.",
+    "sections": [
+      {
+        "number": "01",
+        "title": "Cosa NON usiamo",
+        "body": "Per essere chiari su cosa non finisce nel tuo browser quando visiti helmstudio.it:",
+        "bullets": [
+          "Niente cookie di profilazione",
+          "Niente Google Analytics o equivalenti",
+          "Niente Meta Pixel o trackers pubblicitari",
+          "Niente social trackers (LinkedIn, X, ecc.)",
+          "Niente fingerprinting del browser"
+        ],
+        "outro": "Se sei abituato ai banner cookie infiniti, qui non c'è banner perché non c'è nulla per cui chiederti il consenso."
+      },
+      {
+        "number": "02",
+        "title": "Cosa usiamo (cookie tecnici)",
+        "body": "Solo cookie tecnici, necessari per il funzionamento del sito ai sensi dell'art. 122 del Codice Privacy italiano. Non richiedono consenso preventivo.",
+        "bullets": [
+          "NEXT_LOCALE — ricorda la lingua che hai scelto. Prima parte, persistente, durata 1 anno. Contiene solo il codice lingua (it / en / de / es).",
+          "session — solo nell'area admin (/admin), non riguarda i visitatori del sito pubblico. Prima parte, HttpOnly, sicuro, durata 30 giorni. Contiene il token di autenticazione del personale interno."
+        ]
+      },
+      {
+        "number": "03",
+        "title": "Come spegnerli",
+        "body": "Puoi cancellare i cookie e bloccarne il salvataggio dalle impostazioni del tuo browser:",
+        "bullets": [
+          "Chrome → Impostazioni → Privacy e sicurezza → Cookie",
+          "Firefox → Impostazioni → Privacy e sicurezza → Cookie e dati dei siti",
+          "Safari → Preferenze → Privacy → Gestisci dati dei siti web",
+          "Edge → Impostazioni → Cookie e autorizzazioni sito"
+        ],
+        "outro": "Disabilitare NEXT_LOCALE significa solo che la tua scelta di lingua non sarà ricordata fra una visita e l'altra."
+      },
+      {
+        "number": "04",
+        "title": "Aggiornamenti",
+        "body": "Se aggiungiamo un cookie o cambiamo qualcosa, aggiorniamo questa pagina e la data in alto. Per dubbi scrivi a ciao@helmstudio.it."
+      }
+    ]
+  },
   "Footer": {
     "company": "HELM Studio SRL",
     "address": "Via Giuseppe Mazzini 9 · 20123 Milano (MI)",

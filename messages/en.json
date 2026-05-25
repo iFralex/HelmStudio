@@ -403,6 +403,123 @@
     "ctaHome": "Back to the home",
     "ctaContact": "Write to us if you were looking for something"
   },
+  "Privacy": {
+    "badgeNumber": "06",
+    "badgeLabel": "Privacy",
+    "pageTitle": "[Privacy] in plain words.",
+    "lastUpdatedLabel": "Last updated",
+    "lastUpdated": "25 May 2026",
+    "pageIntro": "This page explains how HELM Studio SRL handles your personal data when you write to us via the form or by direct email. It's deliberately short because we collect little and use little.",
+    "sections": [
+      {
+        "number": "01",
+        "title": "Who is the controller",
+        "body": "The data controller is HELM Studio SRL, registered office at Via Giuseppe Mazzini 9, 20123 Milan (MI), Italy. For any question about your data, write to ciao@helmstudio.it."
+      },
+      {
+        "number": "02",
+        "title": "What data we collect",
+        "body": "Only what you give us when you write:",
+        "bullets": [
+          "Name",
+          "Email (so we can reply)",
+          "URL of your channel, podcast or newsletter (optional)",
+          "The content of your message"
+        ],
+        "outro": "We don't use profiling cookies. We don't run advertising trackers. We don't resell data to third parties. Ever."
+      },
+      {
+        "number": "03",
+        "title": "Why we process this data",
+        "body": "To reply to your request and — if you decide to work with us — to manage the commercial relationship. Legal basis: legitimate interest of the controller and performance of pre-contractual measures at your request (art. 6.1.b and 6.1.f GDPR)."
+      },
+      {
+        "number": "04",
+        "title": "Who else sees it",
+        "body": "It stays in our inbox. For email delivery we use Resend (resend.com), our external data processor under art. 28 GDPR. No other third parties: no proprietary CRM, no Mailchimp, no Zapier cousins."
+      },
+      {
+        "number": "05",
+        "title": "How long we keep it",
+        "body": "Retention periods:",
+        "bullets": [
+          "While the conversation is active: as long as needed.",
+          "If you write once and we never hear back: 24 months, then deleted.",
+          "If you decide to work with us: for the duration of the relationship + 10 years as required by Italian tax law."
+        ],
+        "outro": "You can ask for early deletion at any time."
+      },
+      {
+        "number": "06",
+        "title": "Your rights",
+        "body": "Under articles 15–22 of the GDPR you have the right to:",
+        "bullets": [
+          "Access your data",
+          "Correct it if it's wrong",
+          "Delete it (right to be forgotten)",
+          "Restrict its processing",
+          "Receive it in a portable format",
+          "Object to the processing",
+          "File a complaint with the Italian data protection authority (garanteprivacy.it)"
+        ],
+        "outro": "To exercise any of these rights, write to ciao@helmstudio.it with subject \"GDPR rights\". We reply within 30 days — usually 1 or 2."
+      },
+      {
+        "number": "07",
+        "title": "Changes to this page",
+        "body": "If we change how we handle data, we update this page and the date at the top. No intrusive popups."
+      }
+    ]
+  },
+  "Cookie": {
+    "badgeNumber": "07",
+    "badgeLabel": "Cookies",
+    "pageTitle": "[Cookies] and trackers.",
+    "lastUpdatedLabel": "Last updated",
+    "lastUpdated": "25 May 2026",
+    "pageIntro": "We barely use any. This page lists what the site puts into your browser, why, and how to turn off what you want to turn off.",
+    "sections": [
+      {
+        "number": "01",
+        "title": "What we do NOT use",
+        "body": "To be clear about what does not end up in your browser when you visit helmstudio.it:",
+        "bullets": [
+          "No profiling cookies",
+          "No Google Analytics or equivalents",
+          "No Meta Pixel or advertising trackers",
+          "No social trackers (LinkedIn, X, etc.)",
+          "No browser fingerprinting"
+        ],
+        "outro": "If you're used to endless cookie banners, there's no banner here because there's nothing for which we'd need to ask your consent."
+      },
+      {
+        "number": "02",
+        "title": "What we do use (technical cookies)",
+        "body": "Only technical cookies, strictly necessary for the site to work — they don't require prior consent under art. 122 of the Italian Privacy Code.",
+        "bullets": [
+          "NEXT_LOCALE — remembers the language you chose. First-party, persistent, 1-year duration. Contains only the language code (it / en / de / es).",
+          "session — only in the admin area (/admin), does not concern visitors of the public site. First-party, HttpOnly, secure, 30-day duration. Contains the authentication token for internal staff."
+        ]
+      },
+      {
+        "number": "03",
+        "title": "How to turn them off",
+        "body": "You can delete cookies and block their storage from your browser settings:",
+        "bullets": [
+          "Chrome → Settings → Privacy and security → Cookies",
+          "Firefox → Settings → Privacy & Security → Cookies and Site Data",
+          "Safari → Preferences → Privacy → Manage Website Data",
+          "Edge → Settings → Cookies and site permissions"
+        ],
+        "outro": "Disabling NEXT_LOCALE just means your language choice won't be remembered between visits."
+      },
+      {
+        "number": "04",
+        "title": "Updates",
+        "body": "If we add a cookie or change something, we update this page and the date at the top. For any question, write to ciao@helmstudio.it."
+      }
+    ]
+  },
   "Footer": {
     "company": "HELM Studio SRL",
     "address": "Via Giuseppe Mazzini 9 · 20123 Milan · Italy",

@@ -403,6 +403,123 @@
     "ctaHome": "Volver a la home",
     "ctaContact": "Escríbenos si buscabas algo"
   },
+  "Privacy": {
+    "badgeNumber": "06",
+    "badgeLabel": "Privacidad",
+    "pageTitle": "[Privacidad] en claro.",
+    "lastUpdatedLabel": "Última actualización",
+    "lastUpdated": "25 de mayo de 2026",
+    "pageIntro": "Esta página explica cómo HELM Studio SRL trata tus datos personales cuando nos escribes vía formulario o email directo. Es deliberadamente breve porque recogemos poco y usamos poco.",
+    "sections": [
+      {
+        "number": "01",
+        "title": "Quién es el responsable",
+        "body": "El responsable del tratamiento es HELM Studio SRL, con sede social en Via Giuseppe Mazzini 9, 20123 Milán (MI), Italia. Para cualquier cuestión sobre tus datos escribe a ciao@helmstudio.it."
+      },
+      {
+        "number": "02",
+        "title": "Qué datos recogemos",
+        "body": "Solo los que nos das tú cuando nos escribes:",
+        "bullets": [
+          "Nombre",
+          "Email (para responderte)",
+          "URL de tu canal, podcast o newsletter (opcional)",
+          "El contenido de tu mensaje"
+        ],
+        "outro": "No usamos cookies de perfilado. No hacemos tracking publicitario. No revendemos datos a terceros. Nunca."
+      },
+      {
+        "number": "03",
+        "title": "Por qué tratamos estos datos",
+        "body": "Para responder a tu solicitud y — si decides trabajar con nosotros — para gestionar la relación comercial. Base jurídica: interés legítimo del responsable y ejecución de medidas precontractuales a solicitud tuya (art. 6.1.b y 6.1.f del RGPD)."
+      },
+      {
+        "number": "04",
+        "title": "Quién más los ve",
+        "body": "Se quedan en nuestra bandeja de entrada. Para la entrega de email usamos Resend (resend.com), nuestro encargado del tratamiento externo según el art. 28 del RGPD. Ningún otro tercero: ningún CRM propietario, ningún Mailchimp, ningún primo de Zapier."
+      },
+      {
+        "number": "05",
+        "title": "Cuánto tiempo los conservamos",
+        "body": "Plazos de conservación:",
+        "bullets": [
+          "Mientras la conversación está activa: el tiempo necesario.",
+          "Si nos escribes una vez y no volvemos a tener noticias: 24 meses, luego eliminados.",
+          "Si decides trabajar con nosotros: por la duración de la relación + 10 años según las obligaciones fiscales italianas."
+        ],
+        "outro": "Puedes pedirnos la cancelación anticipada en cualquier momento."
+      },
+      {
+        "number": "06",
+        "title": "Tus derechos",
+        "body": "Según los artículos 15–22 del RGPD tienes derecho a:",
+        "bullets": [
+          "Acceder a tus datos",
+          "Corregirlos si están mal",
+          "Eliminarlos (derecho al olvido)",
+          "Limitar su tratamiento",
+          "Recibirlos en formato portable",
+          "Oponerte al tratamiento",
+          "Presentar reclamación al Garante para la protección de datos personales italiano (garanteprivacy.it)"
+        ],
+        "outro": "Para ejercer alguno de estos derechos escribe a ciao@helmstudio.it con asunto \"Derechos RGPD\". Respondemos en 30 días — habitualmente 1 o 2."
+      },
+      {
+        "number": "07",
+        "title": "Cambios en esta página",
+        "body": "Si cambiamos cómo tratamos los datos, actualizamos esta página y la fecha arriba. Sin popups invasivos."
+      }
+    ]
+  },
+  "Cookie": {
+    "badgeNumber": "07",
+    "badgeLabel": "Cookies",
+    "pageTitle": "[Cookies] y trackers.",
+    "lastUpdatedLabel": "Última actualización",
+    "lastUpdated": "25 de mayo de 2026",
+    "pageIntro": "Casi no usamos. Esta página enumera qué pone el sitio en tu navegador, por qué, y cómo apagar lo que quieras apagar.",
+    "sections": [
+      {
+        "number": "01",
+        "title": "Qué NO usamos",
+        "body": "Para tener claro qué no acaba en tu navegador cuando visitas helmstudio.it:",
+        "bullets": [
+          "Ninguna cookie de perfilado",
+          "Ningún Google Analytics o equivalentes",
+          "Ningún Meta Pixel o trackers publicitarios",
+          "Ningún social tracker (LinkedIn, X, etc.)",
+          "Ningún fingerprinting del navegador"
+        ],
+        "outro": "Si estás acostumbrado a banners cookies infinitos, aquí no hay banner porque no hay nada para lo que pedirte el consentimiento."
+      },
+      {
+        "number": "02",
+        "title": "Qué usamos (cookies técnicas)",
+        "body": "Solo cookies técnicas, estrictamente necesarias para el funcionamiento del sitio — no requieren consentimiento previo según el art. 122 del Código de Privacidad italiano.",
+        "bullets": [
+          "NEXT_LOCALE — recuerda el idioma que has elegido. First-party, persistente, duración 1 año. Contiene solo el código de idioma (it / en / de / es).",
+          "session — solo en el área admin (/admin), no afecta a los visitantes del sitio público. First-party, HttpOnly, segura, duración 30 días. Contiene el token de autenticación del personal interno."
+        ]
+      },
+      {
+        "number": "03",
+        "title": "Cómo apagarlas",
+        "body": "Puedes borrar las cookies y bloquear su almacenamiento desde la configuración de tu navegador:",
+        "bullets": [
+          "Chrome → Configuración → Privacidad y seguridad → Cookies",
+          "Firefox → Ajustes → Privacidad & Seguridad → Cookies y datos del sitio",
+          "Safari → Preferencias → Privacidad → Gestionar datos de sitios web",
+          "Edge → Configuración → Cookies y permisos del sitio"
+        ],
+        "outro": "Desactivar NEXT_LOCALE solo significa que tu elección de idioma no se recordará entre visitas."
+      },
+      {
+        "number": "04",
+        "title": "Actualizaciones",
+        "body": "Si añadimos una cookie o cambiamos algo, actualizamos esta página y la fecha arriba. Para dudas escribe a ciao@helmstudio.it."
+      }
+    ]
+  },
   "Footer": {
     "company": "HELM Studio SRL",
     "address": "Via Giuseppe Mazzini 9 · 20123 Milán (MI) · Italia",
