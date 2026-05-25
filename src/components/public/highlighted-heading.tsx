@@ -25,7 +25,7 @@ export function HighlightedHeading({
   let chunkIndex = 0;
 
   return (
-    <h1 className={cn('font-display font-bold leading-[0.95] tracking-tight', className)}>
+    <h1 className={cn('font-display font-bold tracking-tight', className)} style={{ lineHeight: 0.92 }}>
       {segments.map((segment, segIdx) => {
         const isAccent = segment.startsWith('[') && segment.endsWith(']');
         const content = isAccent ? segment.slice(1, -1) : segment;
@@ -36,7 +36,7 @@ export function HighlightedHeading({
         return (
           <span
             key={segIdx}
-            className={isAccent ? 'relative inline-block whitespace-nowrap' : ''}
+            className={isAccent ? 'relative inline-block whitespace-nowrap isolate' : ''}
           >
             {chunks.map((chunk, i) => {
               if (/^\s+$/.test(chunk)) return chunk;
@@ -45,7 +45,7 @@ export function HighlightedHeading({
               return (
                 <span
                   key={i}
-                  className="inline-block animate-hero-word opacity-0"
+                  className="relative inline-block animate-hero-word opacity-0"
                   style={{ animationDelay: `${delay}ms` }}
                 >
                   {chunk}
@@ -55,12 +55,36 @@ export function HighlightedHeading({
             {isAccent && (
               <span
                 aria-hidden
-                className="absolute left-0 right-0 bottom-[0.08em] -z-10 origin-left animate-highlight-draw scale-x-0 bg-brutal-accent"
+                className="absolute origin-left animate-highlight-draw pointer-events-none block"
                 style={{
-                  height: '0.42em',
+                  left: '-0.06em',
+                  right: '-0.06em',
+                  bottom: '0.02em',
+                  height: '0.85em',
+                  zIndex: -1,
                   animationDelay: `${baseDelay + chunkIndex * stagger + 80}ms`,
+                  color: 'var(--brutal-accent)',
                 }}
-              />
+              >
+                <svg
+                  viewBox="0 0 200 100"
+                  preserveAspectRatio="none"
+                  width="100%"
+                  height="100%"
+                  className="block"
+                >
+                  {/* Sinuous highlighter blob — path spans full viewBox so stretching
+                      feels consistent across words of any length. */}
+                  <path
+                    d="M 0 30
+                       C 40 12, 100 8, 200 18
+                       C 210 38, 208 62, 200 82
+                       C 130 92, 60 96, 0 78
+                       C -8 60, -6 48, 0 30 Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
             )}
           </span>
         );

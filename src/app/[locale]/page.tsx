@@ -41,28 +41,18 @@ export default async function HomePage({
             stagger={75}
           />
 
-          {/* Schema settimane: two boxes connected by an arrow, blueprint-style */}
+          {/* Schema settimane — typographic, no cards. Two big numbers with inline
+              text, connected by a hand-drawn scribble arrow in the accent colour. */}
           <div
-            className="mt-12 grid gap-5 sm:grid-cols-[auto_auto_auto_1fr] items-center max-w-2xl animate-brutal-fade-up opacity-0"
+            className="mt-14 animate-brutal-fade-up opacity-0"
             style={{ animationDelay: '1200ms' }}
           >
-            <WeekBox
-              label={t('weekOneLabel')}
-              text={t('weekOneText')}
-              variant="primary"
-            />
-            <span
-              aria-hidden
-              className="hidden sm:block font-mono text-2xl text-brutal-fg select-none"
-            >
-              →
-            </span>
-            <WeekBox
-              label={t('weekTwoLabel')}
-              text={t('weekTwoText')}
-              variant="secondary"
-            />
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-brutal-muted sm:pl-2 max-w-[20ch]">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+              <WeekStep number="01" text={t('weekOneText')} />
+              <ScribbleArrow />
+              <WeekStep number="02" text={t('weekTwoText')} />
+            </div>
+            <p className="mt-4 font-mono text-[11px] md:text-xs uppercase tracking-[0.22em] text-brutal-muted max-w-[44ch]">
               {t('footnote')}
             </p>
           </div>
@@ -102,34 +92,36 @@ export default async function HomePage({
   );
 }
 
-function WeekBox({
-  label,
-  text,
-  variant,
-}: {
-  label: string;
-  text: string;
-  variant: 'primary' | 'secondary';
-}) {
-  const isPrimary = variant === 'primary';
+function WeekStep({ number, text }: { number: string; text: string }) {
   return (
-    <div
-      className={
-        'border-2 border-brutal-fg w-44 ' +
-        (isPrimary
-          ? 'bg-brutal-fg text-brutal-bg shadow-brutal'
-          : 'bg-brutal-bg text-brutal-fg shadow-brutal-sm')
-      }
-    >
-      <div
-        className={
-          'font-mono text-[10px] uppercase tracking-[0.22em] px-3 py-1 border-b-2 ' +
-          (isPrimary ? 'border-brutal-bg/40' : 'border-brutal-fg')
-        }
-      >
-        {label}
-      </div>
-      <div className="font-display text-lg font-semibold px-3 py-3">{text}</div>
+    <div className="flex items-baseline gap-3 md:gap-4">
+      <span className="font-display font-bold text-5xl md:text-6xl lg:text-7xl leading-none tabular-nums">
+        {number}
+      </span>
+      <span className="font-display font-medium text-xl md:text-2xl lg:text-3xl text-brutal-fg/85 lowercase">
+        {text}
+      </span>
     </div>
+  );
+}
+
+function ScribbleArrow() {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 120 32"
+      className="w-20 md:w-28 lg:w-32 h-auto shrink-0 text-brutal-accent"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Hand-drawn marker squiggle from left to right with a small overshoot,
+          then a soft arrowhead. Drawn as if with the same pen as the highlights. */}
+      <path d="M 4 22 C 22 8, 44 26, 66 14 S 96 22, 110 16" />
+      <path d="M 110 16 L 100 9" />
+      <path d="M 110 16 L 100 24" />
+    </svg>
   );
 }
