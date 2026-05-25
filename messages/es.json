@@ -267,6 +267,95 @@
     "ctaBody": "La llamada del paso 01 dura 30 minutos, es gratis, y al final sabes si tiene sentido seguir adelante o no.",
     "ctaLabel": "Hablemos"
   },
+  "AboutPage": {
+    "badgeNumber": "04",
+    "badgeLabel": "Quiénes somos",
+    "pageTitle": "Un [estudio]. No una agencia.",
+    "pageIntro": "HELM Studio es el spin-off europeo de Morningside AI — la agencia neozelandesa que codificó el modelo \"build custom AI workflows\". Ellos trabajan con empresas. Nosotros hacemos el mismo trabajo para quien gestiona, en primera persona, un canal, un podcast, una newsletter.",
+
+    "originTitle": "[De dónde venimos.]",
+    "originParagraphs": [
+      "Morningside AI fue fundada en Auckland en 2023. Es la agencia que primero formalizó la idea de no vender SaaS, sino de construir automatizaciones cosidas al cliente — código a medida, sin productos white-label, sin plantillas recicladas.",
+      "Cuatro años después, un grupo de técnicos europeos llevó el mismo enfoque a Europa, con una diferencia crucial: nuestros clientes no son empresas, son personas. Creadores individuales que trabajan solos o en equipos pequeñísimos, y que no saben qué hacer con las herramientas de IA genéricas.",
+      "Desde enero de 2026 el estudio está basado en Milán, con tres sedes satélite (Barcelona, Berlín, Dublín) — una para cada uno de los mercados principales en los que operamos. No por moda \"remote-first\", sino porque estar en los lugares donde viven nuestros clientes significa hablar su idioma, conocer sus plataformas, entender sus brand deals."
+    ],
+
+    "positioningTitle": "Qué [somos], qué no somos.",
+    "positioningIntro": "El mercado \"IA para creadores\" está lleno de ruido. Pongamos los puntos sobre las íes.",
+    "positioningNotLabel": "Qué no somos",
+    "positioningNotItems": [
+      "Una agencia social o de growth marketing.",
+      "Un proveedor de SaaS o de plantillas IA recicladas.",
+      "Ghostwriters, video editors o productores de contenido.",
+      "Resellers de Make, Zapier, n8n o similares."
+    ],
+    "positioningAreLabel": "Qué somos",
+    "positioningAreItems": [
+      "Un estudio técnico que construye automatizaciones IA a medida.",
+      "Build-first: código nuevo cosido a tu workflow específico.",
+      "Sobre el terreno en Europa, con cuatro sedes y cuatro idiomas.",
+      "Directos: hablas con quien tiene las manos en el código."
+    ],
+
+    "manifestoTitle": "Cuatro [principios] no negociables.",
+    "manifestoPrinciples": [
+      {
+        "number": "01",
+        "title": "Construir antes de hablar.",
+        "body": "Las slides comerciales no automatizan nada. Se nota cuando una automatización funciona de verdad: la encuentras en tu calendario de publicación, no en un PDF."
+      },
+      {
+        "number": "02",
+        "title": "Honestidad antes que venta.",
+        "body": "Si tu workflow no es automatizable, te lo decimos en la primera llamada y se acaba ahí. Venderte algo falso sería lo peor que podríamos hacer por nuestra reputación."
+      },
+      {
+        "number": "03",
+        "title": "El código es tuyo.",
+        "body": "Sin lock-in, sin SaaS propietario, sin \"cancelas y pierdes todo\". Al final del piloto tienes un repositorio limpio y una documentación que puedes pasar a quien quieras."
+      },
+      {
+        "number": "04",
+        "title": "Tiempo, no clics.",
+        "body": "No te vendemos views, engagement ni crecimiento social. Te vendemos horas que vuelven a tu calendario, para dedicarlas a aquello por lo que te hiciste creador."
+      }
+    ],
+
+    "officesTitle": "Las [sedes].",
+    "officesIntro": "Una persona físicamente presente en cada una de las cuatro ciudades en las que operamos. Sin remote-first ideológico — la proximidad cuenta en los brand deals, en los pagos, en conocer los mercados locales.",
+    "officesHqLabel": "Sede social",
+    "officesSatelliteLabel": "Sede operativa",
+    "offices": [
+      {
+        "city": "Milán",
+        "address": "Via Giuseppe Mazzini 9 · 20123 Milán (MI) · Italia",
+        "kind": "hq",
+        "note": "Sede social legal, base operativa italiana y corazón administrativo del estudio."
+      },
+      {
+        "city": "Barcelona",
+        "address": "Passeig de Gràcia 17 · 08007 Barcelona · España",
+        "kind": "satellite",
+        "note": "Cubre la comunidad creator hispanohablante y los brands ibéricos."
+      },
+      {
+        "city": "Berlín",
+        "address": "Rosenthaler Str. 43–45 · 10178 Berlín · Alemania",
+        "kind": "satellite",
+        "note": "Cubre los creadores DACH — Alemania, Austria, Suiza alemana."
+      },
+      {
+        "city": "Dublín",
+        "address": "2 Dublin Landings · D01 V4A3 · Irlanda",
+        "kind": "satellite",
+        "note": "Cubre los creadores UK + IE y las sponsor relations anglófonas."
+      }
+    ],
+
+    "ctaTitle": "¿Quieres ver si tiene sentido [hablar]?",
+    "ctaBody": "La llamada del paso 01 dura 30 minutos y al final sabes si tiene sentido seguir o no. Sin compromiso.",
+    "ctaLabel": "Hablemos"
+  },
   "Contact": {
     "badgeNumber": "05",
     "badgeLabel": "Contacto",

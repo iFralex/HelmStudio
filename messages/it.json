@@ -267,6 +267,95 @@
     "ctaBody": "La call di step 01 dura 30 minuti, è gratis, e a fine call sai se ha senso o no andare avanti.",
     "ctaLabel": "Parliamone"
   },
+  "AboutPage": {
+    "badgeNumber": "04",
+    "badgeLabel": "Chi siamo",
+    "pageTitle": "Uno [studio]. Non un'agenzia.",
+    "pageIntro": "HELM Studio è lo spin-off europeo di Morningside AI — l'agenzia neozelandese che ha codificato il modello \"build custom AI workflows\". Loro lavorano con aziende. Noi lo facciamo per chi gestisce, in prima persona, un canale, un podcast, una newsletter.",
+
+    "originTitle": "[Da dove veniamo.]",
+    "originParagraphs": [
+      "Morningside AI è stata fondata ad Auckland nel 2023. È l'agenzia che per prima ha formalizzato l'idea di non vendere SaaS, ma di costruire automazioni cucite addosso al cliente — codice custom, niente prodotti white-label, niente template riciclati.",
+      "Quattro anni dopo, un gruppo di tecnici europei ha portato lo stesso approccio in Europa, con una differenza cruciale: i nostri clienti non sono aziende, sono persone. Creator individuali che lavorano da soli o con team piccolissimi, e che dei tool AI generici non sanno cosa farsene.",
+      "Da gennaio 2026 lo studio è basato a Milano, con tre sedi satellite (Barcellona, Berlino, Dublino) — una per ognuno dei mercati principali in cui operiamo. Non per moda \"remote-first\", ma perché stare nei luoghi dove vivono i nostri clienti significa parlare la loro lingua, conoscere le loro piattaforme, capire i loro brand deal."
+    ],
+
+    "positioningTitle": "Cosa [siamo], cosa non siamo.",
+    "positioningIntro": "Il mercato \"AI per creator\" è pieno di rumore. Mettiamo i puntini sulle i.",
+    "positioningNotLabel": "Cosa non siamo",
+    "positioningNotItems": [
+      "Un'agenzia social o di growth marketing.",
+      "Un fornitore di SaaS o di template AI riciclati.",
+      "Ghostwriter, video editor, o produttori di contenuti.",
+      "Reseller di Make, Zapier, n8n o simili."
+    ],
+    "positioningAreLabel": "Cosa siamo",
+    "positioningAreItems": [
+      "Uno studio tecnico che costruisce automazioni AI custom.",
+      "Build-first: codice nuovo cucito sul tuo workflow.",
+      "Sul campo in Europa, con quattro sedi e quattro lingue.",
+      "Diretti: parli con chi mette le mani sul codice."
+    ],
+
+    "manifestoTitle": "Quattro [principi] non negoziabili.",
+    "manifestoPrinciples": [
+      {
+        "number": "01",
+        "title": "Build prima di parlare.",
+        "body": "Le slide commerciali non automatizzano nulla. Si vede quando un'automazione funziona davvero: la trovi sul tuo calendario di pubblicazione, non in un PDF."
+      },
+      {
+        "number": "02",
+        "title": "Onestà prima della vendita.",
+        "body": "Se il tuo workflow non è automatizzabile, te lo diciamo nella prima call e finisce lì. Venderti qualcosa di finto è la cosa peggiore che possiamo fare per la nostra reputazione."
+      },
+      {
+        "number": "03",
+        "title": "Il codice è tuo.",
+        "body": "Niente lock-in, niente SaaS proprietario, niente \"se rescindi perdi tutto\". A fine pilot hai un repository pulito e una documentazione che puoi passare a chi vuoi."
+      },
+      {
+        "number": "04",
+        "title": "Tempo, non clic.",
+        "body": "Non ti vendiamo views, engagement o crescita social. Ti vendiamo ore che ti tornano sul calendario, da dedicare a quello per cui sei diventato creator."
+      }
+    ],
+
+    "officesTitle": "Le [sedi].",
+    "officesIntro": "Una persona fisicamente presente in ognuna delle quattro città in cui operiamo. Non remote-first ideologico — la prossimità conta nei brand deal, nei pagamenti, nella conoscenza dei mercati locali.",
+    "officesHqLabel": "Sede legale",
+    "officesSatelliteLabel": "Sede operativa",
+    "offices": [
+      {
+        "city": "Milano",
+        "address": "Via Giuseppe Mazzini 9 · 20123 Milano (MI) · Italia",
+        "kind": "hq",
+        "note": "HQ legale, base operativa italiana e cuore amministrativo dello studio."
+      },
+      {
+        "city": "Barcellona",
+        "address": "Passeig de Gràcia 17 · 08007 Barcelona · España",
+        "kind": "satellite",
+        "note": "Copre la community creator hispanofona e i brand iberici."
+      },
+      {
+        "city": "Berlino",
+        "address": "Rosenthaler Str. 43–45 · 10178 Berlin · Deutschland",
+        "kind": "satellite",
+        "note": "Copre i creator DACH — Germania, Austria, Svizzera tedesca."
+      },
+      {
+        "city": "Dublino",
+        "address": "2 Dublin Landings · D01 V4A3 · Ireland",
+        "kind": "satellite",
+        "note": "Copre i creator UK + IE e le sponsor relations anglofone."
+      }
+    ],
+
+    "ctaTitle": "Vuoi capire se ha senso [parlarne]?",
+    "ctaBody": "La call di step 01 dura 30 minuti e a fine call sai se ha senso o no andare avanti. Niente impegno.",
+    "ctaLabel": "Parliamone"
+  },
   "Contact": {
     "badgeNumber": "05",
     "badgeLabel": "Contatti",

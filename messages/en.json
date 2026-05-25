@@ -267,6 +267,95 @@
     "ctaBody": "The step 01 call lasts 30 minutes, it's free, and by the end of it you know whether it makes sense to move on or not.",
     "ctaLabel": "Get in touch"
   },
+  "AboutPage": {
+    "badgeNumber": "04",
+    "badgeLabel": "About us",
+    "pageTitle": "A [studio]. Not an agency.",
+    "pageIntro": "HELM Studio is the European spin-off of Morningside AI — the New Zealand agency that codified the \"build custom AI workflows\" model. They work with companies. We do the same work for people who run, in person, a channel, a podcast, a newsletter.",
+
+    "originTitle": "[Where we come from.]",
+    "originParagraphs": [
+      "Morningside AI was founded in Auckland in 2023. It's the agency that first formalised the idea of not selling SaaS, but building automations stitched to the client — custom code, no white-label products, no recycled templates.",
+      "Four years later, a group of European technicians brought the same approach to Europe, with one crucial difference: our clients aren't companies, they're people. Individual creators working alone or in tiny teams, who can't make sense of generic AI tools.",
+      "Since January 2026 the studio has been based in Milan, with three satellite offices (Barcelona, Berlin, Dublin) — one for each of the main markets we operate in. Not for a \"remote-first\" fashion, but because being in the places where our clients live means speaking their language, knowing their platforms, understanding their brand deals."
+    ],
+
+    "positioningTitle": "What we [are], what we are not.",
+    "positioningIntro": "The \"AI for creators\" market is full of noise. Let's set the record straight.",
+    "positioningNotLabel": "What we are not",
+    "positioningNotItems": [
+      "A social or growth marketing agency.",
+      "A SaaS provider or a vendor of recycled AI templates.",
+      "Ghostwriters, video editors, or content producers.",
+      "Resellers of Make, Zapier, n8n or similar."
+    ],
+    "positioningAreLabel": "What we are",
+    "positioningAreItems": [
+      "A technical studio that builds custom AI automations.",
+      "Build-first: new code stitched to your specific workflow.",
+      "On the ground in Europe, with four offices and four languages.",
+      "Direct: you talk to the person whose hands are on the code."
+    ],
+
+    "manifestoTitle": "Four non-negotiable [principles].",
+    "manifestoPrinciples": [
+      {
+        "number": "01",
+        "title": "Build before you talk.",
+        "body": "Sales decks don't automate anything. You can tell when an automation actually works: you find it on your publishing calendar, not in a PDF."
+      },
+      {
+        "number": "02",
+        "title": "Honesty before the sale.",
+        "body": "If your workflow can't be automated, we tell you in the first call and that's it. Selling you something fake is the worst thing we could do for our reputation."
+      },
+      {
+        "number": "03",
+        "title": "The code is yours.",
+        "body": "No lock-in, no proprietary SaaS, no \"cancel and you lose everything\". At the end of the pilot you have a clean repository and documentation you can hand to anyone."
+      },
+      {
+        "number": "04",
+        "title": "Time, not clicks.",
+        "body": "We don't sell you views, engagement or social growth. We sell you hours that come back onto your calendar, to spend on what made you a creator in the first place."
+      }
+    ],
+
+    "officesTitle": "The [offices].",
+    "officesIntro": "One person physically present in each of the four cities where we operate. Not ideological remote-first — proximity matters in brand deals, in payments, in understanding local markets.",
+    "officesHqLabel": "HQ",
+    "officesSatelliteLabel": "Satellite",
+    "offices": [
+      {
+        "city": "Milan",
+        "address": "Via Giuseppe Mazzini 9 · 20123 Milan (MI) · Italy",
+        "kind": "hq",
+        "note": "Legal HQ, Italian operating base, and administrative heart of the studio."
+      },
+      {
+        "city": "Barcelona",
+        "address": "Passeig de Gràcia 17 · 08007 Barcelona · Spain",
+        "kind": "satellite",
+        "note": "Covers the Spanish-speaking creator community and Iberian brands."
+      },
+      {
+        "city": "Berlin",
+        "address": "Rosenthaler Str. 43–45 · 10178 Berlin · Germany",
+        "kind": "satellite",
+        "note": "Covers DACH creators — Germany, Austria, German-speaking Switzerland."
+      },
+      {
+        "city": "Dublin",
+        "address": "2 Dublin Landings · D01 V4A3 · Ireland",
+        "kind": "satellite",
+        "note": "Covers UK + IE creators and English-language sponsor relations."
+      }
+    ],
+
+    "ctaTitle": "Want to see if it makes sense to [talk]?",
+    "ctaBody": "The step 01 call lasts 30 minutes and by the end you know whether to move on or not. No commitment.",
+    "ctaLabel": "Get in touch"
+  },
   "Contact": {
     "badgeNumber": "05",
     "badgeLabel": "Contact",

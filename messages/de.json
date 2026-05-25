@@ -267,6 +267,95 @@
     "ctaBody": "Das Step-01-Gespräch dauert 30 Minuten, ist gratis, und am Ende weißt du, ob es Sinn macht, weiterzumachen oder nicht.",
     "ctaLabel": "Lass uns reden"
   },
+  "AboutPage": {
+    "badgeNumber": "04",
+    "badgeLabel": "Über uns",
+    "pageTitle": "Ein [Studio]. Keine Agentur.",
+    "pageIntro": "HELM Studio ist der europäische Spin-off von Morningside AI — der neuseeländischen Agentur, die das \"build custom AI workflows\"-Modell kodifiziert hat. Sie arbeiten mit Unternehmen. Wir machen dieselbe Arbeit für Menschen, die persönlich einen Channel, einen Podcast, einen Newsletter betreiben.",
+
+    "originTitle": "[Woher wir kommen.]",
+    "originParagraphs": [
+      "Morningside AI wurde 2023 in Auckland gegründet. Es ist die Agentur, die als erste die Idee formalisiert hat, kein SaaS zu verkaufen, sondern Automatisierungen zu bauen, die auf den Kunden zugeschnitten sind — Custom Code, keine White-Label-Produkte, keine recycelten Templates.",
+      "Vier Jahre später hat eine Gruppe europäischer Techniker denselben Ansatz nach Europa gebracht, mit einem entscheidenden Unterschied: unsere Kunden sind keine Unternehmen, sondern Menschen. Einzelne Creator, die alleine oder in winzigen Teams arbeiten und mit generischen KI-Tools nichts anfangen können.",
+      "Seit Januar 2026 sitzt das Studio in Mailand, mit drei Satellitenstandorten (Barcelona, Berlin, Dublin) — einer für jeden der wichtigsten Märkte, in denen wir tätig sind. Nicht aus \"Remote-first\"-Mode, sondern weil es uns, wenn wir dort sind, wo unsere Kunden leben, erlaubt, ihre Sprache zu sprechen, ihre Plattformen zu kennen, ihre Brand Deals zu verstehen."
+    ],
+
+    "positioningTitle": "Was wir [sind], was wir nicht sind.",
+    "positioningIntro": "Der \"KI-für-Creator\"-Markt ist voller Rauschen. Setzen wir die Punkte auf das i.",
+    "positioningNotLabel": "Was wir nicht sind",
+    "positioningNotItems": [
+      "Eine Social- oder Growth-Marketing-Agentur.",
+      "Ein SaaS-Anbieter oder Verkäufer recycelter KI-Templates.",
+      "Ghostwriter, Video-Editoren oder Content-Produzenten.",
+      "Reseller von Make, Zapier, n8n oder ähnlichem."
+    ],
+    "positioningAreLabel": "Was wir sind",
+    "positioningAreItems": [
+      "Ein technisches Studio, das maßgeschneiderte KI-Automatisierungen baut.",
+      "Build-first: neuer Code, zugeschnitten auf deinen spezifischen Workflow.",
+      "Vor Ort in Europa, mit vier Standorten und vier Sprachen.",
+      "Direkt: du sprichst mit der Person, deren Hände am Code sind."
+    ],
+
+    "manifestoTitle": "Vier nicht verhandelbare [Prinzipien].",
+    "manifestoPrinciples": [
+      {
+        "number": "01",
+        "title": "Bauen, bevor man redet.",
+        "body": "Sales-Decks automatisieren nichts. Du merkst, wann eine Automatisierung wirklich funktioniert: du findest sie in deinem Veröffentlichungskalender, nicht in einem PDF."
+      },
+      {
+        "number": "02",
+        "title": "Ehrlichkeit vor dem Verkauf.",
+        "body": "Wenn dein Workflow nicht automatisierbar ist, sagen wir dir das im ersten Gespräch und Schluss. Dir etwas Falsches zu verkaufen wäre das Schlimmste für unseren Ruf."
+      },
+      {
+        "number": "03",
+        "title": "Der Code gehört dir.",
+        "body": "Kein Lock-in, kein proprietäres SaaS, kein \"kündige und du verlierst alles\". Am Ende des Pilots hast du ein sauberes Repository und eine Doku, die du an jeden weitergeben kannst."
+      },
+      {
+        "number": "04",
+        "title": "Zeit, nicht Klicks.",
+        "body": "Wir verkaufen dir keine Views, kein Engagement, kein Social Growth. Wir verkaufen dir Stunden, die auf deinen Kalender zurückkommen, um sie für das zu nutzen, weshalb du Creator geworden bist."
+      }
+    ],
+
+    "officesTitle": "Die [Standorte].",
+    "officesIntro": "Eine Person physisch präsent in jeder der vier Städte, in denen wir tätig sind. Kein ideologisches Remote-first — Nähe zählt bei Brand Deals, bei Zahlungen, beim Verstehen lokaler Märkte.",
+    "officesHqLabel": "Hauptsitz",
+    "officesSatelliteLabel": "Standort",
+    "offices": [
+      {
+        "city": "Mailand",
+        "address": "Via Giuseppe Mazzini 9 · 20123 Mailand (MI) · Italien",
+        "kind": "hq",
+        "note": "Eingetragener Hauptsitz, italienische Operationsbasis und administratives Herz des Studios."
+      },
+      {
+        "city": "Barcelona",
+        "address": "Passeig de Gràcia 17 · 08007 Barcelona · Spanien",
+        "kind": "satellite",
+        "note": "Deckt die spanischsprachige Creator-Community und iberische Brands ab."
+      },
+      {
+        "city": "Berlin",
+        "address": "Rosenthaler Str. 43–45 · 10178 Berlin · Deutschland",
+        "kind": "satellite",
+        "note": "Deckt DACH-Creator ab — Deutschland, Österreich, deutschsprachige Schweiz."
+      },
+      {
+        "city": "Dublin",
+        "address": "2 Dublin Landings · D01 V4A3 · Irland",
+        "kind": "satellite",
+        "note": "Deckt UK- und IE-Creator sowie englischsprachige Sponsor-Beziehungen ab."
+      }
+    ],
+
+    "ctaTitle": "Willst du sehen, ob es Sinn macht zu [reden]?",
+    "ctaBody": "Das Step-01-Gespräch dauert 30 Minuten und am Ende weißt du, ob du weitermachen sollst oder nicht. Keine Verpflichtung.",
+    "ctaLabel": "Lass uns reden"
+  },
   "Contact": {
     "badgeNumber": "05",
     "badgeLabel": "Kontakt",
