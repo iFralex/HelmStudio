@@ -69,6 +69,9 @@ export const QualifyOutputSchema = z.object({
   salesObjections: z.array(z.string()).min(1).max(3),
   confidence: z.number().min(0).max(100),
   rationale: z.string(),
+  creatorFirstName: z.string().nullable().describe(
+    'The creator\'s real first name if mentioned in transcripts, channel description, or any provided data. Use proper capitalization (e.g. "Marco", "Ilenia"). Null if not found.',
+  ),
 });
 
 export type QualifyOutput = z.infer<typeof QualifyOutputSchema>;

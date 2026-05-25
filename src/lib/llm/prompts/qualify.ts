@@ -167,9 +167,11 @@ Transcript evidence: "ogni settimana mi ci vogliono 3–4 ore a raccogliere i be
   "salesObjections": [
     "I benchmarks devono essere precisi al 100%, non posso rischiare errori dell'AI",
     "Ho già il mio metodo rodato e funziona — cambiare richiede tempo"
-  ]
+  ],
+  "creatorFirstName": "Luca"
 }
 \`\`\`
+(Note: in this hypothetical example, Luca appears in the channel description: "Ciao, sono Luca e in questo canale...".)
 
 ### Example B — final 41, inferred
 
@@ -193,9 +195,11 @@ No TIER_1 evidence. Some repeatable structure (intro→ingredients→steps→tas
   "salesObjections": [
     "Le mie ricette le scrive io di petto, il tono personale è tutto",
     "Non ho dimestichezza con strumenti tecnici SaaS"
-  ]
+  ],
+  "creatorFirstName": "Marta"
 }
 \`\`\`
+(Note: "Marta" appears in the channel name itself as a clear human first name — acceptable. Channel names like "Accademia Nicotra" or "TechChannel" would resolve to null.)
 
 ### Example C — final 9, disqualified
 
@@ -211,9 +215,11 @@ Copyright risk (−25 commercialViability). No original spoken content (−30 ev
   "disqualifierScoreImpact": "copyright: commercialViability −25; corporate: commercialViability −20 (floored at 0); no spoken content: evidenceStrength −30",
   "salesObjections": [
     "Non decidiamo noi gli acquisti software, tutto passa dall'ufficio IT"
-  ]
+  ],
+  "creatorFirstName": null
 }
 \`\`\`
+(Note: corporate/network channel — no individual creator name applicable. Always null in these cases.)
 
 ### Example D — final 62, evidence_driven with weak evidence
 
@@ -250,9 +256,11 @@ Physical repair work caps workflowRepeatability (−25 applied).
   "salesObjections": [
     "Devo verificare personalmente ogni ricambio — non posso fidarmi di un AI che non ha mai smontato un motore",
     "I miei iscritti si aspettano che io sappia tutto a memoria, non che usi strumenti"
-  ]
+  ],
+  "creatorFirstName": "Roberto"
 }
 \`\`\`
+(Note: "Roberto" appears in the channel name "AutoMeccanica Roberto" as a clear human first name.)
 
 You answer ONLY in JSON, conforming exactly to the schema in the user message.
 No prose outside the JSON. No markdown fences.`;
@@ -396,7 +404,8 @@ Output a single JSON object conforming to this schema:
   "disqualifierScoreImpact": string,
   "salesObjections": [string (1–3 realistic objections this creator would raise)],
   "confidence": number (0–100),
-  "rationale": string
+  "rationale": string,
+  "creatorFirstName": string | null
 }
 
 Remember:
@@ -411,6 +420,7 @@ Remember:
 - HARD CONSTRAINT: if any disqualifier mentions copyright, third-party, or terzi, set commercialViability to 39 or lower.
 - HARD CONSTRAINT: if analysisMode="inferred", final must be below 60.
 - HARD CONSTRAINT: if automatableWorkflows is empty, final must be below 45.
+- creatorFirstName: extract the creator's REAL first name only if it appears in transcripts, channel description, or video metadata (e.g. "Mi chiamo Moreno", "Ciao, sono Marco", on-screen text, sponsor reads addressing them by name). Use proper Italian/English capitalization (e.g. "Moreno", "Ilenia", "Sarah"). Set to null if the creator goes by a pseudonym/handle only and no real first name is stated anywhere. Do NOT guess from the channel name. Do NOT use channel/show names like "Accademia", "Studio", "TV", etc. as the first name.
 </task>
 </channel_analysis_request>`;
 }

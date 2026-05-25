@@ -133,6 +133,7 @@ function makeQualifyOutputJson(): string {
     salesObjections: ['Il mio processo è già rodato e veloce'],
     confidence: 0.82,
     rationale: 'Strong automation potential.',
+    creatorFirstName: null,
   });
 }
 

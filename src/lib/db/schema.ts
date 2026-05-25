@@ -188,6 +188,8 @@ export const qualifications = sqliteTable(
     advocateRevisedFinal: integer('advocate_revised_final'),
     advocateConcerns: text('advocate_concerns', { mode: 'json' }),
 
+    creatorFirstName: text('creator_first_name'),
+
     rawResponsePath: text('raw_response_path').notNull(),
     rawPromptPath: text('raw_prompt_path').notNull(),
 

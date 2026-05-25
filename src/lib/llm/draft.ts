@@ -3,7 +3,14 @@ import { getDb } from '@/lib/db/client';
 import { outreachDrafts } from '@/lib/db/schema';
 import { logger } from '@/lib/logger';
 import { callLLM, LlmFormatError, type TokenUsage } from './call';
-import { version as promptVersion, system, userTemplate, type DraftInput } from './prompts/draft';
+import {
+  version as promptVersion,
+  system,
+  userTemplate,
+  buildGreeting,
+  emailFooter,
+  type DraftInput,
+} from './prompts/draft';
 import { DraftOutputSchema, validateDraftOutput, type DraftOutput } from './schemas';
 
 export type { DraftInput };
@@ -11,7 +18,18 @@ export type { DraftInput };
 type Db = ReturnType<typeof getDb>;
 
 const WORD_COUNT_RETRY_MSG =
-  'The body was too short/long. Aim for 120-180 words. Reply with the JSON only.';
+  'The body word count was out of band. Target ~180 words (acceptable 150–220). Reply with the JSON only.';
+
+export function assembleEmail(
+  bodyFromLlm: string,
+  recipientFirstName: string | null,
+  language: 'it' | 'en',
+): string {
+  const greeting = buildGreeting(recipientFirstName);
+  const middle = bodyFromLlm.trim();
+  const footer = emailFooter(language);
+  return `${greeting}\n\n${middle}\n\n${footer}`;
+}
 
 export async function runDraftGeneration(
   args: {
@@ -22,7 +40,7 @@ export async function runDraftGeneration(
   db: Db = getDb(),
 ): Promise<{ draftId: number; output: DraftOutput; usage: TokenUsage }> {
   const { channelId, qualificationId, input } = args;
-  const { language } = input;
+  const { language, recipientFirstName } = input;
   const user = userTemplate(input);
 
   const result = await callLLM({
@@ -77,6 +95,8 @@ export async function runDraftGeneration(
     }
   }
 
+  const assembledBody = assembleEmail(output.body, recipientFirstName, language);
+
   const draftId = db.transaction((tx) => {
     tx.update(outreachDrafts)
       .set({ isCurrent: false })
@@ -90,7 +110,7 @@ export async function runDraftGeneration(
         qualificationId,
         language,
         subject: output.subject,
-        body: output.body,
+        body: assembledBody,
         modelUsed,
         promptVersion,
         inputTokens: usage.inputTokens,
@@ -105,5 +125,5 @@ export async function runDraftGeneration(
     return row.id;
   });
 
-  return { draftId, output, usage };
+  return { draftId, output: { subject: output.subject, body: assembledBody }, usage };
 }

@@ -155,7 +155,11 @@ describe.skipIf(!sqlite3Available)('generateDraftForChannel', () => {
 
     expect(draftId).toBeGreaterThan(0);
     expect(subject).toBe(callResult.parsed.subject);
-    expect(body).toBe(callResult.parsed.body);
+    expect(body).toContain(callResult.parsed.body);
+    expect(body.startsWith('Ciao')).toBe(true);
+    expect(body).toContain('Martina Coluzzi');
+    expect(body).toContain('helmstudio.it');
+    expect(body).toContain('HELM Studio SRL');
     expect(language).toBe('it');
 
     const row = db
@@ -221,11 +225,11 @@ describe.skipIf(!sqlite3Available)('generateDraftForChannel', () => {
     expect(mockCallLLM).toHaveBeenCalledTimes(2);
     expect(mockCallLLM).toHaveBeenNthCalledWith(
       2,
-      expect.objectContaining({ user: expect.stringContaining('Aim for 120-180 words') }),
+      expect.objectContaining({ user: expect.stringContaining('Target ~180 words') }),
     );
 
     const row = db.select().from(schema.outreachDrafts).where(eq(schema.outreachDrafts.id, draftId)).get();
-    expect(row!.body).toBe(retryBody);
+    expect(row!.body).toContain(retryBody);
     expect(row!.rawResponsePath).toBe(retryRawPath);
     expect(row!.inputTokens).toBe(200);
     expect(row!.outputTokens).toBe(100);

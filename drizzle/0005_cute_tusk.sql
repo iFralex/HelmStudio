@@ -1,0 +1,1 @@
+ALTER TABLE `qualifications` ADD `creator_first_name` text;
