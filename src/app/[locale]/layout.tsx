@@ -19,5 +19,9 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
-  return <NextIntlClientProvider>{children}</NextIntlClientProvider>;
+  return (
+    <NextIntlClientProvider>
+      <div className="bg-brutal-bg text-brutal-fg font-sans min-h-screen">{children}</div>
+    </NextIntlClientProvider>
+  );
 }
