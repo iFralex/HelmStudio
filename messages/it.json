@@ -42,6 +42,135 @@
     "step03Body": "Provi l'automazione su un video vero, dall'inizio alla fine. A fine settimana decidi tu: se ti ha fatto risparmiare tempo, paghi una flat fee per tenerla. Altrimenti ciao, e nessuno si offende.",
     "step03Annotation": "decidi tu, a fine pilot"
   },
+  "WhatWeBuild": {
+    "badgeNumber": "03",
+    "badgeLabel": "Cosa costruiamo",
+    "title": "Non un catalogo. Un [campionario].",
+    "intro": "Ogni pilot parte da qualcosa di concreto. Tocca un'automazione qui sotto per vedere come ragioniamo — non template generici, soluzioni cucite sul tuo workflow specifico.",
+    "tapToExplore": "Tocca per dettagli",
+    "dialog": {
+      "problemLabel": "Il problema",
+      "solutionLabel": "Come la costruiamo",
+      "exampleLabel": "Esempio",
+      "timeSavedLabel": "Tempo risparmiato",
+      "ctaLabel": "Discutiamone in una call",
+      "closeLabel": "Chiudi"
+    },
+    "items": [
+      {
+        "label": "Transcript → Notion",
+        "problem": "Le trascrizioni dei tuoi video sono un asset ricercabile per il futuro, ma copiarle in Notion a mano non lo fai mai.",
+        "solution": "Webhook su nuovo upload YouTube → estrazione trascrizione (auto o human-edited se disponibile) → creazione automatica di una pagina Notion con sezioni, quote evidenziate e tag per niche.",
+        "example": "Da un video di 25 minuti a una pagina Notion con 8 capitoli e 4 quote ricercabili in meno di 60 secondi.",
+        "timeSaved": "20–40 min per video"
+      },
+      {
+        "label": "B-roll search",
+        "problem": "Cerchi un'inquadratura specifica dai tuoi vecchi video e finisce che scrolli 20 minuti senza trovarla.",
+        "solution": "Indicizziamo l'intera library (frame + audio) in un database vettoriale. Tu cerchi a voce: \"quando ho saldato la PCB rossa\" → ti restituisce timestamp esatti.",
+        "example": "280 video indicizzati. Trovi una scena precisa in 3 secondi invece di 20 minuti di scrubbing.",
+        "timeSaved": "30–90 min per video"
+      },
+      {
+        "label": "Thumbnail A/B",
+        "problem": "La miniatura sbagliata costa views ma non hai tempo per testarne 5 versioni a ogni upload.",
+        "solution": "Generiamo 5–10 varianti nel tuo style (testo, taglio, soggetto), le testiamo via YouTube experiments API, ti riportiamo solo la vincente con i numeri.",
+        "example": "7 miniature testate nelle 48h post-upload. Tienila o sostituiscila in un click.",
+        "timeSaved": "30 min + uplift CTR misurato"
+      },
+      {
+        "label": "Sponsor matching",
+        "problem": "I brand giusti per il tuo canale ti contattano poco. Quelli sbagliati ti scrivono ogni settimana.",
+        "solution": "RAG sul canale + analisi pubblico → media kit dinamico. Identifichiamo brand con prodotti coerenti col tuo contenuto e prepariamo la mail di pitch nel tuo tone.",
+        "example": "6 brand identificati in nicchia tech retro, 3 risposte positive in 2 settimane.",
+        "timeSaved": "5–8h per ciclo di outreach"
+      },
+      {
+        "label": "Description writer",
+        "problem": "Scrivere descrizione + capitoli + tag + link affiliate per ogni video sono 20 minuti ripetitivi che eviti.",
+        "solution": "Pipeline che da trascrizione + metadati genera descrizione SEO nel tuo tone, capitoli con timestamp, tag YouTube ottimizzati e blocco affiliate compilato.",
+        "example": "Da video grezzo a description pubblicabile in 90 secondi invece di 20 minuti.",
+        "timeSaved": "15–20 min per video"
+      },
+      {
+        "label": "Chapter generator",
+        "problem": "I capitoli aumentano la retention ma metterli a mano è la prima cosa che salti quando hai fretta.",
+        "solution": "LLM analizza la struttura del video da trascrizione e audio, propone capitoli con titoli nel tuo tone e timestamp esatti. Tu approvi o ritocchi.",
+        "example": "12 capitoli generati in 30s su un video di 25 minuti, titoli scritti come li scriveresti tu.",
+        "timeSaved": "15 min per video"
+      },
+      {
+        "label": "Title testing",
+        "problem": "Hai 3 titoli in testa, non sai quale spara meglio, e non vuoi essere il classico \"YouTube growth guy\".",
+        "solution": "Generiamo 5 varianti nel tuo style (zero clickbait), testiamo via YouTube experiments, ti riportiamo la più performante con i dati.",
+        "example": "5 titoli su un video, vince quello laterale che non avresti scelto: +22% CTR vs l'originale.",
+        "timeSaved": "Uplift CTR misurato, ~10 min per upload"
+      },
+      {
+        "label": "Shorts editor",
+        "problem": "Tagliare 3 Shorts da ogni long-form sono ore di editing che spesso saltano del tutto.",
+        "solution": "LLM cerca i momenti più clipabili usando la curva di retention + transcript, genera taglio, zoom e caption. Tu approvi i 3 migliori.",
+        "example": "8 Shorts pronti da un long-form di 25 minuti. Pubblichi o scarti in pochi minuti.",
+        "timeSaved": "1–2h per video long-form"
+      },
+      {
+        "label": "Setup VM legacy",
+        "problem": "Ogni volta che riprendi una scheda vintage perdi una nottata a installare l'OS giusto e i driver.",
+        "solution": "Libreria di VM/imaging pre-configurate (Win 98 SE, XP, varianti driver). Singolo comando per avviare l'ambiente test.",
+        "example": "VMAS test pronto in 90 secondi, niente più Ctrl+A ripetuto fino alle 4 di notte.",
+        "timeSaved": "1 notte per progetto"
+      },
+      {
+        "label": "Outlier research",
+        "problem": "Per i video tipo saggio servono ore di ricerca su PDF accademici, Substack, OECD reports che cita ogni volta a mano.",
+        "solution": "RAG custom che ingerisce la tua reading list + fonti PDF, genera summary strutturati e cluster tematici. Ogni fact viene citato con la source.",
+        "example": "22 fonti aggregate in un brief di 4 pagine con timeline e cluster tematici.",
+        "timeSaved": "6–10h per video di approfondimento"
+      },
+      {
+        "label": "Newsletter draft",
+        "problem": "La newsletter che esce dopo il video sono 90 minuti di rewriting che ammazzano l'energia post-upload.",
+        "solution": "Transcript → draft Substack nel tuo tone, con sezioni, lead, link al video. Tu rivedi 15 minuti e pubblichi.",
+        "example": "Newsletter di 1200 parole pronta in 4 minuti, su cui fai polish in un quarto d'ora.",
+        "timeSaved": "60 min per release"
+      },
+      {
+        "label": "Podcast show notes",
+        "problem": "Le show notes del tuo podcast sono SEO e crescita audience, ma le rimandi perché stanchezza.",
+        "solution": "Da audio podcast → show notes complete: 3 paragrafi, timestamps, key quotes, bio guest, link social.",
+        "example": "35 minuti di podcast → 6 capitoli + 8 quote + bio ospite in 90 secondi.",
+        "timeSaved": "40 min per episodio"
+      },
+      {
+        "label": "Comment triage",
+        "problem": "Sotto i video ricevi 500 commenti, 90% rumore, 10% domande importanti che vorresti vedere ma non vedi.",
+        "solution": "Classifichiamo i commenti (domanda, idea, fan, hater, sponsor) e ti mandiamo un digest giornaliero solo dei \"tier 1\" da rispondere.",
+        "example": "Da 320 commenti su un video, 28 segnalati come \"rispondi\". Risposto a tutti in 12 minuti.",
+        "timeSaved": "30–60 min per video"
+      },
+      {
+        "label": "Affiliate aggregator",
+        "problem": "Tieni 15 link affiliate in mente + uno spreadsheet vecchio + descrizioni copy-paste video dopo video.",
+        "solution": "Database affiliate con lookup automatico → inserimento dei link nei prodotti citati nel video (transcript-based).",
+        "example": "14 link inseriti automaticamente nella description di un teardown audio, con disclosure.",
+        "timeSaved": "12 min per video"
+      },
+      {
+        "label": "Reading vlog highlights",
+        "problem": "I reading vlog hanno 30 minuti di vita quotidiana e 5 frasi forti sui libri sparse ovunque. Il pubblico social skipa.",
+        "solution": "Estraiamo i momenti \"best of\" sui libri dai vlog → versione clip per reel/short con caption ottimizzate.",
+        "example": "10 highlight tipo \"perché Colette mi sta lavorando dentro\" estratti da 4 vlog.",
+        "timeSaved": "2h di ricerca + uplift social"
+      },
+      {
+        "label": "Sponsor brief",
+        "problem": "Quando un brand ti scrive devi rispondere con un media kit aggiornato. Quello che hai è del 2024.",
+        "solution": "Media kit dinamico (audience demo, top 10 video, CPM avg, esempi di sponsor integrations) sempre aggiornato. Solo da inoltrare.",
+        "example": "Brand chiede pricing → mandi PDF aggiornato in 30 secondi invece di passare 1h a rifare le statistiche.",
+        "timeSaved": "1h per richiesta brand"
+      }
+    ]
+  },
   "Footer": {
     "company": "HELM Studio SRL",
     "address": "Via Giuseppe Mazzini 9 · 20123 Milano (MI)",
