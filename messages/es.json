@@ -189,6 +189,84 @@
       { "label": "Equipo", "value": "Local, pequeño, accesible" }
     ]
   },
+  "HowItWorksPage": {
+    "badgeNumber": "02",
+    "badgeLabel": "Cómo funciona",
+    "pageTitle": "El piloto de [dos semanas]. En detalle.",
+    "pageIntro": "Sin presupuestos abstractos. Sin lock-in. Sin resellers. Construimos una automatización cosida a tu workflow, la pruebas gratis durante una semana, decides tú si vale la pena pagarla. Funcionamos así porque ya estamos hartos de software que se compra a ciegas.",
+    "stepsTitle": "[El modelo.] Tres pasos, dos semanas.",
+    "stepGiveLabel": "Qué necesitamos",
+    "stepGetLabel": "Qué recibes",
+    "stepTimelineLabel": "Plazos",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Entendemos juntos qué automatizar.",
+        "body": "Media hora de llamada con uno de los técnicos del equipo — no un sales rep. Tú cuentas dónde pierdes tiempo, nosotros entendemos si es realmente automatizable o si es un caso de \"déjalo a mano\" (pasa, te lo decimos). Si tiene sentido, arrancamos. Si no, te explicamos por qué y se acaba ahí, sin follow-up insistente.",
+        "youGive": "30 minutos de tu tiempo + una descripción honesta de una tarea recurrente.",
+        "youGet": "Una evaluación franca: se puede, no se puede, y por qué.",
+        "timeline": "Cuando te venga bien."
+      },
+      {
+        "number": "02",
+        "title": "Construimos la automatización.",
+        "body": "Semana 1 (5 días laborables). El equipo técnico construye la solución a medida del workflow específico que hemos elegido. Sin plantillas genéricas. Sin \"adaptamos algo que ya hicimos para otro\". Tu código, hosteado donde decidas, documentado en tu idioma de trabajo. Updates cada 1–2 días sobre lo que está listo.",
+        "youGive": "Acceso a los sistemas que hacen falta (cuentas de test, API keys, archivos de ejemplo si aplica). Supervisado, sin datos sensibles.",
+        "youGet": "Una automatización funcionando al final de la semana, con documentación y un training de 30 minutos.",
+        "timeline": "5 días laborables consecutivos."
+      },
+      {
+        "number": "03",
+        "title": "La pruebas gratis, decides tú.",
+        "body": "Semana 2 (7 días). La usas en un vídeo real, de producción, de principio a fin. Estamos en standby para soporte si hace falta, pero no te miramos por encima del hombro. Al final de la semana decides: si te ha ahorrado tiempo, pagas una tarifa plana (te la dijimos antes del piloto — sin sorpresas). Si no, sin rencores.",
+        "youGive": "Siete días de uso real + honestidad al final del piloto.",
+        "youGet": "Una decisión informada. Sin lock-in, sin suscripción, sin capa intermedia.",
+        "timeline": "7 días, decisión el lunes siguiente."
+      }
+    ],
+    "pricingTitle": "[Transparencia] sobre los precios.",
+    "pricingBody": "Por defecto una tarifa plana única, declarada antes incluso de que empiece el piloto. ¿Cuánto? Depende de la complejidad del workflow — un description writer cuesta menos que un agente RAG sobre 500 vídeos. La cifra exacta te la decimos en la llamada del paso 01, cuando tenemos claro qué hace falta. ¿Prefieres un modelo de suscripción? Hablémoslo: lo estructuramos así — la elección es tuya.",
+    "pricingBullets": [
+      "Por defecto una sola tarifa única, declarada antes del piloto.",
+      "Suscripción si la prefieres — tu elección, no un default forzado.",
+      "Sin lock-in: el código es tuyo, hosteado donde quieras.",
+      "Si no funciona, no pagas. Punto."
+    ],
+    "faqTitle": "[Preguntas] y respuestas.",
+    "faq": [
+      {
+        "q": "¿Y si mi workflow es demasiado específico para automatizarse?",
+        "a": "Te lo decimos enseguida. En la llamada del paso 01 verificamos si hay suficiente repetición estructural para construir algo encima. Si no la hay, es un honesto \"no\" y seguimos siendo amigos. No te vendemos una automatización falsa."
+      },
+      {
+        "q": "¿Qué pasa si al final del piloto no estoy convencido?",
+        "a": "Exactamente nada: no pagas, nos despedimos. Te quedas con el código si quieres (aunque sea solo para probarlo tú mismo o pasarlo a uno de tus developers en el futuro). No te pedimos motivos, no te hacemos follow-up insistente."
+      },
+      {
+        "q": "¿Puedo seguir trabajando con mis developers después del piloto?",
+        "a": "Sí, el código es tuyo. Documentación en tu idioma de trabajo, repositorio limpio, sin magia oscura. Si en el futuro quieres mantenimiento por parte nuestra, pasas primero por nosotros, pero eres libre de hacer lo que quieras."
+      },
+      {
+        "q": "¿Qué significa tarifa plana? ¿Y puedo pagar a suscripción si la prefiero?",
+        "a": "El modelo por defecto es una sola tarifa cuando decides quedarte la automatización, declarada antes del piloto. Sin costes por vídeo, sin sorpresas. Si prefieres una suscripción mensual o trimestral, podemos estructurarlo así — solo dínoslo. La flexibilidad está de tu parte."
+      },
+      {
+        "q": "¿Firmáis NDAs?",
+        "a": "Sí, antes de la llamada del paso 01 si nos lo pides. Normalmente no hace falta porque hablamos de workflows, no de datos sensibles o contratos de sponsors, pero para nosotros está bien firmarlo igualmente."
+      },
+      {
+        "q": "¿Cuán técnico tiene que ser el workflow que propongo?",
+        "a": "De nada a muchísimo. Hemos construido automatizaciones simples (scripts de descripción) y complejas (provisioning de entornos vintage para hardware testing). Lo entendemos en la llamada: no tienes que ser ingeniero para hablar con nosotros."
+      },
+      {
+        "q": "¿Hay un mínimo de suscriptores, views o facturación para trabajar con vosotros?",
+        "a": "No. Lo que cuenta es que haya un workflow recurrente que automatizar, no lo grande que seas. Hemos trabajado con creadores de 5k subs y de 500k. El piloto es el mismo para todos."
+      }
+    ],
+    "ctaTitle": "¿Listo para [hablar]?",
+    "ctaBody": "La llamada del paso 01 dura 30 minutos, es gratis, y al final sabes si tiene sentido seguir adelante o no.",
+    "ctaLabel": "Hablemos"
+  },
   "Contact": {
     "badgeNumber": "05",
     "badgeLabel": "Contacto",

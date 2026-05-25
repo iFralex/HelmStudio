@@ -189,6 +189,84 @@
       { "label": "Team", "value": "Local, small, reachable" }
     ]
   },
+  "HowItWorksPage": {
+    "badgeNumber": "02",
+    "badgeLabel": "How it works",
+    "pageTitle": "The [two-week] pilot. In detail.",
+    "pageIntro": "No abstract quotes. No lock-in. No resellers. We build an automation stitched to your workflow, you use it free for a week, then you decide if it's worth paying for. We work this way because we've had enough of software you buy in the dark.",
+    "stepsTitle": "[The model.] Three steps, two weeks.",
+    "stepGiveLabel": "What we need",
+    "stepGetLabel": "What you get",
+    "stepTimelineLabel": "Timing",
+    "steps": [
+      {
+        "number": "01",
+        "title": "We figure out what to automate, together.",
+        "body": "A 30-minute call with one of the team's technical leads — not a sales rep. You describe where you lose time, we figure out whether it's actually automatable or whether it's a case for \"leave it manual\" (it happens, and we'll tell you). If it makes sense, we go. If not, we explain why and that's it — no pushy follow-up.",
+        "youGive": "30 minutes of your time + an honest description of a recurring task.",
+        "youGet": "A frank evaluation: can be done, can't be done, and why.",
+        "timeline": "Whenever works for you."
+      },
+      {
+        "number": "02",
+        "title": "We build the automation.",
+        "body": "Week 1 (5 working days). The technical team builds the solution tailored to the specific workflow we picked. No generic templates. No \"let's adapt something we already built for someone else\". Your code, hosted wherever you decide, documented in your working language. Updates every 1–2 days on what's done.",
+        "youGive": "Access to the systems we need (test accounts, API keys, sample files if relevant). Supervised, no sensitive data.",
+        "youGet": "A working automation by end of week, with documentation and a 30-minute training.",
+        "timeline": "5 consecutive working days."
+      },
+      {
+        "number": "03",
+        "title": "You use it free, you decide.",
+        "body": "Week 2 (7 days). You use it on a real production video, end to end. We're on standby for support if needed, but we don't look over your shoulder. At week's end you decide: if it saved you time, you pay a flat fee (we told you the figure before the pilot — no surprises). If not, no hard feelings.",
+        "youGive": "Seven days of real use + honesty at the end of the pilot.",
+        "youGet": "An informed decision. No lock-in, no subscription, no middle layer.",
+        "timeline": "7 days, decision on the following Monday."
+      }
+    ],
+    "pricingTitle": "[Transparency] on pricing.",
+    "pricingBody": "By default, a one-off flat fee, declared before the pilot even begins. How much? It depends on the workflow's complexity — a description writer costs less than a RAG agent over 500 videos. We give you the exact number in the step 01 call, once we know what's needed. Prefer a subscription model instead? Let's talk: we can structure it that way — the choice is yours.",
+    "pricingBullets": [
+      "By default a single one-off fee, declared before the pilot starts.",
+      "Subscription if you prefer — your call, not a forced default.",
+      "No lock-in: the code is yours, hosted wherever you want.",
+      "If it doesn't work, you don't pay. Period."
+    ],
+    "faqTitle": "[Questions] and answers.",
+    "faq": [
+      {
+        "q": "What if my workflow is too specific to be automated?",
+        "a": "We tell you straight away. In the step 01 call we check whether there's enough structural repetition to build something on top of. If there isn't, it's an honest \"no\" and we're still on good terms. We don't sell you a fake automation."
+      },
+      {
+        "q": "What if I'm not convinced at the end of the pilot?",
+        "a": "Exactly nothing happens: you don't pay, we say goodbye. You still have the code if you want to keep it (even just to try it yourself or hand it to one of your developers later). No reason needed, no pushy follow-ups."
+      },
+      {
+        "q": "Can I keep working on it with my own developers after the pilot?",
+        "a": "Yes, the code is yours. Documentation in your working language, clean repository, no obscure magic. If you want maintenance from us later, you check with us first, but you're free to do as you like."
+      },
+      {
+        "q": "What does \"flat fee\" mean? And can I pay as a subscription if I prefer?",
+        "a": "The default model is one fee when you decide to keep the automation, declared before the pilot. No per-video cost, no surprises. If you prefer a monthly or quarterly subscription, we can structure it that way — just ask. Flexibility is on your side."
+      },
+      {
+        "q": "Do you sign NDAs?",
+        "a": "Yes, before the step 01 call if you ask us. Usually it's not needed because we talk about workflows, not sensitive data or sponsor contracts, but we're fine signing one anyway."
+      },
+      {
+        "q": "How technical does the workflow I bring need to be?",
+        "a": "From not at all to very. We've built simple automations (description scripts) and complex ones (vintage hardware test environments). We figure it out in the call: you don't need to be an engineer to talk to us."
+      },
+      {
+        "q": "Is there a minimum on subscribers, views, or revenue to work with you?",
+        "a": "No. What matters is having a recurring workflow worth automating, not how big you are. We've worked with creators at 5k subs and at 500k. The pilot is the same for everyone."
+      }
+    ],
+    "ctaTitle": "Ready to [talk]?",
+    "ctaBody": "The step 01 call lasts 30 minutes, it's free, and by the end of it you know whether it makes sense to move on or not.",
+    "ctaLabel": "Get in touch"
+  },
   "Contact": {
     "badgeNumber": "05",
     "badgeLabel": "Contact",

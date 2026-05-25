@@ -189,6 +189,84 @@
       { "label": "Team", "value": "Lokal, klein, erreichbar" }
     ]
   },
+  "HowItWorksPage": {
+    "badgeNumber": "02",
+    "badgeLabel": "So funktioniert's",
+    "pageTitle": "Das [zwei-wöchige] Pilotprojekt. Im Detail.",
+    "pageIntro": "Keine abstrakten Angebote. Keine Bindung. Keine Reseller. Wir bauen eine Automatisierung, die auf deinen Workflow zugeschnitten ist, du nutzt sie eine Woche gratis, und dann entscheidest du, ob es das Geld wert ist. So arbeiten wir, weil wir die Nase voll haben von Software, die man im Blindflug kauft.",
+    "stepsTitle": "[Das Modell.] Drei Schritte, zwei Wochen.",
+    "stepGiveLabel": "Was wir brauchen",
+    "stepGetLabel": "Was du bekommst",
+    "stepTimelineLabel": "Zeitrahmen",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Wir finden gemeinsam heraus, was zu automatisieren ist.",
+        "body": "Ein 30-minütiges Gespräch mit einem unserer Techniker — kein Sales-Rep. Du erzählst, wo du Zeit verlierst, wir prüfen, ob es wirklich automatisierbar ist oder ob es ein Fall für \"lass es manuell\" ist (passiert, und wir sagen es dir). Wenn es Sinn ergibt, machen wir weiter. Wenn nicht, erklären wir warum — Schluss, kein peinliches Nachhaken.",
+        "youGive": "30 Minuten deiner Zeit + eine ehrliche Beschreibung einer wiederkehrenden Aufgabe.",
+        "youGet": "Eine ehrliche Einschätzung: geht, geht nicht, und warum.",
+        "timeline": "Wann es dir passt."
+      },
+      {
+        "number": "02",
+        "title": "Wir bauen die Automatisierung.",
+        "body": "Woche 1 (5 Arbeitstage). Das technische Team baut die Lösung, zugeschnitten auf den spezifischen Workflow, den wir gewählt haben. Keine generischen Templates. Kein \"passen wir einfach etwas an, das wir schon mal gemacht haben\". Dein Code, gehostet wo du willst, dokumentiert in deiner Arbeitssprache. Updates alle 1–2 Tage über den Stand.",
+        "youGive": "Zugang zu den nötigen Systemen (Test-Accounts, API-Keys, eventuell Beispieldateien). Beaufsichtigt, keine sensiblen Daten.",
+        "youGet": "Eine funktionierende Automatisierung zum Wochenende, mit Doku und einer 30-minütigen Einarbeitung.",
+        "timeline": "5 zusammenhängende Arbeitstage."
+      },
+      {
+        "number": "03",
+        "title": "Du nutzt sie gratis, du entscheidest.",
+        "body": "Woche 2 (7 Tage). Du nutzt sie an einem echten Produktionsvideo, von Anfang bis Ende. Wir sind im Standby für Support, aber wir schauen dir nicht über die Schulter. Am Ende der Woche entscheidest du: Wenn sie dir Zeit gespart hat, zahlst du eine Pauschalgebühr (wir haben sie dir vor dem Pilot genannt — keine Überraschung). Andernfalls, kein Stress.",
+        "youGive": "Sieben Tage echte Nutzung + Ehrlichkeit am Ende des Pilots.",
+        "youGet": "Eine informierte Entscheidung. Kein Lock-in, kein Abo, keine Zwischenschicht.",
+        "timeline": "7 Tage, Entscheidung am folgenden Montag."
+      }
+    ],
+    "pricingTitle": "[Transparenz] bei den Preisen.",
+    "pricingBody": "Standardmäßig eine einmalige Pauschalgebühr, genannt bevor der Pilot überhaupt beginnt. Wie viel? Hängt von der Komplexität des Workflows ab — ein Description Writer kostet weniger als ein RAG-Agent über 500 Videos. Die genaue Zahl nennen wir dir im Step-01-Gespräch, sobald wir wissen, was nötig ist. Bevorzugst du stattdessen ein Abo-Modell? Lass uns reden: wir können es so strukturieren — die Wahl liegt bei dir.",
+    "pricingBullets": [
+      "Standardmäßig eine einzige einmalige Gebühr, vor dem Pilot genannt.",
+      "Abo, wenn du es bevorzugst — deine Entscheidung, kein erzwungener Standard.",
+      "Kein Lock-in: der Code gehört dir, gehostet wo du willst.",
+      "Wenn es nicht funktioniert, zahlst du nicht. Punkt."
+    ],
+    "faqTitle": "[Fragen] und Antworten.",
+    "faq": [
+      {
+        "q": "Was, wenn mein Workflow zu spezifisch ist, um automatisiert zu werden?",
+        "a": "Wir sagen es dir sofort. Im Step-01-Gespräch prüfen wir, ob es genug strukturelle Wiederholung gibt, um etwas darauf aufzubauen. Wenn nicht, ist es ein ehrliches \"Nein\" und wir bleiben gut zueinander. Wir verkaufen dir keine Fake-Automatisierung."
+      },
+      {
+        "q": "Was passiert, wenn ich am Ende des Pilots nicht überzeugt bin?",
+        "a": "Genau nichts: du zahlst nicht, wir verabschieden uns. Du hast trotzdem den Code, falls du ihn behalten willst (auch nur, um ihn selbst zu testen oder später einem deiner Entwickler zu übergeben). Wir fragen nicht nach Gründen, kein nervendes Nachhaken."
+      },
+      {
+        "q": "Kann ich mit meinen eigenen Entwicklern nach dem Pilot daran weiterarbeiten?",
+        "a": "Ja, der Code gehört dir. Doku in deiner Arbeitssprache, sauberes Repository, keine dunkle Magie. Wenn du später Wartung von uns willst, kommst du zuerst zu uns, aber du bist frei, damit zu tun, was du willst."
+      },
+      {
+        "q": "Was bedeutet Pauschalgebühr? Und kann ich per Abo zahlen, wenn ich es bevorzuge?",
+        "a": "Das Standardmodell ist eine einzige Gebühr, wenn du entscheidest, die Automatisierung zu behalten — vor dem Pilot genannt. Keine Kosten pro Video, keine Überraschungen. Wenn du ein monatliches oder vierteljährliches Abo bevorzugst, können wir es so strukturieren — sag uns einfach Bescheid. Flexibilität liegt bei dir."
+      },
+      {
+        "q": "Unterzeichnet ihr NDAs?",
+        "a": "Ja, vor dem Step-01-Gespräch wenn du es willst. Normalerweise ist es nicht nötig, weil wir über Workflows sprechen, nicht über sensible Daten oder Sponsor-Verträge, aber wir unterschreiben gerne eines."
+      },
+      {
+        "q": "Wie technisch muss der Workflow sein, den ich vorschlage?",
+        "a": "Von gar nicht bis sehr. Wir haben einfache Automatisierungen gebaut (Description-Skripte) und komplexe (Vintage-Hardware-Test-Umgebungen). Wir verstehen es im Gespräch: du musst kein Ingenieur sein, um mit uns zu reden."
+      },
+      {
+        "q": "Gibt es ein Minimum an Abonnenten, Views oder Umsatz, um mit euch zu arbeiten?",
+        "a": "Nein. Was zählt, ist ein wiederkehrender Workflow, den man automatisieren kann, nicht wie groß du bist. Wir haben mit Creators bei 5k Abos und bei 500k gearbeitet. Der Pilot ist für alle gleich."
+      }
+    ],
+    "ctaTitle": "Bereit zu [reden]?",
+    "ctaBody": "Das Step-01-Gespräch dauert 30 Minuten, ist gratis, und am Ende weißt du, ob es Sinn macht, weiterzumachen oder nicht.",
+    "ctaLabel": "Lass uns reden"
+  },
   "Contact": {
     "badgeNumber": "05",
     "badgeLabel": "Kontakt",

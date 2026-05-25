@@ -189,6 +189,84 @@
       { "label": "Team", "value": "Localizzato, piccolo, accessibile" }
     ]
   },
+  "HowItWorksPage": {
+    "badgeNumber": "02",
+    "badgeLabel": "Come funziona",
+    "pageTitle": "Il pilot di [due settimane]. In dettaglio.",
+    "pageIntro": "Niente preventivi astratti. Niente lock-in. Niente reseller. Costruiamo un'automazione cucita sul tuo workflow, la provi gratis per una settimana, decidi tu se vale la pena pagarla. Funziona così perché ne abbiamo abbastanza di software che si compra al buio.",
+    "stepsTitle": "[Il modello.] Tre passi, due settimane.",
+    "stepGiveLabel": "Cosa ci serve",
+    "stepGetLabel": "Cosa ricevi",
+    "stepTimelineLabel": "Tempi",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Capiamo insieme cosa automatizzare.",
+        "body": "Mezz'ora di call con uno dei tecnici del team — non un sales rep. Tu racconti dove perdi tempo, noi capiamo se è automatizzabile davvero o se è un caso da \"lascialo a mano\" (succede, te lo diciamo). Se ha senso, partiamo. Se no, ti spieghiamo perché e finisce lì senza follow-up insistenti.",
+        "youGive": "30 minuti del tuo tempo + una descrizione onesta di un task ricorrente.",
+        "youGet": "Una valutazione franca: si fa, non si fa, e perché.",
+        "timeline": "Quando vuoi tu."
+      },
+      {
+        "number": "02",
+        "title": "Costruiamo l'automazione.",
+        "body": "Settimana 1 (5 giorni lavorativi). Il team tecnico costruisce la soluzione su misura del workflow specifico che abbiamo scelto. Niente template generici. Niente \"adattiamo qualcosa che abbiamo già fatto per un altro\". Codice tuo, hostato dove decidi tu, documentato nella tua lingua di lavoro. Aggiornamenti ogni 1-2 giorni su cosa è pronto.",
+        "youGive": "Accesso ai sistemi che servono (account di test, API key, eventualmente file di esempio). Controllato a vista, niente dati sensibili.",
+        "youGet": "Un'automazione funzionante a fine settimana, con documentazione e un training di 30 minuti.",
+        "timeline": "5 giorni lavorativi consecutivi."
+      },
+      {
+        "number": "03",
+        "title": "La provi gratis, decidi tu.",
+        "body": "Settimana 2 (7 giorni). La usi su un video vero, di produzione, dall'inizio alla fine. Noi siamo in standby per supporto se serve, ma non ti guardiamo le spalle. A fine settimana decidi: se ti ha fatto risparmiare tempo, paghi una flat fee (te l'abbiamo detta prima, non c'è sorpresa). Altrimenti, ciao senza rancore.",
+        "youGive": "Sette giorni di uso reale + onestà a fine pilot.",
+        "youGet": "Decisione informata. Niente lock-in, niente subscription, niente catena di mezzo.",
+        "timeline": "7 giorni, decisione il lunedì successivo."
+      }
+    ],
+    "pricingTitle": "[Trasparenza] sui prezzi.",
+    "pricingBody": "Di default una flat fee una tantum, dichiarata prima ancora che inizi il pilot. Quanto? Dipende dalla complessità del workflow — un description writer costa meno di un agente RAG su 500 video. La cifra esatta te la diciamo nella call di step 01, quando abbiamo chiaro cosa serve. Preferisci un modello ad abbonamento? Parliamone: lo strutturiamo così — la scelta sta a te.",
+    "pricingBullets": [
+      "Di default una sola fee una tantum, dichiarata prima del pilot.",
+      "Abbonamento se lo preferisci — scelta tua, non un default forzato.",
+      "Niente lock-in: il codice è tuo, hostato dove vuoi.",
+      "Se non funziona, non paghi. Punto."
+    ],
+    "faqTitle": "[Domande] e risposte.",
+    "faq": [
+      {
+        "q": "E se il mio workflow è troppo specifico per essere automatizzato?",
+        "a": "Te lo diciamo subito. Nella call di step 01 verifichiamo se c'è abbastanza ripetizione strutturale per costruirci sopra qualcosa. Se non c'è, è un onesto \"no\" e amici come prima. Non ti vendiamo un'automazione finta."
+      },
+      {
+        "q": "Cosa succede se a fine pilot non sono convinto?",
+        "a": "Esattamente niente: non paghi, ci salutiamo. Hai comunque il codice se vuoi tenerlo (anche solo per provarlo da solo o farlo continuare a un tuo developer in futuro). Non ti chiediamo cause, non ti facciamo follow-up insistenti."
+      },
+      {
+        "q": "Posso continuare a lavorarci con i miei developer dopo il pilot?",
+        "a": "Sì, il codice è tuo. Documentazione nella tua lingua di lavoro, repository pulito, niente magia oscura. Se in futuro vuoi una manutenzione da parte nostra passi prima da noi, ma sei libero di farne quello che vuoi."
+      },
+      {
+        "q": "Cosa significa flat fee? E posso pagare ad abbonamento se preferisco?",
+        "a": "Il modello di default è una sola fee al momento di tenere l'automazione, dichiarata prima del pilot. Niente costi a video, niente sorprese. Se preferisci un abbonamento mensile o trimestrale, possiamo strutturarlo così — basta dircelo. La flessibilità sta dalla tua parte."
+      },
+      {
+        "q": "Firmate NDA?",
+        "a": "Sì, prima della call di step 01 se ce lo chiedi. Tipicamente non serve perché parliamo di workflow, non di dati sensibili o contratti sponsor, ma per noi va bene firmarlo lo stesso."
+      },
+      {
+        "q": "Quanto deve essere tecnico il workflow che posso proporre?",
+        "a": "Da nessuno a moltissimo. Abbiamo costruito automazioni semplici (script di description) e complesse (provisioning di ambienti vintage per hardware testing). Lo capiamo nella call: non devi essere un ingegnere per parlarci."
+      },
+      {
+        "q": "C'è un minimo di iscritti, view, o fatturato per lavorare con voi?",
+        "a": "No. Quello che conta è che ci sia un workflow ricorrente da automatizzare, non quanto sei grande. Abbiamo lavorato con creator da 5k iscritti e con creator da 500k. Il pilot è uguale per tutti."
+      }
+    ],
+    "ctaTitle": "Pronto a [parlarne]?",
+    "ctaBody": "La call di step 01 dura 30 minuti, è gratis, e a fine call sai se ha senso o no andare avanti.",
+    "ctaLabel": "Parliamone"
+  },
   "Contact": {
     "badgeNumber": "05",
     "badgeLabel": "Contatti",
