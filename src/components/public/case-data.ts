@@ -1,7 +1,29 @@
 // Source of truth for case-study slugs. Used by generateStaticParams,
 // route validation, and links. Keep in sync with messages.CaseStudies.cases[].slug.
-export const CASE_STUDY_SLUGS = ['mai-erklart', 'chase-maker'] as const;
+export const CASE_STUDY_SLUGS = ['mailab', 'code-monkey'] as const;
 export type CaseStudySlug = (typeof CASE_STUDY_SLUGS)[number];
+
+// Locale-invariant metadata kept in code (not in messages) because URLs don't
+// change per language.
+//
+// Avatars are pulled via unavatar.io, a tiny proxy that returns the real
+// YouTube channel avatar given a handle. ChannelAvatar uses next/image with
+// `unoptimized`, so no domain whitelist tweak is needed.
+//
+// Replace these with real client data once the first pilots ship.
+export const CASE_METADATA: Record<
+  CaseStudySlug,
+  { logoUrl: string | null; channelUrl: string }
+> = {
+  mailab: {
+    logoUrl: 'https://unavatar.io/youtube/maiLab',
+    channelUrl: 'https://www.youtube.com/@maiLab',
+  },
+  'code-monkey': {
+    logoUrl: 'https://unavatar.io/youtube/CodeMonkeyUnity',
+    channelUrl: 'https://www.youtube.com/@CodeMonkeyUnity',
+  },
+};
 
 export type CaseStudy = {
   slug: CaseStudySlug;

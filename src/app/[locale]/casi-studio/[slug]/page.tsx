@@ -6,10 +6,12 @@ import { HazardStripe } from '@/components/public/hazard-stripe';
 import { SectionBadge } from '@/components/public/section-badge';
 import { HighlightedHeading } from '@/components/public/highlighted-heading';
 import {
+  CASE_METADATA,
   CASE_STUDY_SLUGS,
   isCaseSlug,
   type CaseStudy,
 } from '@/components/public/case-data';
+import { ChannelAvatar } from '@/components/public/channel-avatar';
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -30,6 +32,7 @@ export default async function CaseStudyDetailPage({
   const cases = t.raw('cases') as CaseStudy[];
   const c = cases.find((x) => x.slug === slug);
   if (!c) notFound();
+  const meta = CASE_METADATA[slug];
 
   return (
     <>
@@ -46,25 +49,45 @@ export default async function CaseStudyDetailPage({
 
           <SectionBadge number={t('badgeNumber')} label={t('badgeLabel')} />
 
-          <div className="mt-10 flex items-center gap-3 flex-wrap">
-            <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-brutal-muted">
-              {c.tag}
-            </span>
-            <span aria-hidden className="text-brutal-muted">·</span>
-            <span className="inline-flex items-center justify-center px-2 py-0.5 border-2 border-brutal-fg bg-brutal-accent text-brutal-accent-fg font-mono text-[10px] uppercase tracking-[0.18em]">
-              {c.language}
-            </span>
-          </div>
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-start">
+            <ChannelAvatar
+              channelName={c.channelName}
+              logoUrl={meta.logoUrl}
+              size="lg"
+            />
 
-          <h1
-            className="mt-4 font-display font-bold text-[clamp(2.5rem,8vw,7rem)] tracking-tight max-w-[14ch]"
-            style={{ lineHeight: 0.95 }}
-          >
-            {c.channelName}
-          </h1>
-          <p className="mt-2 font-mono text-xs md:text-sm uppercase tracking-[0.18em] text-brutal-muted">
-            {c.channelHandle} · {c.subscribers} · {c.format}
-          </p>
+            <div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-brutal-muted">
+                  {c.tag}
+                </span>
+                <span aria-hidden className="text-brutal-muted">·</span>
+                <span className="inline-flex items-center justify-center px-2 py-0.5 border-2 border-brutal-fg bg-brutal-accent text-brutal-accent-fg font-mono text-[10px] uppercase tracking-[0.18em]">
+                  {c.language}
+                </span>
+              </div>
+
+              <h1
+                className="mt-3 font-display font-bold text-[clamp(2.5rem,7vw,6rem)] tracking-tight max-w-[14ch]"
+                style={{ lineHeight: 0.95 }}
+              >
+                {c.channelName}
+              </h1>
+              <p className="mt-2 font-mono text-xs md:text-sm uppercase tracking-[0.18em] text-brutal-muted">
+                {c.channelHandle} · {c.subscribers} · {c.format}
+              </p>
+
+              <a
+                href={meta.channelUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center gap-2 bg-brutal-bg text-brutal-fg font-display font-semibold text-sm md:text-base px-4 py-2 border-2 border-brutal-fg shadow-brutal-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-[transform,box-shadow] duration-100"
+              >
+                {t('viewChannelLabel')}
+                <span aria-hidden>↗</span>
+              </a>
+            </div>
+          </div>
 
           <figure className="mt-12 max-w-3xl">
             <blockquote

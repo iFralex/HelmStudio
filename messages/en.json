@@ -527,6 +527,7 @@
     "indexTitle": "What happened [after] the pilot.",
     "indexIntro": "Two automations stitched to two very different creators. Stories told by real numbers — time before, time after, and what changed on the publishing calendar.",
     "cardReadMore": "Read the case",
+    "viewChannelLabel": "View the channel",
     "cardSubscribersLabel": "Subscribers",
     "cardFormatLabel": "Format",
     "backToIndex": "← All cases",
@@ -543,18 +544,18 @@
     "ctaLabel": "Get in touch",
     "cases": [
       {
-        "slug": "mai-erklart",
-        "channelName": "Mai Erklärt",
-        "channelHandle": "@maierklart",
+        "slug": "mailab",
+        "channelName": "maiLab",
+        "channelHandle": "@maiLab",
         "tag": "Science explainer",
         "language": "DE",
-        "subscribers": "180k subscribers",
-        "format": "Long-form essay, biweekly, 20–30 min",
-        "summary": "A German scientist-creator was spending 10 hours on research per video. We built her a custom RAG that does most of that work in 2 hours — and now she publishes twice as many videos.",
+        "subscribers": "1.7M subscribers",
+        "format": "Long-form essay, variable cadence, 10–30 min",
+        "summary": "A German science explainer channel was spending 10 hours on research per video. We built a custom RAG that does most of that work in 2 hours — and they now publish twice as many videos.",
         "heroQuote": "I wanted to make more explainer videos and lose fewer hours in PDFs. That's exactly what happens now.",
         "heroQuoteOriginalLang": "German",
-        "problem": "Each video on the channel starts from a synthesis of scientific literature: PubMed, academic papers, regulatory reports (EMA, FDA, OECD), peer newsletters, and her own notes in Obsidian. The average — measured by the creator herself — was 10 hours of research for every 25-minute video. On top of that came an extra hour of book-keeping to correctly track inline citations. The result: two videos a month instead of the four her audience kept asking for. The backlog of ideas never emptied.",
-        "solution": "We built a custom RAG (Retrieval-Augmented Generation) system that automatically ingests her sources — PubMed saved searches via API, a folder of regulatory PDFs, the inbox where curated newsletters land, and her Obsidian vault via markdown export. Given a topic, the system produces a structured brief: executive summary, numbered key findings, inline citations with exact page references in the source PDFs, and a \"gaps\" section flagging where additional manual research is needed. Hosted on a Hetzner VPS in Germany (GDPR-friendly), no data leaving the EU.",
+        "problem": "Each video on the channel starts from a synthesis of scientific literature: PubMed, academic papers, regulatory reports (EMA, FDA, OECD), peer newsletters, and team notes in Obsidian. The average — measured by the team itself — was 10 hours of research for every 25-minute video. On top of that came an extra hour of book-keeping to correctly track inline citations. The result: two videos a month instead of the four the audience kept asking for. The backlog of ideas never emptied.",
+        "solution": "We built a custom RAG (Retrieval-Augmented Generation) system that automatically ingests the sources — PubMed saved searches via API, a folder of regulatory PDFs, the inbox where curated newsletters land, and the Obsidian vault via markdown export. Given a topic, the system produces a structured brief: executive summary, numbered key findings, inline citations with exact page references in the source PDFs, and a \"gaps\" section flagging where additional manual research is needed. Hosted on a Hetzner VPS in Germany (GDPR-friendly), no data leaving the EU.",
         "stack": ["Python", "LangChain", "Qdrant", "OpenAI GPT-4", "Hetzner Cloud (DE)"],
         "metrics": [
           { "label": "Research per video", "before": "~10 h", "after": "~2 h" },
@@ -562,23 +563,23 @@
           { "label": "Inline citations tracked", "before": "manual", "after": "automated" },
           { "label": "Monthly infrastructure cost", "before": "—", "after": "€18 VPS" }
         ],
-        "finalQuote": "I never thought of it as an \"AI replacement\". I thought of it as a patient intern who prepares the brief while I think about how to explain the thing. The brief lands, I correct half of it, and I've already written the script. It's a different way of working.",
+        "finalQuote": "We never thought of it as an \"AI replacement\". We thought of it as a patient intern who prepares the brief while we think about how to explain the thing. The brief lands, we correct half of it, and the script is essentially written. It's a different way of working.",
         "finalQuoteOriginalLang": "German",
-        "finalQuoteAttribution": "Mai Erklärt"
+        "finalQuoteAttribution": "maiLab team"
       },
       {
-        "slug": "chase-maker",
-        "channelName": "Chase Maker",
-        "channelHandle": "@chasemaker",
-        "tag": "Indie game dev tutorials",
+        "slug": "code-monkey",
+        "channelName": "Code Monkey",
+        "channelHandle": "@CodeMonkeyUnity",
+        "tag": "Unity tutorials",
         "language": "EN",
-        "subscribers": "215k subscribers",
-        "format": "Unity/Godot tutorials, weekly, 15–25 min",
-        "summary": "A British game-dev tutorial creator was losing four hours per video preparing the Unity project. We built him a CLI that does it in 20 minutes, pulling his scene assets from his own S3.",
+        "subscribers": "440k subscribers",
+        "format": "Unity tutorials, regular uploads, 10–40 min",
+        "summary": "A Unity tutorial creator was losing four hours per video preparing the project. We built him a CLI that does it in 20 minutes, pulling his scene assets from his own S3.",
         "heroQuote": "I used to spend half a Saturday setting up the project scaffolding before I could even hit record. Now it's a single command.",
         "heroQuoteOriginalLang": "English",
-        "problem": "Every tutorial required creating a fresh Unity or Godot project from scratch: importing the standard assets, setting up folder structure, scene presets, configuring OBS to capture a specific region, audio routing for voice + game audio. Average measured time: 4 hours per tutorial. Worse: about once a month he'd discover halfway through filming that the scaffolding was wrong and need to reshoot the clips. Output capacity: 2 tutorials a month, with a 3-week backlog.",
-        "solution": "We built `chase-init`, a TypeScript CLI that generates a complete tutorial project from a single command. It picks the engine (Unity or Godot) from a flag, pulls reusable asset bundles from his personal S3 bucket, generates the standardised folder structure, applies scene presets, configures OBS with the correct capture region and audio routing, and includes a \"tutorial-template\" scene with intro/outro slots. Fully open source on Chase's GitHub — his code, his maintenance.",
+        "problem": "Every tutorial required creating a fresh Unity project from scratch: importing the standard assets, setting up folder structure, scene presets, configuring OBS to capture a specific region, audio routing for voice + game audio. Average measured time: 4 hours per tutorial. Worse: about once a month he'd discover halfway through filming that the scaffolding was wrong and need to reshoot the clips. Output capacity: 2 tutorials a month, with a 3-week backlog.",
+        "solution": "We built `cm-init`, a TypeScript CLI that generates a complete Unity tutorial project from a single command. It pulls reusable asset bundles from his personal S3 bucket, generates the standardised folder structure, applies scene presets, configures OBS with the correct capture region and audio routing, and includes a \"tutorial-template\" scene with intro/outro slots. Fully open source on his GitHub — his code, his maintenance.",
         "stack": ["TypeScript", "Node.js CLI", "GitHub Actions", "OBS WebSocket API", "AWS S3"],
         "metrics": [
           { "label": "Setup per tutorial", "before": "~4 h", "after": "~20 min" },
@@ -588,7 +589,7 @@
         ],
         "finalQuote": "The most interesting part isn't the time saved — it's that I can now host a monthly \"bonus video\" deep-dive, something I always wanted to do but never had the energy to build. The CLI unlocked an entire format.",
         "finalQuoteOriginalLang": "English",
-        "finalQuoteAttribution": "Chase Maker"
+        "finalQuoteAttribution": "Code Monkey"
       }
     ]
   },

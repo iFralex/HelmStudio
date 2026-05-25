@@ -3,7 +3,8 @@ import { Link } from '@/i18n/navigation';
 import { HazardStripe } from '@/components/public/hazard-stripe';
 import { SectionBadge } from '@/components/public/section-badge';
 import { HighlightedHeading } from '@/components/public/highlighted-heading';
-import type { CaseStudy } from '@/components/public/case-data';
+import { CASE_METADATA, type CaseStudy } from '@/components/public/case-data';
+import { ChannelAvatar } from '@/components/public/channel-avatar';
 
 export default async function CaseStudiesIndexPage({
   params,
@@ -43,9 +44,9 @@ export default async function CaseStudiesIndexPage({
             {cases.map((c) => (
               <CaseCard
                 key={c.slug}
-                locale={locale}
                 c={c}
                 readMoreLabel={t('cardReadMore')}
+                viewChannelLabel={t('viewChannelLabel')}
               />
             ))}
           </div>
@@ -81,59 +82,72 @@ export default async function CaseStudiesIndexPage({
 }
 
 function CaseCard({
-  locale,
   c,
   readMoreLabel,
+  viewChannelLabel,
 }: {
-  locale: string;
   c: CaseStudy;
   readMoreLabel: string;
+  viewChannelLabel: string;
 }) {
-  return (
-    <Link
-      href={`/casi-studio/${c.slug}`}
-      className="group block border-2 border-brutal-fg bg-brutal-bg shadow-brutal-sm hover:shadow-brutal hover:-translate-x-0.5 hover:-translate-y-0.5 transition-[transform,box-shadow] duration-100"
-    >
-      <div className="p-6 md:p-8">
-        <div className="flex items-center gap-3 mb-5">
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-brutal-muted">
-            {c.tag}
-          </span>
-          <span
-            aria-hidden
-            className="font-mono text-[10px] uppercase tracking-[0.22em] text-brutal-muted"
-          >
-            ·
-          </span>
-          <span className="inline-flex items-center justify-center px-2 py-0.5 border-2 border-brutal-fg bg-brutal-accent text-brutal-accent-fg font-mono text-[10px] uppercase tracking-[0.18em]">
-            {c.language}
-          </span>
-        </div>
+  const meta = CASE_METADATA[c.slug];
 
-        <h2
-          className="font-display font-bold text-3xl md:text-4xl lg:text-5xl tracking-tight"
-          style={{ lineHeight: 1.05 }}
-        >
-          {c.channelName}
-        </h2>
-        <p className="mt-2 font-mono text-xs uppercase tracking-[0.18em] text-brutal-muted">
-          {c.channelHandle} · {c.subscribers}
-        </p>
+  return (
+    <article className="border-2 border-brutal-fg bg-brutal-bg shadow-brutal-sm hover:shadow-brutal hover:-translate-x-0.5 hover:-translate-y-0.5 transition-[transform,box-shadow] duration-100">
+      <div className="p-6 md:p-8">
+        <div className="flex items-start gap-5">
+          <ChannelAvatar channelName={c.channelName} logoUrl={meta.logoUrl} size="md" />
+
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-3 mb-2 flex-wrap">
+              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-brutal-muted">
+                {c.tag}
+              </span>
+              <span className="inline-flex items-center justify-center px-2 py-0.5 border-2 border-brutal-fg bg-brutal-accent text-brutal-accent-fg font-mono text-[10px] uppercase tracking-[0.18em]">
+                {c.language}
+              </span>
+            </div>
+
+            <h2
+              className="font-display font-bold text-2xl md:text-3xl lg:text-4xl tracking-tight"
+              style={{ lineHeight: 1.05 }}
+            >
+              {c.channelName}
+            </h2>
+            <p className="mt-1 font-mono text-xs uppercase tracking-[0.18em] text-brutal-muted">
+              {c.channelHandle} · {c.subscribers}
+            </p>
+          </div>
+        </div>
 
         <p className="mt-6 text-base md:text-lg text-brutal-fg/85 leading-relaxed">
           {c.summary}
         </p>
 
-        <p className="mt-6 inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.18em] text-brutal-fg group-hover:text-brutal-accent transition-colors">
-          {readMoreLabel}
-          <span
-            aria-hidden
-            className="transition-transform group-hover:translate-x-1"
+        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <Link
+            href={`/casi-studio/${c.slug}`}
+            className="group inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.18em] text-brutal-fg hover:text-brutal-accent transition-colors"
           >
-            →
-          </span>
-        </p>
+            {readMoreLabel}
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
+          </Link>
+
+          <a
+            href={meta.channelUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.18em] text-brutal-muted hover:text-brutal-fg transition-colors"
+          >
+            {viewChannelLabel}
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              ↗
+            </span>
+          </a>
+        </div>
       </div>
-    </Link>
+    </article>
   );
 }
