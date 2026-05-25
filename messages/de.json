@@ -549,7 +549,7 @@
         "channelHandle": "@DoktorWhatson",
         "tag": "Wissenschafts-Explainer",
         "language": "DE",
-        "subscribers": "~400k Abonnenten",
+        "subscribers": "~420k Abonnenten",
         "format": "Essay-Videos, variable Frequenz, 10–30 Min.",
         "summary": "Ein deutscher Wissenschafts-Erklärkanal verbrachte 10 Stunden mit Recherche pro Video. Wir haben ein RAG-System gebaut, das den Großteil dieser Arbeit in 2 Stunden erledigt — und jetzt erscheinen doppelt so viele Videos.",
         "heroQuote": "Ich wollte mehr Erklärvideos machen und weniger Stunden in PDFs verlieren. Genau das passiert jetzt.",
@@ -568,28 +568,28 @@
         "finalQuoteAttribution": "Doktor Whatson"
       },
       {
-        "slug": "code-monkey",
-        "channelName": "Code Monkey",
-        "channelHandle": "@CodeMonkeyUnity",
-        "tag": "Unity-Tutorials",
+        "slug": "acerola",
+        "channelName": "Acerola",
+        "channelHandle": "@Acerola_t",
+        "tag": "Graphics- & Shader-Deep-Dives",
         "language": "EN",
-        "subscribers": "440k Abonnenten",
-        "format": "Unity-Tutorials, regelmäßige Uploads, 10–40 Min.",
-        "summary": "Ein Unity-Tutorial-Creator verlor vier Stunden pro Video für die Vorbereitung des Projekts. Wir haben ihm eine CLI gebaut, die das in 20 Minuten erledigt und seine Szenen-Assets aus seinem eigenen S3 lädt.",
-        "heroQuote": "Ich verbrachte den halben Samstag damit, das Projekt-Scaffolding einzurichten, bevor ich überhaupt auf REC drücken konnte. Jetzt ist es ein einziger Befehl.",
+        "subscribers": "~310k Abonnenten",
+        "format": "Graphics/Shader-Deep-Dives, ~1/Monat, 15–25 Min.",
+        "summary": "Ein Creator mit Fokus auf Graphics-Deep-Dives verlor 4 Stunden pro Video für das Setup neuer Demo-Projekte. Wir haben ihm eine CLI gebaut, die das in 20 Minuten erledigt — und seine Videos erscheinen jetzt monatlich ohne Lücken.",
+        "heroQuote": "Ich verbrachte den halben Samstag damit, die Rendering-Pipeline und OBS einzurichten, bevor ich überhaupt auf REC drücken konnte. Jetzt ist es ein einziger Befehl.",
         "heroQuoteOriginalLang": "Englischen",
-        "problem": "Jedes Tutorial verlangte, ein neues Unity-Projekt von Grund auf zu erstellen: Import der Standard-Assets, Ordnerstruktur, Szenen-Presets, OBS-Konfiguration für die Aufnahme einer bestimmten Region, Audio-Routing für Stimme + Game-Audio. Durchschnittlich gemessene Zeit: 4 Stunden pro Tutorial. Schlimmer noch: etwa einmal im Monat entdeckte er mitten in der Aufnahme, dass das Scaffolding falsch eingerichtet war und musste die Clips neu drehen. Output-Kapazität: 2 Tutorials pro Monat, mit 3 Wochen Backlog.",
-        "solution": "Wir haben `cm-init` gebaut, eine TypeScript-CLI, die mit einem einzigen Befehl ein vollständiges Unity-Tutorial-Projekt generiert. Sie lädt wiederverwendbare Asset-Bundles aus seinem persönlichen S3-Bucket, generiert die standardisierte Ordnerstruktur, wendet Szenen-Presets an, konfiguriert OBS mit der richtigen Aufnahme-Region und Audio-Routing, und enthält eine \"tutorial-template\"-Szene mit Slots für Intro/Outro. Komplett Open Source auf seinem GitHub — sein Code, seine Wartung.",
+        "problem": "Jedes Video des Kanals ist ein Deep-Dive zu einem Graphics-Konzept — ein neuer Shader, eine neue Rendering-Technik, ein neues Dateiformat. Jeder Deep-Dive erfordert ein neues Demo-Projekt von Grund auf: Custom Rendering Pipeline, Platzhalter-Assets, OBS-Capture-Region, GPU-Profiler-Konfiguration, Code-Ordnerstruktur. Durchschnittlich gemessene Zeit: 4 Stunden pro Video. Schlimmer noch: bewusst langsame Frequenz übersprang manchmal 1–2 Monate, wenn das Setup zu schwer wurde — frustrierend fürs loyale Publikum.",
+        "solution": "Wir haben `ace-init` gebaut, eine TypeScript-CLI, die mit einem einzigen Befehl ein vollständiges Graphics-Demo-Projekt generiert. Sie lädt wiederverwendbare Asset-Bundles aus seinem persönlichen S3-Bucket, generiert die standardisierte Ordnerstruktur, wendet Rendering-Pipeline-Presets an (Unity URP oder Godot ForwardPlus, per Flag), konfiguriert OBS mit der richtigen Aufnahme-Region und aktivem GPU-Profiler, und enthält eine \"demo-template\"-Szene mit Slots für Intro/Outro. Komplett Open Source auf seinem GitHub — sein Code, seine Wartung.",
         "stack": ["TypeScript", "Node.js CLI", "GitHub Actions", "OBS WebSocket API", "AWS S3"],
         "metrics": [
-          { "label": "Setup pro Tutorial", "before": "~4 h", "after": "~20 Min." },
-          { "label": "Tutorials pro Monat", "before": "2", "after": "4 (+1 Deep-Dive)" },
-          { "label": "Nötige Re-Shoots", "before": "~1/Monat", "after": "0 in 3 Monaten" },
+          { "label": "Setup pro Video", "before": "~4 h", "after": "~20 Min." },
+          { "label": "Videos pro Monat", "before": "~1 (mit Lücken)", "after": "~2 stabil" },
+          { "label": "Monate ohne Upload", "before": "~3/Jahr", "after": "0 in 6 Monaten" },
           { "label": "Monatliche Infrastrukturkosten", "before": "—", "after": "$6 S3" }
         ],
-        "finalQuote": "Der interessanteste Teil ist nicht die gesparte Zeit — sondern dass ich jetzt monatlich ein \"Bonus-Video\" Deep-Dive hosten kann, etwas das ich immer machen wollte, aber nie die Energie hatte aufzubauen. Die CLI hat mir ein ganzes Format freigeschaltet.",
+        "finalQuote": "Der interessanteste Teil ist nicht die gesparte Zeit — sondern dass ich jetzt zwischen den Deep-Dives ein \"Bonus\"-Experiment hosten kann, etwas das ich immer machen wollte, aber nie die Energie hatte, von Grund auf aufzubauen. Die CLI hat mir ein ganzes Format freigeschaltet.",
         "finalQuoteOriginalLang": "Englischen",
-        "finalQuoteAttribution": "Code Monkey"
+        "finalQuoteAttribution": "Acerola"
       }
     ]
   },

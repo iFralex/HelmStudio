@@ -549,7 +549,7 @@
         "channelHandle": "@DoktorWhatson",
         "tag": "Science explainer",
         "language": "DE",
-        "subscribers": "~400k suscriptores",
+        "subscribers": "~420k suscriptores",
         "format": "Vídeo ensayo, cadencia variable, 10–30 min",
         "summary": "Un creador alemán de divulgación científica pasaba 10 horas de investigación por vídeo. Construimos un RAG que hace la mayor parte de ese trabajo en 2 horas — y ahora publica el doble de vídeos.",
         "heroQuote": "Quería hacer más vídeos de explicación y perder menos horas en PDFs. Es exactamente lo que pasa ahora.",
@@ -568,28 +568,28 @@
         "finalQuoteAttribution": "Doktor Whatson"
       },
       {
-        "slug": "code-monkey",
-        "channelName": "Code Monkey",
-        "channelHandle": "@CodeMonkeyUnity",
-        "tag": "Tutoriales Unity",
+        "slug": "acerola",
+        "channelName": "Acerola",
+        "channelHandle": "@Acerola_t",
+        "tag": "Deep-dives gráficos y shaders",
         "language": "EN",
-        "subscribers": "440k suscriptores",
-        "format": "Tutoriales Unity, uploads regulares, 10–40 min",
-        "summary": "Un creador de tutoriales Unity perdía cuatro horas por vídeo preparando el proyecto. Le construimos una CLI que lo hace en 20 minutos, descargando sus assets de escena desde su propio S3.",
-        "heroQuote": "Pasaba medio sábado preparando el scaffolding del proyecto antes de poder pulsar REC. Ahora es un solo comando.",
+        "subscribers": "~310k suscriptores",
+        "format": "Deep-dive gráficos/shaders, ~1/mes, 15–25 min",
+        "summary": "Un creador centrado en deep-dives gráficos perdía 4 horas por vídeo en el setup de nuevos proyectos demo. Le construimos una CLI que lo hace en 20 minutos — y sus vídeos ahora salen cada mes sin gaps.",
+        "heroQuote": "Pasaba medio sábado configurando la rendering pipeline y OBS antes de poder pulsar REC. Ahora es un solo comando.",
         "heroQuoteOriginalLang": "Inglés",
-        "problem": "Cada tutorial requería crear un nuevo proyecto Unity desde cero: import de los assets estándar, estructura de carpetas, preset de escenas, configuración de OBS para capturar una región específica, audio routing para voz + audio del juego. Tiempo medio medido: 4 horas por tutorial. Peor: aproximadamente una vez al mes descubría a mitad del rodaje que el scaffolding estaba mal configurado y tenía que regrabar las clips. Capacidad de output: 2 tutoriales al mes, con 3 semanas de backlog.",
-        "solution": "Construimos `cm-init`, una CLI en TypeScript que genera un proyecto-tutorial Unity completo desde un solo comando. Descarga los asset bundles reutilizables desde su bucket S3 personal, genera la estructura de carpetas estandarizada, aplica presets de escena, configura OBS con la región de captura y audio routing correctos, e incluye una escena \"tutorial-template\" con slots para intro/outro. Todo open source en su GitHub — su código, su mantenimiento.",
+        "problem": "Cada vídeo del canal es un deep-dive sobre un concepto gráfico — un nuevo shader, una nueva técnica de rendering, un nuevo file format. Cada deep-dive requiere un proyecto demo nuevo desde cero: custom rendering pipeline, assets placeholder, capture region para OBS, configuración del GPU profiler, estructura de carpetas para el código. Tiempo medio medido: 4 horas por vídeo. Peor: cadencia deliberadamente lenta a veces se saltaba 1–2 meses cuando el setup se volvía demasiado pesado, frustrando a la audiencia fiel.",
+        "solution": "Construimos `ace-init`, una CLI en TypeScript que genera un proyecto-demo gráfico completo desde un solo comando. Descarga los asset bundles reutilizables desde su bucket S3 personal, genera la estructura de carpetas estandarizada, aplica presets de rendering pipeline (Unity URP o Godot ForwardPlus, vía flag), configura OBS con la región de captura y GPU profiler activo, e incluye una escena \"demo-template\" con slots para intro/outro. Todo open source en su GitHub — su código, su mantenimiento.",
         "stack": ["TypeScript", "Node.js CLI", "GitHub Actions", "OBS WebSocket API", "AWS S3"],
         "metrics": [
-          { "label": "Setup por tutorial", "before": "~4 h", "after": "~20 min" },
-          { "label": "Tutoriales al mes", "before": "2", "after": "4 (+1 deep-dive)" },
-          { "label": "Re-grabaciones necesarias", "before": "~1/mes", "after": "0 en 3 meses" },
+          { "label": "Setup por vídeo", "before": "~4 h", "after": "~20 min" },
+          { "label": "Vídeos al mes", "before": "~1 (con gaps)", "after": "~2 estables" },
+          { "label": "Meses sin upload", "before": "~3/año", "after": "0 en 6 meses" },
           { "label": "Coste infraestructura mensual", "before": "—", "after": "$6 S3" }
         ],
-        "finalQuote": "La parte más interesante no es el tiempo ahorrado — es que ahora puedo hospedar un \"vídeo bonus\" deep-dive cada mes, algo que siempre quise hacer pero no tenía energía para construir. La CLI me ha desbloqueado un formato entero.",
+        "finalQuote": "La parte más interesante no es el tiempo ahorrado — es que ahora puedo correr un experimento \"bonus\" entre un deep-dive y otro, algo que siempre quise hacer pero no tenía energía para montar desde cero. La CLI me ha desbloqueado un formato entero.",
         "finalQuoteOriginalLang": "Inglés",
-        "finalQuoteAttribution": "Code Monkey"
+        "finalQuoteAttribution": "Acerola"
       }
     ]
   },
