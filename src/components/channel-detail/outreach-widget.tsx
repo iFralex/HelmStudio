@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { copy } from '@/lib/ui/copy';
 import { formatDate, formatRelative } from '@/lib/ui/format';
+import { renderOutreachAsHtml } from '@/lib/email/render';
 import type { Channel, OutreachDraft } from '@/lib/db/queries';
 
 interface OutreachWidgetProps {
@@ -226,7 +227,22 @@ function DraftedView({
 
   const handleCopy = async () => {
     const text = `${copy.channelDetail.subjectPrefix(subject)}\n\n${body}`;
-    await navigator.clipboard.writeText(text);
+    const html = renderOutreachAsHtml(body);
+    try {
+      // Stage both formats so rich-text email composers (Gmail, Apple Mail,
+      // Outlook Web) pick up the HTML version with the logo, while text-only
+      // contexts still receive the plain body. ClipboardItem isn't supported
+      // in every browser — fall back to writeText if the multi-format API
+      // throws.
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([html], { type: 'text/html' }),
+          'text/plain': new Blob([text], { type: 'text/plain' }),
+        }),
+      ]);
+    } catch {
+      await navigator.clipboard.writeText(text);
+    }
     setDidCopy(true);
     setTimeout(() => setDidCopy(false), 2000);
     toast.success(copy.channelDetail.copied);
