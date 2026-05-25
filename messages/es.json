@@ -1,0 +1,208 @@
+{
+  "Site": {
+    "name": "HELM Studio",
+    "tagline": "Automatizaciones de IA a medida para creadores europeos."
+  },
+  "Nav": {
+    "home": "Inicio",
+    "howItWorks": "Cómo funciona",
+    "about": "Quiénes somos",
+    "contact": "Contacto",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "Hero": {
+    "badgeNumber": "01",
+    "badgeLabel": "Obra abierta",
+    "title": "Construimos automatizaciones [IA] [a medida] para creadores de contenido.",
+    "weekOneLabel": "Semana 01",
+    "weekOneText": "construimos",
+    "weekTwoLabel": "Semana 02",
+    "weekTwoText": "lo usas gratis",
+    "footnote": "Pagas solo si realmente te ha ahorrado tiempo.",
+    "ctaPrimary": "Hablemos",
+    "ctaSecondary": "Cómo funciona",
+    "annotation": "sin compromiso"
+  },
+  "HowItWorks": {
+    "badgeNumber": "02",
+    "badgeLabel": "Cómo funciona",
+    "title": "El piloto de [dos semanas].",
+    "intro": "Sin presupuestos abstractos. Sin compromiso. Construimos una automatización a medida de tu workflow, la usas gratis, y pagas solo si realmente te ha ahorrado tiempo en un vídeo real.",
+    "step01Number": "01",
+    "step01Title": "Llamada con un técnico",
+    "step01Body": "Entendemos juntos qué tarea recurrente te pesa más: setup, investigación, repurposing, descripciones, sponsor matching… Decidimos juntos el punto de partida.",
+    "step01Annotation": "30 minutos, sin compromiso",
+    "step02Number": "02",
+    "step02Title": "Semana 1, construimos",
+    "step02Body": "Nuestro equipo técnico construye la automatización a medida de tu workflow específico. No una plantilla genérica, una solución cosida a tu canal.",
+    "step02Annotation": "5 días laborables",
+    "step03Number": "03",
+    "step03Title": "Semana 2, la usas gratis",
+    "step03Body": "La usas en un vídeo real, de principio a fin. Al final de la semana decides tú: si te ha ahorrado tiempo, pagas una tarifa plana para quedártela. Si no, sin rencores.",
+    "step03Annotation": "Decisión al final del piloto"
+  },
+  "WhatWeBuild": {
+    "badgeNumber": "03",
+    "badgeLabel": "Qué construimos",
+    "title": "No un catálogo. Un [muestrario].",
+    "intro": "Cada piloto empieza con algo concreto. Pulsa una automatización abajo para ver cómo lo pensamos — no plantillas genéricas, soluciones cosidas a tu workflow específico.",
+    "tapToExplore": "Pulsa para detalles",
+    "dialog": {
+      "problemLabel": "El problema",
+      "solutionLabel": "Cómo la construimos",
+      "exampleLabel": "Ejemplo",
+      "timeSavedLabel": "Tiempo ahorrado",
+      "ctaLabel": "Hablémoslo en una llamada",
+      "closeLabel": "Cerrar"
+    },
+    "items": [
+      {
+        "label": "Transcript → Notion",
+        "problem": "Las transcripciones de tus vídeos son un activo buscable para el futuro, pero copiarlas a Notion a mano es algo que en realidad nunca haces.",
+        "solution": "Webhook en nuevo upload de YouTube → extracción de transcripción (auto o human-edited si está disponible) → creación automática de una página de Notion con secciones, citas destacadas y etiquetas de nicho.",
+        "example": "De un vídeo de 25 minutos a una página de Notion con 8 capítulos y 4 citas buscables en menos de 60 segundos.",
+        "timeSaved": "20–40 min por vídeo"
+      },
+      {
+        "label": "B-roll search",
+        "problem": "Buscas una toma específica de tus vídeos viejos y acabas haciendo scroll 20 minutos sin encontrarla.",
+        "solution": "Indexamos tu library entera (frame + audio) en una base de datos vectorial. Tú buscas por voz: \"cuando soldé la PCB roja\" → timestamps exactos devueltos.",
+        "example": "280 vídeos indexados. Encuentras una escena precisa en 3 segundos en lugar de 20 minutos de scrubbing.",
+        "timeSaved": "30–90 min por vídeo"
+      },
+      {
+        "label": "Thumbnail A/B",
+        "problem": "La miniatura equivocada cuesta views, pero no tienes tiempo de testear 5 versiones en cada upload.",
+        "solution": "Generamos 5–10 variantes en tu estilo (texto, encuadre, sujeto), las testeamos vía YouTube Experiments API, te reportamos solo la ganadora con números.",
+        "example": "7 miniaturas testeadas en las 48h post-upload. La mantienes o la cambias con un clic.",
+        "timeSaved": "30 min + uplift de CTR medible"
+      },
+      {
+        "label": "Sponsor matching",
+        "problem": "Los brands adecuados para tu canal te contactan poco. Los equivocados te escriben cada semana.",
+        "solution": "RAG sobre tu canal + análisis de audiencia → media kit dinámico. Identificamos brands cuyos productos son coherentes con tu contenido y preparamos el pitch en tu tono.",
+        "example": "6 brands identificados en el nicho tech retro, 3 respuestas positivas en 2 semanas.",
+        "timeSaved": "5–8h por ciclo de outreach"
+      },
+      {
+        "label": "Description writer",
+        "problem": "Escribir descripción + capítulos + tags + enlaces de afiliados en cada vídeo son 20 minutos repetitivos que evitas.",
+        "solution": "Pipeline que desde la transcripción + metadatos genera descripción SEO en tu tono, capítulos con timestamps, tags YouTube optimizados y bloque de afiliados rellenado.",
+        "example": "De vídeo en bruto a descripción publicable en 90 segundos en lugar de 20 minutos.",
+        "timeSaved": "15–20 min por vídeo"
+      },
+      {
+        "label": "Chapter generator",
+        "problem": "Los capítulos aumentan la retención pero ponerlos a mano es lo primero que saltas cuando tienes prisa.",
+        "solution": "Un LLM analiza la estructura del vídeo desde transcripción y audio, propone capítulos con títulos en tu tono y timestamps exactos. Tú apruebas o retocas.",
+        "example": "12 capítulos generados en 30s en un vídeo de 25 minutos, títulos escritos como los escribirías tú.",
+        "timeSaved": "15 min por vídeo"
+      },
+      {
+        "label": "Title testing",
+        "problem": "Tienes 3 títulos en la cabeza, no sabes cuál performa mejor, y no quieres ser un YouTube growth guy.",
+        "solution": "Generamos 5 variantes en tu estilo (cero clickbait), testeamos vía YouTube Experiments, reportamos el mejor performer con datos.",
+        "example": "5 títulos en un vídeo, gana el lateral que no habrías elegido: +22% CTR vs el original.",
+        "timeSaved": "Uplift de CTR medible, ~10 min por upload"
+      },
+      {
+        "label": "Shorts editor",
+        "problem": "Cortar 3 Shorts de cada long-form son horas de edición que a menudo se saltan del todo.",
+        "solution": "Un LLM busca los momentos más clipables usando la curva de retención + transcripción, genera corte, zoom y subtítulos. Tú apruebas los 3 mejores.",
+        "example": "8 Shorts listos de un long-form de 25 minutos. Publicas o descartas en pocos minutos.",
+        "timeSaved": "1–2h por vídeo long-form"
+      },
+      {
+        "label": "Setup VM legacy",
+        "problem": "Cada vez que retomas una tarjeta vintage pierdes una noche entera instalando el OS correcto y los drivers.",
+        "solution": "Librería de VM/imaging preconfiguradas (Win 98 SE, XP, variantes de drivers). Comando único para spawn de un entorno de test.",
+        "example": "Test de VMAS listo en 90 segundos, no más Ctrl+A hasta las 4 de la madrugada.",
+        "timeSaved": "1 noche por proyecto"
+      },
+      {
+        "label": "Outlier research",
+        "problem": "Los vídeos tipo ensayo requieren horas de investigación en PDFs académicos, Substack, OECD reports que citas a mano cada vez.",
+        "solution": "RAG custom que ingiere tu reading list + PDFs de fuentes, genera summaries estructurados y clusters temáticos. Cada fact citado con source.",
+        "example": "22 fuentes agregadas en un brief de 4 páginas con timeline y clusters temáticos.",
+        "timeSaved": "6–10h por vídeo de profundización"
+      },
+      {
+        "label": "Newsletter draft",
+        "problem": "La newsletter que sale después del vídeo son 90 minutos de rewriting que matan la energía post-upload.",
+        "solution": "Transcript → draft de Substack en tu tono, con secciones, lead y link al vídeo. Tú revisas 15 minutos y publicas.",
+        "example": "Una newsletter de 1200 palabras lista en 4 minutos, con un cuarto de hora de polish encima.",
+        "timeSaved": "60 min por release"
+      },
+      {
+        "label": "Podcast show notes",
+        "problem": "Las show notes de tu podcast son SEO y crecimiento de audiencia, pero las pospones por cansancio.",
+        "solution": "Del audio del podcast → show notes completas: 3 párrafos, timestamps, key quotes, bio del invitado, social links.",
+        "example": "35 minutos de podcast → 6 capítulos + 8 citas + bio del invitado en 90 segundos.",
+        "timeSaved": "40 min por episodio"
+      },
+      {
+        "label": "Comment triage",
+        "problem": "Debajo de tus vídeos recibes 500 comentarios, 90% ruido, 10% preguntas importantes que te encantaría ver pero no ves.",
+        "solution": "Clasificamos los comentarios (pregunta, idea, fan, hater, sponsor) y te enviamos un digest diario solo con los \"tier 1\" para responder.",
+        "example": "De 320 comentarios en un vídeo, 28 marcados como \"responder\". Respondidos todos en 12 minutos.",
+        "timeSaved": "30–60 min por vídeo"
+      },
+      {
+        "label": "Affiliate aggregator",
+        "problem": "Mantienes 15 enlaces de afiliados en la cabeza + una hoja de cálculo vieja + descripciones copy-paste vídeo tras vídeo.",
+        "solution": "Base de datos de afiliados con lookup automático → enlaces insertados para los productos mencionados en el vídeo (transcript-based).",
+        "example": "14 enlaces insertados automáticamente en la descripción de un teardown de audio, con disclosure.",
+        "timeSaved": "12 min por vídeo"
+      },
+      {
+        "label": "Reading vlog highlights",
+        "problem": "Los reading vlogs tienen 30 minutos de vida cotidiana y 5 frases fuertes sobre libros dispersas. Las audiencias sociales las saltan.",
+        "solution": "Extraemos los momentos \"best of\" sobre libros de tus vlogs → versión clip para reel/short con subtítulos optimizados.",
+        "example": "10 highlights como \"por qué Colette está trabajando en mí\" extraídos de 4 vlogs.",
+        "timeSaved": "2h de investigación + uplift social"
+      },
+      {
+        "label": "Sponsor brief",
+        "problem": "Cuando un brand te contacta tienes que responder con un media kit actualizado. El que tienes es de 2024.",
+        "solution": "Media kit dinámico (audience demo, top 10 vídeos, CPM medio, ejemplos de integraciones de sponsors) siempre actualizado. Solo para reenviar.",
+        "example": "Brand pide pricing → mandas PDF actualizado en 30 segundos en lugar de pasar 1h rehaciendo las estadísticas.",
+        "timeSaved": "1h por solicitud de brand"
+      }
+    ]
+  },
+  "About": {
+    "badgeNumber": "04",
+    "badgeLabel": "Quiénes somos",
+    "title": "Lo que [Morningside] es para las empresas. Para los creadores.",
+    "origin": "HELM Studio nace en 2026 como spin-off europeo de Morningside AI, la primera agencia en formalizar el modelo \"build custom AI workflows\" — soluciones cosidas a medida, no plantillas genéricas recicladas de canal en canal.",
+    "differentiation": "Morningside trabaja con empresas. Nosotros hacemos el mismo trabajo para quien gestiona un canal, un podcast, una newsletter — personas individuales, no departamentos.",
+    "people": "Cuando te escribimos, detrás no hay un comercial, está el equipo técnico que construye en primera persona. Sin sales reps, sin resellers, sin capa intermedia: hablas directamente con la persona que tiene las manos en el código.",
+    "manifesto": "Las automatizaciones de verdad se ven en el calendario de publicación, no en las slides comerciales.",
+    "factsLabel": "El estudio",
+    "facts": [
+      { "label": "Fundación", "value": "2026" },
+      { "label": "Sedes", "value": "Milán · Madrid · Berlín · Dublín" },
+      { "label": "Casa madre", "value": "Morningside AI · Auckland (NZ)" },
+      { "label": "Mercado", "value": "Europa" },
+      { "label": "Idiomas", "value": "Italiano · Deutsch · Español · English" },
+      { "label": "Equipo", "value": "Local, pequeño, accesible" }
+    ]
+  },
+  "Footer": {
+    "company": "HELM Studio SRL",
+    "address": "Via Giuseppe Mazzini 9 · 20123 Milán (MI) · Italia",
+    "rightsReserved": "Todos los derechos reservados",
+    "privacy": "Privacidad",
+    "cookies": "Cookies",
+    "manifesto": "Construimos herramientas que ganan tiempo, no clics."
+  },
+  "LanguageSwitcher": {
+    "label": "Idioma",
+    "switchTo": "Cambiar idioma",
+    "it": "Italiano",
+    "en": "English",
+    "de": "Deutsch",
+    "es": "Español"
+  }
+}

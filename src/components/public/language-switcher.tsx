@@ -40,7 +40,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
             type="button"
             onClick={() => switchTo(loc)}
             aria-current={isActive ? 'true' : undefined}
-            aria-label={`${t('switchTo')} – ${loc === 'it' ? t('italian') : t('english')}`}
+            aria-label={`${t('switchTo')} – ${t(loc)}`}
             className={cn(
               'px-2.5 py-1 transition-colors',
               i > 0 && 'border-l-2 border-brutal-fg',

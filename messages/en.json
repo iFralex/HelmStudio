@@ -171,6 +171,24 @@
       }
     ]
   },
+  "About": {
+    "badgeNumber": "04",
+    "badgeLabel": "About us",
+    "title": "What [Morningside] is for companies. For creators.",
+    "origin": "HELM Studio was founded in 2026 as the European spin-off of Morningside AI, the first agency to formalise the \"build custom AI workflows\" model — solutions stitched to the client, not generic templates recycled from one channel to the next.",
+    "differentiation": "Morningside works with companies. We do the same work for people who run a channel, a podcast, a newsletter — individuals, not departments.",
+    "people": "When we write to you, there isn't a sales rep behind the message — it's the technical team that builds the work itself. No resellers, no middle layer: you talk directly with the person whose hands are on the code.",
+    "manifesto": "Real automation shows up on your publishing calendar, not on a sales deck.",
+    "factsLabel": "The studio",
+    "facts": [
+      { "label": "Founded", "value": "2026" },
+      { "label": "Offices", "value": "Milan · Madrid · Berlin · Dublin" },
+      { "label": "Parent", "value": "Morningside AI · Auckland (NZ)" },
+      { "label": "Market", "value": "Europe" },
+      { "label": "Languages", "value": "Italiano · Deutsch · Español · English" },
+      { "label": "Team", "value": "Local, small, reachable" }
+    ]
+  },
   "Footer": {
     "company": "HELM Studio SRL",
     "address": "Via Giuseppe Mazzini 9 · 20123 Milan · Italy",
@@ -181,8 +199,10 @@
   },
   "LanguageSwitcher": {
     "label": "Language",
-    "italian": "Italiano",
-    "english": "English",
-    "switchTo": "Switch language"
+    "switchTo": "Switch language",
+    "it": "Italiano",
+    "en": "English",
+    "de": "Deutsch",
+    "es": "Español"
   }
 }

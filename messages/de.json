@@ -1,0 +1,208 @@
+{
+  "Site": {
+    "name": "HELM Studio",
+    "tagline": "Maßgeschneiderte KI-Automatisierungen für europäische Creator."
+  },
+  "Nav": {
+    "home": "Home",
+    "howItWorks": "So funktioniert's",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen"
+  },
+  "Hero": {
+    "badgeNumber": "01",
+    "badgeLabel": "Baustelle offen",
+    "title": "Wir bauen [maßgeschneiderte] [KI]-Automatisierungen für Content-Creator.",
+    "weekOneLabel": "Woche 01",
+    "weekOneText": "wir bauen",
+    "weekTwoLabel": "Woche 02",
+    "weekTwoText": "du nutzt kostenlos",
+    "footnote": "Du zahlst nur, wenn es dir wirklich Zeit gespart hat.",
+    "ctaPrimary": "Lass uns reden",
+    "ctaSecondary": "So funktioniert's",
+    "annotation": "keine Verpflichtung"
+  },
+  "HowItWorks": {
+    "badgeNumber": "02",
+    "badgeLabel": "So funktioniert's",
+    "title": "Das [zwei-wöchige] Pilotprojekt.",
+    "intro": "Keine abstrakten Angebote. Keine Verpflichtung. Wir bauen eine maßgeschneiderte Automatisierung für deinen Workflow, du nutzt sie kostenlos, und du zahlst nur, wenn sie dir wirklich Zeit auf einem echten Video gespart hat.",
+    "step01Number": "01",
+    "step01Title": "Gespräch mit einem Techniker",
+    "step01Body": "Wir finden gemeinsam heraus, welche wiederkehrende Aufgabe dich am meisten Zeit kostet: Setup, Recherche, Repurposing, Beschreibungen, Sponsor-Matching… Wir wählen den Ausgangspunkt zusammen.",
+    "step01Annotation": "30 Minuten, ohne Verpflichtung",
+    "step02Number": "02",
+    "step02Title": "Woche 1, wir bauen",
+    "step02Body": "Unser technisches Team baut die Automatisierung, zugeschnitten auf deinen spezifischen Workflow. Keine generische Vorlage, eine Lösung, die auf dein Channel zugeschnitten ist.",
+    "step02Annotation": "5 Arbeitstage",
+    "step03Number": "03",
+    "step03Title": "Woche 2, du nutzt sie kostenlos",
+    "step03Body": "Du nutzt sie auf einem echten Video, von Anfang bis Ende. Am Ende der Woche entscheidest du: Wenn sie dir Zeit gespart hat, zahlst du eine Pauschalgebühr, um sie zu behalten. Sonst, kein Stress.",
+    "step03Annotation": "Entscheidung am Ende des Pilots"
+  },
+  "WhatWeBuild": {
+    "badgeNumber": "03",
+    "badgeLabel": "Was wir bauen",
+    "title": "Kein Katalog. Ein [Musterbuch].",
+    "intro": "Jedes Pilotprojekt beginnt mit etwas Konkretem. Tippe auf eine Automatisierung unten, um zu sehen, wie wir denken — keine generischen Vorlagen, Lösungen, die auf deinen spezifischen Workflow zugeschnitten sind.",
+    "tapToExplore": "Tippen für Details",
+    "dialog": {
+      "problemLabel": "Das Problem",
+      "solutionLabel": "Wie wir es bauen",
+      "exampleLabel": "Beispiel",
+      "timeSavedLabel": "Zeitersparnis",
+      "ctaLabel": "Sprechen wir in einem Call darüber",
+      "closeLabel": "Schließen"
+    },
+    "items": [
+      {
+        "label": "Transcript → Notion",
+        "problem": "Deine Video-Transkripte sind durchsuchbare Assets für die Zukunft, aber das Kopieren nach Notion von Hand machst du nie wirklich.",
+        "solution": "Webhook auf neuen YouTube-Upload → Transkript-Extraktion (auto oder human-edited, wenn verfügbar) → automatische Erstellung einer Notion-Seite mit Abschnitten, hervorgehobenen Zitaten und Nischen-Tags.",
+        "example": "Von einem 25-Minuten-Video zu einer Notion-Seite mit 8 Kapiteln und 4 durchsuchbaren Zitaten in unter 60 Sekunden.",
+        "timeSaved": "20–40 Min. pro Video"
+      },
+      {
+        "label": "B-roll search",
+        "problem": "Du suchst eine bestimmte Einstellung aus deinen alten Videos und scrubst am Ende 20 Minuten lang, ohne sie zu finden.",
+        "solution": "Wir indizieren deine gesamte Library (Frame + Audio) in einer Vektor-Datenbank. Du suchst per Sprache: \"als ich die rote PCB gelötet habe\" → exakte Timestamps zurück.",
+        "example": "280 Videos indiziert. Du findest eine präzise Szene in 3 Sekunden statt 20 Minuten Scrubbing.",
+        "timeSaved": "30–90 Min. pro Video"
+      },
+      {
+        "label": "Thumbnail A/B",
+        "problem": "Das falsche Thumbnail kostet Views, aber du hast keine Zeit, bei jedem Upload 5 Varianten zu testen.",
+        "solution": "Wir generieren 5–10 Varianten in deinem Stil (Text, Crop, Subjekt), testen sie über die YouTube Experiments API und melden nur den Gewinner mit Zahlen.",
+        "example": "7 Thumbnails getestet in den 48h nach Upload. Behalten oder mit einem Klick tauschen.",
+        "timeSaved": "30 Min. + messbarer CTR-Anstieg"
+      },
+      {
+        "label": "Sponsor matching",
+        "problem": "Die richtigen Brands für deinen Channel melden sich selten. Die falschen schreiben dir jede Woche.",
+        "solution": "RAG auf deinem Channel + Audience-Analyse → dynamisches Media-Kit. Wir identifizieren Brands, deren Produkte zu deinem Content passen, und bereiten die Pitch-Mail in deinem Tone vor.",
+        "example": "6 Brands in der Retro-Tech-Nische identifiziert, 3 positive Antworten in 2 Wochen.",
+        "timeSaved": "5–8h pro Outreach-Zyklus"
+      },
+      {
+        "label": "Description writer",
+        "problem": "Beschreibung + Kapitel + Tags + Affiliate-Links für jedes Video zu schreiben sind 20 wiederkehrende Minuten, die du vermeidest.",
+        "solution": "Pipeline, die aus Transkript + Metadaten eine SEO-Beschreibung in deinem Tone, Kapitel mit Timestamps, optimierte YouTube-Tags und einen ausgefüllten Affiliate-Block generiert.",
+        "example": "Vom Rohvideo zur veröffentlichbaren Beschreibung in 90 Sekunden statt 20 Minuten.",
+        "timeSaved": "15–20 Min. pro Video"
+      },
+      {
+        "label": "Chapter generator",
+        "problem": "Kapitel steigern die Retention, aber sie von Hand hinzuzufügen ist das Erste, was du überspringst, wenn du in Eile bist.",
+        "solution": "Ein LLM analysiert die Video-Struktur aus Transkript und Audio, schlägt Kapitel mit Titeln in deinem Tone und exakten Timestamps vor. Du genehmigst oder feinjustierst.",
+        "example": "12 Kapitel in 30 Sek. auf einem 25-Minuten-Video generiert, Titel geschrieben, wie du sie schreiben würdest.",
+        "timeSaved": "15 Min. pro Video"
+      },
+      {
+        "label": "Title testing",
+        "problem": "Du hast 3 Titel im Kopf, du weißt nicht, welcher am besten performt, und du willst kein YouTube-Growth-Typ sein.",
+        "solution": "Wir generieren 5 Varianten in deinem Stil (kein Clickbait), testen über YouTube Experiments, melden den Top-Performer mit Daten.",
+        "example": "5 Titel auf einem Video, der Nebentipp, den du nicht gewählt hättest, gewinnt: +22% CTR vs Original.",
+        "timeSaved": "Messbarer CTR-Anstieg, ~10 Min. pro Upload"
+      },
+      {
+        "label": "Shorts editor",
+        "problem": "3 Shorts aus jedem Long-Form zu schneiden, sind Stunden Editing, die oft komplett übersprungen werden.",
+        "solution": "Ein LLM findet die am besten clipbaren Momente anhand von Retention-Kurve + Transkript, generiert Schnitt, Zoom und Captions. Du genehmigst die Top 3.",
+        "example": "8 Shorts fertig aus einem 25-minütigen Long-Form. Veröffentlichen oder verwerfen in wenigen Minuten.",
+        "timeSaved": "1–2h pro Long-Form-Video"
+      },
+      {
+        "label": "Setup VM legacy",
+        "problem": "Jedes Mal, wenn du eine Vintage-Karte zurückbringst, verlierst du eine ganze Nacht damit, das richtige OS und die Treiber zu installieren.",
+        "solution": "Vorkonfigurierte VM/Imaging-Bibliothek (Win 98 SE, XP, Treibervarianten). Einzelner Befehl zum Hochfahren einer Test-Umgebung.",
+        "example": "VMAS-Test bereit in 90 Sekunden, kein Strg+A mehr bis 4 Uhr morgens.",
+        "timeSaved": "1 Nacht pro Projekt"
+      },
+      {
+        "label": "Outlier research",
+        "problem": "Essay-Style-Videos brauchen Stunden Recherche über akademische PDFs, Substack-Newsletter, OECD-Berichte, die du jedes Mal von Hand zitierst.",
+        "solution": "Custom RAG, das deine Reading-List + Quellen-PDFs einliest, strukturierte Summaries und thematische Cluster generiert. Jeder Fact mit Quelle zitiert.",
+        "example": "22 Quellen aggregiert in einem 4-seitigen Brief mit Timeline und thematischen Clustern.",
+        "timeSaved": "6–10h pro Deep-Dive-Video"
+      },
+      {
+        "label": "Newsletter draft",
+        "problem": "Der Newsletter, der nach dem Video kommt, sind 90 Minuten Rewriting, die deine Energie nach dem Upload aufzehren.",
+        "solution": "Transkript → Substack-Draft in deinem Tone, mit Abschnitten, Lead und Link zum Video. Du reviewst 15 Minuten und veröffentlichst.",
+        "example": "Ein 1200-Wörter-Newsletter fertig in 4 Minuten, mit einer Viertelstunde Polish obendrauf.",
+        "timeSaved": "60 Min. pro Release"
+      },
+      {
+        "label": "Podcast show notes",
+        "problem": "Deine Podcast-Show-Notes sind SEO und Audience-Wachstum, aber du schiebst sie wegen Müdigkeit immer auf.",
+        "solution": "Vom Podcast-Audio → vollständige Show-Notes: 3 Absätze, Timestamps, Key Quotes, Gast-Bio, Social-Links.",
+        "example": "35 Minuten Podcast → 6 Kapitel + 8 Zitate + Gast-Bio in 90 Sekunden.",
+        "timeSaved": "40 Min. pro Folge"
+      },
+      {
+        "label": "Comment triage",
+        "problem": "Unter deinen Videos bekommst du 500 Kommentare, 90% Rauschen, 10% wichtige Fragen, die du gerne sehen würdest, aber nicht siehst.",
+        "solution": "Wir klassifizieren die Kommentare (Frage, Idee, Fan, Hater, Sponsor) und schicken einen täglichen Digest nur der \"Tier 1\"-Kommentare zum Antworten.",
+        "example": "Von 320 Kommentaren auf einem Video, 28 als \"antworten\" markiert. Alle in 12 Minuten beantwortet.",
+        "timeSaved": "30–60 Min. pro Video"
+      },
+      {
+        "label": "Affiliate aggregator",
+        "problem": "Du hältst 15 Affiliate-Links im Kopf + ein altes Spreadsheet + Copy-Paste-Beschreibungen Video für Video.",
+        "solution": "Affiliate-Datenbank mit automatischer Lookup → Links für die im Video erwähnten Produkte eingefügt (transcript-basiert).",
+        "example": "14 Links automatisch in die Beschreibung eines Audio-Teardowns eingefügt, mit Disclosure.",
+        "timeSaved": "12 Min. pro Video"
+      },
+      {
+        "label": "Reading vlog highlights",
+        "problem": "Reading-Vlogs haben 30 Minuten Alltag und 5 starke Zeilen über Bücher, überall verteilt. Social-Audiences überspringen sie.",
+        "solution": "Wir extrahieren die \"Best-of\"-Buchmomente aus deinen Vlogs → Reel/Short-Version mit optimierten Captions.",
+        "example": "10 Highlights wie \"warum Colette an mir arbeitet\" aus 4 Vlogs extrahiert.",
+        "timeSaved": "2h Recherche + Social Uplift"
+      },
+      {
+        "label": "Sponsor brief",
+        "problem": "Wenn ein Brand sich meldet, musst du mit einem aktuellen Media-Kit antworten. Das, das du hast, ist von 2024.",
+        "solution": "Dynamisches Media-Kit (Audience-Demo, Top-10-Videos, durchschnittlicher CPM, Beispiele von Sponsor-Integrationen) immer aktuell. Einfach weiterleiten.",
+        "example": "Brand fragt nach Preisen → du schickst ein aktuelles PDF in 30 Sekunden statt 1h die Statistiken zu aktualisieren.",
+        "timeSaved": "1h pro Brand-Anfrage"
+      }
+    ]
+  },
+  "About": {
+    "badgeNumber": "04",
+    "badgeLabel": "Über uns",
+    "title": "Was [Morningside] für Unternehmen ist. Für Creator.",
+    "origin": "HELM Studio wurde 2026 als europäischer Spin-off von Morningside AI gegründet, der ersten Agentur, die das Modell \"build custom AI workflows\" formalisierte — maßgeschneiderte Lösungen, keine recycelten generischen Templates.",
+    "differentiation": "Morningside arbeitet mit Unternehmen. Wir machen die gleiche Arbeit für Menschen, die einen Channel, einen Podcast, einen Newsletter betreiben — Einzelpersonen, keine Abteilungen.",
+    "people": "Wenn wir dir schreiben, steht dahinter kein Vertriebler, sondern das technische Team, das die Arbeit selbst baut. Keine Sales-Reps, keine Reseller, keine Zwischenschicht: du sprichst direkt mit der Person, deren Hände am Code sind.",
+    "manifesto": "Echte Automatisierung zeigt sich in deinem Veröffentlichungskalender, nicht in einem Sales-Deck.",
+    "factsLabel": "Das Studio",
+    "facts": [
+      { "label": "Gegründet", "value": "2026" },
+      { "label": "Standorte", "value": "Mailand · Madrid · Berlin · Dublin" },
+      { "label": "Muttergesellschaft", "value": "Morningside AI · Auckland (NZ)" },
+      { "label": "Markt", "value": "Europa" },
+      { "label": "Sprachen", "value": "Italiano · Deutsch · Español · English" },
+      { "label": "Team", "value": "Lokal, klein, erreichbar" }
+    ]
+  },
+  "Footer": {
+    "company": "HELM Studio SRL",
+    "address": "Via Giuseppe Mazzini 9 · 20123 Mailand (MI) · Italien",
+    "rightsReserved": "Alle Rechte vorbehalten",
+    "privacy": "Datenschutz",
+    "cookies": "Cookies",
+    "manifesto": "Wir bauen Tools, die Zeit verdienen, nicht Klicks."
+  },
+  "LanguageSwitcher": {
+    "label": "Sprache",
+    "switchTo": "Sprache wechseln",
+    "it": "Italiano",
+    "en": "English",
+    "de": "Deutsch",
+    "es": "Español"
+  }
+}

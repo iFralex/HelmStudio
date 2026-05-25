@@ -5,6 +5,7 @@ import { SectionBadge } from '@/components/public/section-badge';
 import { HighlightedHeading } from '@/components/public/highlighted-heading';
 import { HowItWorks } from '@/components/public/how-it-works';
 import { WhatWeBuild } from '@/components/public/what-we-build';
+import { About } from '@/components/public/about';
 
 export default async function HomePage({
   params,
@@ -98,6 +99,10 @@ export default async function HomePage({
       <WhatWeBuild />
 
       <HazardStripe reverse delay={0} />
+
+      <About />
+
+      <HazardStripe delay={0} />
     </>
   );
 }
