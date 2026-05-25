@@ -51,8 +51,10 @@ export async function buildPageMetadata(opts: {
   }
   languages['x-default'] = `${env.SITE_URL}/${routing.defaultLocale}${normalisedPath}`;
 
-  const ogImage = `${env.SITE_URL}/og.png`;
-
+  // Images are intentionally not set here — the per-locale OG image is
+  // generated dynamically by src/app/[locale]/opengraph-image.tsx and
+  // auto-discovered by Next.js for every route under that layout. Twitter
+  // cards inherit the same image when no twitter-image.tsx is present.
   return {
     title,
     description,
@@ -68,13 +70,11 @@ export async function buildPageMetadata(opts: {
       url: canonical,
       title,
       description,
-      images: [{ url: ogImage, width: 1200, height: 630, alt: 'HELM Studio' }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [ogImage],
     },
     robots: opts.index === false ? { index: false, follow: true } : undefined,
   };
