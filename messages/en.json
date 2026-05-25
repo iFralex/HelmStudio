@@ -182,11 +182,51 @@
     "factsLabel": "The studio",
     "facts": [
       { "label": "Founded", "value": "2026" },
-      { "label": "Offices", "value": "Milan · Madrid · Berlin · Dublin" },
+      { "label": "Offices", "value": "Milan · Barcelona · Berlin · Dublin" },
       { "label": "Parent", "value": "Morningside AI · Auckland (NZ)" },
       { "label": "Market", "value": "Europe" },
       { "label": "Languages", "value": "Italiano · Deutsch · Español · English" },
       { "label": "Team", "value": "Local, small, reachable" }
+    ]
+  },
+  "Contact": {
+    "badgeNumber": "05",
+    "badgeLabel": "Contact",
+    "title": "[Let's talk.]",
+    "intro": "Tell us what drains you most in your workflow. A person from the technical team replies within one business day. No sales reps, no form-bots.",
+    "form": {
+      "nameLabel": "Name",
+      "namePlaceholder": "What we should call you",
+      "emailLabel": "Email",
+      "emailPlaceholder": "where we can reply",
+      "channelLabel": "Channel, podcast or newsletter",
+      "channelPlaceholder": "URL or handle — helps us understand context",
+      "channelOptional": "optional",
+      "messageLabel": "What drains you most",
+      "messagePlaceholder": "A recurring task that eats your hours. No need to be precise — we'll start from there together.",
+      "submit": "Send",
+      "submitting": "Sending…",
+      "successTitle": "Got it.",
+      "successBody": "We'll write back to the address you gave us within one business day.",
+      "errorTitle": "Something went wrong.",
+      "errorBody": "Try again in a moment, or write directly to {email}."
+    },
+    "validation": {
+      "nameRequired": "Name is missing.",
+      "emailRequired": "Email is missing.",
+      "emailInvalid": "This email doesn't look valid.",
+      "messageRequired": "Message is missing.",
+      "messageTooShort": "Message is too short (min 20 characters)."
+    },
+    "altLabel": "Or",
+    "altEmailLabel": "Write directly",
+    "contactEmail": "hello@helmstudio.it",
+    "altOfficeLabel": "Registered office",
+    "altOfficesLabel": "Other offices",
+    "altOffices": [
+      { "city": "Barcelona", "address": "Passeig de Gràcia 17 · 08007" },
+      { "city": "Berlin", "address": "Rosenthaler Str. 43–45 · 10178" },
+      { "city": "Dublin", "address": "2 Dublin Landings · D01 V4A3" }
     ]
   },
   "Footer": {

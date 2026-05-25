@@ -44,6 +44,11 @@ const EnvSchema = z.object({
 
   // Logging
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
+
+  // Public contact form (Resend)
+  RESEND_API_KEY: z.string().optional(),
+  CONTACT_EMAIL_TO: z.string().email().default('ciao@helmstudio.it'),
+  CONTACT_EMAIL_FROM: z.string().default('HELM Studio <onboarding@resend.dev>'),
 });
 
 const EnvSchemaRefined = EnvSchema.refine(

@@ -47,7 +47,13 @@ try {
   process.exit(1);
 }
 
-const SECRET_KEYS = new Set(['ADMIN_PASSWORD', 'SESSION_SECRET', 'YOUTUBE_API_KEY', 'LLM_API_KEY']);
+const SECRET_KEYS = new Set([
+  'ADMIN_PASSWORD',
+  'SESSION_SECRET',
+  'YOUTUBE_API_KEY',
+  'LLM_API_KEY',
+  'RESEND_API_KEY',
+]);
 
 const DISPLAY_KEYS = [
   'NODE_ENV',
@@ -73,6 +79,9 @@ const DISPLAY_KEYS = [
   'PIPELINE_YOUTUBE_QUOTA_SAFETY_BUFFER',
   'DATA_DIR',
   'LOG_LEVEL',
+  'RESEND_API_KEY',
+  'CONTACT_EMAIL_TO',
+  'CONTACT_EMAIL_FROM',
 ];
 
 console.log('\nResolved environment:');

@@ -182,11 +182,51 @@
     "factsLabel": "Lo studio",
     "facts": [
       { "label": "Fondazione", "value": "2026" },
-      { "label": "Sedi", "value": "Milano · Madrid · Berlino · Dublino" },
+      { "label": "Sedi", "value": "Milano · Barcellona · Berlino · Dublino" },
       { "label": "Casa madre", "value": "Morningside AI · Auckland (NZ)" },
       { "label": "Mercato", "value": "Europa" },
       { "label": "Lingue", "value": "Italiano · Deutsch · Español · English" },
       { "label": "Team", "value": "Localizzato, piccolo, accessibile" }
+    ]
+  },
+  "Contact": {
+    "badgeNumber": "05",
+    "badgeLabel": "Contatti",
+    "title": "[Parliamone.]",
+    "intro": "Scrivici cosa ti pesa di più nel tuo workflow. Risponde una persona del team tecnico entro un giorno lavorativo. Niente sales rep, niente form-bot.",
+    "form": {
+      "nameLabel": "Nome",
+      "namePlaceholder": "Come ti chiami",
+      "emailLabel": "Email",
+      "emailPlaceholder": "dove possiamo risponderti",
+      "channelLabel": "Canale, podcast o newsletter",
+      "channelPlaceholder": "URL o handle — ci aiuta a contestualizzare",
+      "channelOptional": "opzionale",
+      "messageLabel": "Cosa ti pesa di più",
+      "messagePlaceholder": "Un task ripetitivo che ti ruba ore. Non serve essere precisi: partiamo da lì insieme.",
+      "submit": "Invia",
+      "submitting": "Invio in corso…",
+      "successTitle": "Ricevuto.",
+      "successBody": "Ti scriviamo entro un giorno lavorativo all'indirizzo che ci hai dato.",
+      "errorTitle": "Qualcosa è andato storto.",
+      "errorBody": "Riprova tra un momento, oppure scrivi direttamente a {email}."
+    },
+    "validation": {
+      "nameRequired": "Manca il nome.",
+      "emailRequired": "Manca l'email.",
+      "emailInvalid": "Questa email non sembra valida.",
+      "messageRequired": "Manca il messaggio.",
+      "messageTooShort": "Il messaggio è troppo corto (almeno 20 caratteri)."
+    },
+    "altLabel": "Oppure",
+    "altEmailLabel": "Scrivi diretto",
+    "contactEmail": "ciao@helmstudio.it",
+    "altOfficeLabel": "Sede legale",
+    "altOfficesLabel": "Altre sedi",
+    "altOffices": [
+      { "city": "Barcellona", "address": "Passeig de Gràcia 17 · 08007" },
+      { "city": "Berlino", "address": "Rosenthaler Str. 43–45 · 10178" },
+      { "city": "Dublino", "address": "2 Dublin Landings · D01 V4A3" }
     ]
   },
   "Footer": {

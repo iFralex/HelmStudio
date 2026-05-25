@@ -182,11 +182,51 @@
     "factsLabel": "El estudio",
     "facts": [
       { "label": "Fundación", "value": "2026" },
-      { "label": "Sedes", "value": "Milán · Madrid · Berlín · Dublín" },
+      { "label": "Sedes", "value": "Milán · Barcelona · Berlín · Dublín" },
       { "label": "Casa madre", "value": "Morningside AI · Auckland (NZ)" },
       { "label": "Mercado", "value": "Europa" },
       { "label": "Idiomas", "value": "Italiano · Deutsch · Español · English" },
       { "label": "Equipo", "value": "Local, pequeño, accesible" }
+    ]
+  },
+  "Contact": {
+    "badgeNumber": "05",
+    "badgeLabel": "Contacto",
+    "title": "[Hablémoslo.]",
+    "intro": "Escríbenos qué te pesa más en tu workflow. Responde una persona del equipo técnico en un día laborable. Sin sales reps, sin form-bots.",
+    "form": {
+      "nameLabel": "Nombre",
+      "namePlaceholder": "Cómo te llamamos",
+      "emailLabel": "Email",
+      "emailPlaceholder": "dónde podemos responderte",
+      "channelLabel": "Canal, podcast o newsletter",
+      "channelPlaceholder": "URL o handle — nos ayuda a contextualizar",
+      "channelOptional": "opcional",
+      "messageLabel": "Qué te pesa más",
+      "messagePlaceholder": "Una tarea recurrente que te come horas. No hace falta ser preciso, partimos de ahí juntos.",
+      "submit": "Enviar",
+      "submitting": "Enviando…",
+      "successTitle": "Recibido.",
+      "successBody": "Te escribimos en un día laborable a la dirección que nos has dado.",
+      "errorTitle": "Algo ha ido mal.",
+      "errorBody": "Inténtalo de nuevo en un momento, o escribe directamente a {email}."
+    },
+    "validation": {
+      "nameRequired": "Falta el nombre.",
+      "emailRequired": "Falta el email.",
+      "emailInvalid": "Este email no parece válido.",
+      "messageRequired": "Falta el mensaje.",
+      "messageTooShort": "El mensaje es demasiado corto (mínimo 20 caracteres)."
+    },
+    "altLabel": "O bien",
+    "altEmailLabel": "Escribe directo",
+    "contactEmail": "hola@helmstudio.it",
+    "altOfficeLabel": "Sede social",
+    "altOfficesLabel": "Otras sedes",
+    "altOffices": [
+      { "city": "Barcelona", "address": "Passeig de Gràcia 17 · 08007" },
+      { "city": "Berlín", "address": "Rosenthaler Str. 43–45 · 10178" },
+      { "city": "Dublín", "address": "2 Dublin Landings · D01 V4A3" }
     ]
   },
   "Footer": {
