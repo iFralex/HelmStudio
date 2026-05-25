@@ -23,12 +23,12 @@ const QUEUE_ITEMS: { label: string; key: DiscoveryStatus | OutreachStatus; href?
   {
     label: copy.dashboard.queueDrafted,
     key: 'drafted' as const,
-    href: '/channels?status=drafted',
+    href: '/admin/channels?status=drafted',
   },
   {
     label: copy.dashboard.queueSentNoReply,
     key: 'no_reply' as const,
-    href: '/channels?status=no_reply',
+    href: '/admin/channels?status=no_reply',
   },
 ];
 

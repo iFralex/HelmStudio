@@ -23,7 +23,7 @@ export default function LoginPage() {
         body: JSON.stringify({ password: form.get('password') }),
       });
       if (res.ok) {
-        router.push('/');
+        router.push('/admin');
         router.refresh();
       } else {
         toast.error('Password errata');

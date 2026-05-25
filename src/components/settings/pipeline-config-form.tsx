@@ -8,7 +8,7 @@ import { copy } from '@/lib/ui/copy';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { updatePipelineConfigAction } from '@/app/(app)/settings/actions';
+import { updatePipelineConfigAction } from '@/app/admin/settings/actions';
 
 interface Props {
   config: PipelineConfigSetting;

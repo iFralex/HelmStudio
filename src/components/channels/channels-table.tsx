@@ -51,7 +51,7 @@ export function ChannelsTable({ rows }: ChannelsTableProps) {
             <TableRow
               key={row.id}
               className="cursor-pointer"
-              onClick={() => router.push(`/channels/${row.id}`)}
+              onClick={() => router.push(`/admin/channels/${row.id}`)}
             >
               <TableCell>
                 {row.thumbnailUrl ? (

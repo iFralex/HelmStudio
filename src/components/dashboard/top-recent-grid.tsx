@@ -39,7 +39,7 @@ export function TopRecentGrid({ channels }: TopRecentGridProps) {
       <h2 className="text-lg font-medium mb-3">{copy.dashboard.topRecent}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {channels.map((ch) => (
-          <Link key={ch.channelId} href={`/channels/${ch.channelId}`}>
+          <Link key={ch.channelId} href={`/admin/channels/${ch.channelId}`}>
             <Card className="hover:ring-primary/40 transition-shadow cursor-pointer h-full">
               <CardContent className="p-3 space-y-2">
                 {ch.thumbnailUrl ? (

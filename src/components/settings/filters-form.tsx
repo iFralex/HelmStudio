@@ -8,7 +8,7 @@ import { copy } from '@/lib/ui/copy';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { updateFiltersAction } from '@/app/(app)/settings/actions';
+import { updateFiltersAction } from '@/app/admin/settings/actions';
 
 interface Props {
   filters: FiltersSetting;

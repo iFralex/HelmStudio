@@ -56,7 +56,7 @@ export function FiltersBar({ filters, rawParams }: FiltersBarProps) {
         }
       }
       const qs = params.toString();
-      return qs ? `/channels?${qs}` : '/channels';
+      return qs ? `/admin/channels?${qs}` : '/admin/channels';
     },
     [rawParams],
   );
@@ -244,7 +244,7 @@ export function FiltersBar({ filters, rawParams }: FiltersBarProps) {
           </SelectContent>
         </Select>
 
-        <Link href="/channels">
+        <Link href="/admin/channels">
           <Button variant="ghost" size="sm">
             {copy.channels.clearFilters}
           </Button>

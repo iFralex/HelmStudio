@@ -19,7 +19,7 @@ import { Label } from '@/components/ui/label';
 import { copy } from '@/lib/ui/copy';
 import { cn } from '@/lib/utils';
 import { formatCompact, formatDate } from '@/lib/ui/format';
-import { deleteChannel } from '@/app/(app)/channels/[channelId]/actions';
+import { deleteChannel } from '@/app/admin/channels/[channelId]/actions';
 import type { Channel } from '@/lib/db/queries';
 
 const CATEGORY_NAMES: Record<string, string> = {

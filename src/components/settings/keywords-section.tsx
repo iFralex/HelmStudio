@@ -28,7 +28,7 @@ import {
   createKeywordAction,
   updateKeywordAction,
   deleteKeywordAction,
-} from '@/app/(app)/settings/actions';
+} from '@/app/admin/settings/actions';
 
 interface Props {
   keywords: SeedKeyword[];

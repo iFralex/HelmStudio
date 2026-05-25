@@ -33,7 +33,7 @@ export function EventsTable({
 }: EventsTableProps) {
   return (
     <div className="space-y-4">
-      <form method="get" action={`/runs/${runId}`} className="flex flex-wrap items-end gap-3">
+      <form method="get" action={`/admin/runs/${runId}`} className="flex flex-wrap items-end gap-3">
         <div className="space-y-1">
           <label className="block text-xs font-medium text-muted-foreground">
             {copy.runs.eventColumnStage}
@@ -74,7 +74,7 @@ export function EventsTable({
 
         {(currentStage || currentChannelId) && (
           <a
-            href={`/runs/${runId}`}
+            href={`/admin/runs/${runId}`}
             className="inline-flex h-9 items-center rounded-md border border-input bg-background px-3 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
           >
             {copy.runs.filterReset}
