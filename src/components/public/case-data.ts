@@ -1,6 +1,6 @@
 // Source of truth for case-study slugs. Used by generateStaticParams,
 // route validation, and links. Keep in sync with messages.CaseStudies.cases[].slug.
-export const CASE_STUDY_SLUGS = ['mailab', 'code-monkey'] as const;
+export const CASE_STUDY_SLUGS = ['doktor-whatson', 'code-monkey'] as const;
 export type CaseStudySlug = (typeof CASE_STUDY_SLUGS)[number];
 
 // Locale-invariant metadata kept in code (not in messages) because URLs don't
@@ -15,9 +15,9 @@ export const CASE_METADATA: Record<
   CaseStudySlug,
   { logoUrl: string | null; channelUrl: string }
 > = {
-  mailab: {
-    logoUrl: 'https://unavatar.io/youtube/maiLab',
-    channelUrl: 'https://www.youtube.com/@maiLab',
+  'doktor-whatson': {
+    logoUrl: 'https://unavatar.io/youtube/DoktorWhatson',
+    channelUrl: 'https://www.youtube.com/@DoktorWhatson',
   },
   'code-monkey': {
     logoUrl: 'https://unavatar.io/youtube/CodeMonkeyUnity',

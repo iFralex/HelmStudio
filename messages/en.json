@@ -544,18 +544,18 @@
     "ctaLabel": "Get in touch",
     "cases": [
       {
-        "slug": "mailab",
-        "channelName": "maiLab",
-        "channelHandle": "@maiLab",
+        "slug": "doktor-whatson",
+        "channelName": "Doktor Whatson",
+        "channelHandle": "@DoktorWhatson",
         "tag": "Science explainer",
         "language": "DE",
-        "subscribers": "1.7M subscribers",
+        "subscribers": "~400k subscribers",
         "format": "Long-form essay, variable cadence, 10–30 min",
-        "summary": "A German science explainer channel was spending 10 hours on research per video. We built a custom RAG that does most of that work in 2 hours — and they now publish twice as many videos.",
+        "summary": "A German science explainer creator was spending 10 hours on research per video. We built a custom RAG that does most of that work in 2 hours — and he now publishes twice as many videos.",
         "heroQuote": "I wanted to make more explainer videos and lose fewer hours in PDFs. That's exactly what happens now.",
         "heroQuoteOriginalLang": "German",
-        "problem": "Each video on the channel starts from a synthesis of scientific literature: PubMed, academic papers, regulatory reports (EMA, FDA, OECD), peer newsletters, and team notes in Obsidian. The average — measured by the team itself — was 10 hours of research for every 25-minute video. On top of that came an extra hour of book-keeping to correctly track inline citations. The result: two videos a month instead of the four the audience kept asking for. The backlog of ideas never emptied.",
-        "solution": "We built a custom RAG (Retrieval-Augmented Generation) system that automatically ingests the sources — PubMed saved searches via API, a folder of regulatory PDFs, the inbox where curated newsletters land, and the Obsidian vault via markdown export. Given a topic, the system produces a structured brief: executive summary, numbered key findings, inline citations with exact page references in the source PDFs, and a \"gaps\" section flagging where additional manual research is needed. Hosted on a Hetzner VPS in Germany (GDPR-friendly), no data leaving the EU.",
+        "problem": "Each video on the channel starts from a synthesis of literature: academic papers, regulatory and educational reports, peer newsletters, and personal notes in Obsidian. The average — measured by the creator himself — was 10 hours of research for every 25-minute video. On top of that came an extra hour of book-keeping to correctly track inline citations. The result: two videos a month instead of the four the audience kept asking for. The backlog of ideas never emptied.",
+        "solution": "We built a custom RAG (Retrieval-Augmented Generation) system that automatically ingests the sources — academic saved searches via API, a folder of topical PDFs, the inbox where curated newsletters land, and the Obsidian vault via markdown export. Given a topic, the system produces a structured brief: executive summary, numbered key findings, inline citations with exact page references in the source PDFs, and a \"gaps\" section flagging where additional manual research is needed. Hosted on a Hetzner VPS in Germany (GDPR-friendly), no data leaving the EU.",
         "stack": ["Python", "LangChain", "Qdrant", "OpenAI GPT-4", "Hetzner Cloud (DE)"],
         "metrics": [
           { "label": "Research per video", "before": "~10 h", "after": "~2 h" },
@@ -563,9 +563,9 @@
           { "label": "Inline citations tracked", "before": "manual", "after": "automated" },
           { "label": "Monthly infrastructure cost", "before": "—", "after": "€18 VPS" }
         ],
-        "finalQuote": "We never thought of it as an \"AI replacement\". We thought of it as a patient intern who prepares the brief while we think about how to explain the thing. The brief lands, we correct half of it, and the script is essentially written. It's a different way of working.",
+        "finalQuote": "I never thought of it as an \"AI replacement\". I thought of it as a patient intern who prepares the brief while I think about how to explain the thing. The brief lands, I correct half of it, and the script is essentially written. It's a different way of working.",
         "finalQuoteOriginalLang": "German",
-        "finalQuoteAttribution": "maiLab team"
+        "finalQuoteAttribution": "Doktor Whatson"
       },
       {
         "slug": "code-monkey",

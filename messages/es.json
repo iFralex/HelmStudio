@@ -544,18 +544,18 @@
     "ctaLabel": "Hablemos",
     "cases": [
       {
-        "slug": "mailab",
-        "channelName": "maiLab",
-        "channelHandle": "@maiLab",
+        "slug": "doktor-whatson",
+        "channelName": "Doktor Whatson",
+        "channelHandle": "@DoktorWhatson",
         "tag": "Science explainer",
         "language": "DE",
-        "subscribers": "1,7M suscriptores",
+        "subscribers": "~400k suscriptores",
         "format": "Vídeo ensayo, cadencia variable, 10–30 min",
-        "summary": "Un canal alemán de divulgación científica pasaba 10 horas de investigación por vídeo. Construimos un RAG que hace la mayor parte de ese trabajo en 2 horas — y ahora publican el doble de vídeos.",
+        "summary": "Un creador alemán de divulgación científica pasaba 10 horas de investigación por vídeo. Construimos un RAG que hace la mayor parte de ese trabajo en 2 horas — y ahora publica el doble de vídeos.",
         "heroQuote": "Quería hacer más vídeos de explicación y perder menos horas en PDFs. Es exactamente lo que pasa ahora.",
         "heroQuoteOriginalLang": "Alemán",
-        "problem": "Cada vídeo del canal parte de una síntesis de literatura científica: PubMed, papers académicos, reportes regulatorios (EMA, FDA, OECD), newsletters de colegas y notas del equipo en Obsidian. La media — medida por el propio equipo — era de 10 horas de investigación por cada vídeo de 25 minutos. A esto se sumaba una hora de book-keeping para trackear correctamente las citas inline. El resultado: dos vídeos al mes en vez de los cuatro que la audiencia pedía. El backlog de ideas nunca se vaciaba.",
-        "solution": "Construimos un sistema RAG (Retrieval-Augmented Generation) a medida que ingiere automáticamente las fuentes — saved searches de PubMed vía API, una carpeta de PDFs regulatorios, el inbox donde aterrizan las newsletters seleccionadas, y el vault de Obsidian vía export markdown. Dado un tema, el sistema produce un brief estructurado: executive summary, key findings numerados, citas inline con referencia exacta a la página del PDF de origen, y una sección \"gaps\" que señala dónde hace falta investigación manual adicional. Hospedado en un VPS de Hetzner en Alemania (compatible con RGPD), sin datos que salgan de la UE.",
+        "problem": "Cada vídeo del canal parte de una síntesis de literatura: papers académicos, reportes regulatorios y educativos, newsletters de colegas y notas personales en Obsidian. La media — medida por el propio creador — era de 10 horas de investigación por cada vídeo de 25 minutos. A esto se sumaba una hora de book-keeping para trackear correctamente las citas inline. El resultado: dos vídeos al mes en vez de los cuatro que la audiencia pedía. El backlog de ideas nunca se vaciaba.",
+        "solution": "Construimos un sistema RAG (Retrieval-Augmented Generation) a medida que ingiere automáticamente las fuentes — saved searches académicas vía API, una carpeta de PDFs temáticos, el inbox donde aterrizan las newsletters seleccionadas, y el vault de Obsidian vía export markdown. Dado un tema, el sistema produce un brief estructurado: executive summary, key findings numerados, citas inline con referencia exacta a la página del PDF de origen, y una sección \"gaps\" que señala dónde hace falta investigación manual adicional. Hospedado en un VPS de Hetzner en Alemania (compatible con RGPD), sin datos que salgan de la UE.",
         "stack": ["Python", "LangChain", "Qdrant", "OpenAI GPT-4", "Hetzner Cloud (DE)"],
         "metrics": [
           { "label": "Investigación por vídeo", "before": "~10 h", "after": "~2 h" },
@@ -563,9 +563,9 @@
           { "label": "Citas inline trackeadas", "before": "manuales", "after": "automáticas" },
           { "label": "Coste infraestructura mensual", "before": "—", "after": "€18 VPS" }
         ],
-        "finalQuote": "Nunca lo pensamos como un \"AI replacement\". Lo pensamos como un becario paciente que nos prepara el brief mientras pensamos cómo explicar la cosa. El brief llega, lo corregimos a medias, y el guion ya está prácticamente escrito. Es otra forma de trabajar.",
+        "finalQuote": "Nunca lo pensé como un \"AI replacement\". Lo pensé como un becario paciente que me prepara el brief mientras pienso cómo explicar la cosa. El brief llega, lo corrijo a medias, y el guion ya está prácticamente escrito. Es otra forma de trabajar.",
         "finalQuoteOriginalLang": "Alemán",
-        "finalQuoteAttribution": "Equipo maiLab"
+        "finalQuoteAttribution": "Doktor Whatson"
       },
       {
         "slug": "code-monkey",

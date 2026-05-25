@@ -544,18 +544,18 @@
     "ctaLabel": "Lass uns reden",
     "cases": [
       {
-        "slug": "mailab",
-        "channelName": "maiLab",
-        "channelHandle": "@maiLab",
+        "slug": "doktor-whatson",
+        "channelName": "Doktor Whatson",
+        "channelHandle": "@DoktorWhatson",
         "tag": "Wissenschafts-Explainer",
         "language": "DE",
-        "subscribers": "1,7 Mio. Abonnenten",
+        "subscribers": "~400k Abonnenten",
         "format": "Essay-Videos, variable Frequenz, 10–30 Min.",
-        "summary": "Ein deutscher Wissenschafts-Erklärkanal verbrachte 10 Stunden mit Recherche pro Video. Wir haben ein RAG-System gebaut, das den Großteil dieser Arbeit in 2 Stunden erledigt — jetzt veröffentlichen sie doppelt so viele Videos.",
+        "summary": "Ein deutscher Wissenschafts-Erklärkanal verbrachte 10 Stunden mit Recherche pro Video. Wir haben ein RAG-System gebaut, das den Großteil dieser Arbeit in 2 Stunden erledigt — und jetzt erscheinen doppelt so viele Videos.",
         "heroQuote": "Ich wollte mehr Erklärvideos machen und weniger Stunden in PDFs verlieren. Genau das passiert jetzt.",
         "heroQuoteOriginalLang": "Deutschen",
-        "problem": "Jedes Video des Kanals beginnt mit einer Synthese wissenschaftlicher Literatur: PubMed, akademische Papers, Regulierungsberichte (EMA, FDA, OECD), Kollegen-Newsletter und Team-Notizen in Obsidian. Der Durchschnitt — vom Team selbst gemessen — lag bei 10 Stunden Recherche pro 25-Minuten-Video. Dazu kam eine zusätzliche Stunde Book-keeping für korrekt nachvollziehbare Inline-Zitationen. Das Ergebnis: zwei Videos pro Monat statt der vier, die das Publikum verlangte. Der Ideen-Backlog leerte sich nie.",
-        "solution": "Wir haben ein maßgeschneidertes RAG-System (Retrieval-Augmented Generation) gebaut, das die Quellen automatisch einliest — PubMed Saved Searches via API, einen Ordner mit Regulierungs-PDFs, das Postfach mit ausgewählten Newslettern und den Obsidian-Vault via Markdown-Export. Zu einem Thema produziert das System ein strukturiertes Brief: Executive Summary, nummerierte Key Findings, Inline-Zitationen mit exakter Seitenreferenz im Quell-PDF, und einen \"Gaps\"-Abschnitt, der Stellen markiert, an denen zusätzliche manuelle Recherche nötig ist. Gehostet auf einem Hetzner VPS in Deutschland (DSGVO-konform), keine Daten verlassen die EU.",
+        "problem": "Jedes Video des Kanals beginnt mit einer Synthese von Literatur: akademische Papers, Regulierungs- und Bildungsberichte, Kollegen-Newsletter und persönliche Notizen in Obsidian. Der Durchschnitt — vom Creator selbst gemessen — lag bei 10 Stunden Recherche pro 25-Minuten-Video. Dazu kam eine zusätzliche Stunde Book-keeping für korrekt nachvollziehbare Inline-Zitationen. Das Ergebnis: zwei Videos pro Monat statt der vier, die das Publikum verlangte. Der Ideen-Backlog leerte sich nie.",
+        "solution": "Wir haben ein maßgeschneidertes RAG-System (Retrieval-Augmented Generation) gebaut, das die Quellen automatisch einliest — akademische Saved Searches via API, einen Ordner mit thematischen PDFs, das Postfach mit ausgewählten Newslettern und den Obsidian-Vault via Markdown-Export. Zu einem Thema produziert das System ein strukturiertes Brief: Executive Summary, nummerierte Key Findings, Inline-Zitationen mit exakter Seitenreferenz im Quell-PDF, und einen \"Gaps\"-Abschnitt, der Stellen markiert, an denen zusätzliche manuelle Recherche nötig ist. Gehostet auf einem Hetzner VPS in Deutschland (DSGVO-konform), keine Daten verlassen die EU.",
         "stack": ["Python", "LangChain", "Qdrant", "OpenAI GPT-4", "Hetzner Cloud (DE)"],
         "metrics": [
           { "label": "Recherche pro Video", "before": "~10 h", "after": "~2 h" },
@@ -563,9 +563,9 @@
           { "label": "Inline-Zitationen erfasst", "before": "manuell", "after": "automatisch" },
           { "label": "Monatliche Infrastrukturkosten", "before": "—", "after": "€18 VPS" }
         ],
-        "finalQuote": "Wir haben es nie als \"AI-Replacement\" gedacht. Wir haben es als geduldigen Praktikanten gedacht, der uns das Brief vorbereitet, während wir überlegen, wie wir die Sache erklären. Das Brief kommt an, wir korrigieren die Hälfte davon, und das Skript ist im Grunde schon geschrieben. Es ist eine andere Art zu arbeiten.",
+        "finalQuote": "Ich habe es nie als \"AI-Replacement\" gedacht. Ich habe es als geduldigen Praktikanten gedacht, der mir das Brief vorbereitet, während ich überlege, wie ich die Sache erkläre. Das Brief kommt an, ich korrigiere die Hälfte davon, und das Skript ist im Grunde schon geschrieben. Es ist eine andere Art zu arbeiten.",
         "finalQuoteOriginalLang": "Deutschen",
-        "finalQuoteAttribution": "maiLab Team"
+        "finalQuoteAttribution": "Doktor Whatson"
       },
       {
         "slug": "code-monkey",
