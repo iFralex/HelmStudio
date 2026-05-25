@@ -26,6 +26,9 @@ export async function Header() {
           <Link href="/come-funziona" className="relative hover:text-brutal-accent transition-colors">
             {t('howItWorks')}
           </Link>
+          <Link href="/casi-studio" className="relative hover:text-brutal-accent transition-colors">
+            {t('caseStudies')}
+          </Link>
           <Link href="/chi-siamo" className="relative hover:text-brutal-accent transition-colors">
             {t('about')}
           </Link>

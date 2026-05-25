@@ -6,6 +6,7 @@
   "Nav": {
     "home": "Inicio",
     "howItWorks": "Cómo funciona",
+    "caseStudies": "Casos de estudio",
     "about": "Quiénes somos",
     "contact": "Contacto",
     "openMenu": "Abrir menú",
@@ -517,6 +518,77 @@
         "number": "04",
         "title": "Actualizaciones",
         "body": "Si añadimos una cookie o cambiamos algo, actualizamos esta página y la fecha arriba. Para dudas escribe a ciao@helmstudio.it."
+      }
+    ]
+  },
+  "CaseStudies": {
+    "badgeNumber": "08",
+    "badgeLabel": "Casos de estudio",
+    "indexTitle": "Qué pasó [después] del piloto.",
+    "indexIntro": "Dos automatizaciones cosidas a dos creadores muy diferentes. Historias contadas por números reales — tiempo antes, tiempo después, y qué cambió en el calendario de publicación.",
+    "cardReadMore": "Leer el caso",
+    "cardSubscribersLabel": "Suscriptores",
+    "cardFormatLabel": "Formato",
+    "backToIndex": "← Todos los casos",
+    "problemLabel": "El problema",
+    "solutionLabel": "Qué hemos construido",
+    "stackLabel": "Stack técnico",
+    "numbersLabel": "Los números",
+    "metricBefore": "Antes",
+    "metricAfter": "Después",
+    "quoteLabel": "Qué dice",
+    "translatedFromLabel": "Traducido del",
+    "ctaTitle": "¿Quieres un caso como este?",
+    "ctaBody": "La llamada del paso 01 dura 30 minutos, es gratis, sin compromiso.",
+    "ctaLabel": "Hablemos",
+    "cases": [
+      {
+        "slug": "mai-erklart",
+        "channelName": "Mai Erklärt",
+        "channelHandle": "@maierklart",
+        "tag": "Science explainer",
+        "language": "DE",
+        "subscribers": "180k suscriptores",
+        "format": "Vídeo ensayo, cada dos semanas, 20–30 min",
+        "summary": "Una científica-creadora alemana pasaba 10 horas de investigación por vídeo. Le construimos un RAG que hace la mayor parte de ese trabajo en 2 horas — y ahora publica el doble de vídeos.",
+        "heroQuote": "Quería hacer más vídeos de explicación y perder menos horas en PDFs. Es exactamente lo que pasa ahora.",
+        "heroQuoteOriginalLang": "Alemán",
+        "problem": "Cada vídeo del canal parte de una síntesis de literatura científica: PubMed, papers académicos, reportes regulatorios (EMA, FDA, OECD), newsletters de colegas y notas personales en Obsidian. La media — medida por la propia creadora — era de 10 horas de investigación por cada vídeo de 25 minutos. A esto se sumaba una hora de book-keeping para trackear correctamente las citas inline. El resultado: dos vídeos al mes en vez de los cuatro que la audiencia pedía. El backlog de ideas nunca se vaciaba.",
+        "solution": "Construimos un sistema RAG (Retrieval-Augmented Generation) a medida que ingiere automáticamente sus fuentes — saved searches de PubMed vía API, una carpeta de PDFs regulatorios, el inbox donde aterrizan las newsletters seleccionadas, y su vault de Obsidian vía export markdown. Dado un tema, el sistema produce un brief estructurado: executive summary, key findings numerados, citas inline con referencia exacta a la página del PDF de origen, y una sección \"gaps\" que señala dónde hace falta investigación manual adicional. Hospedado en un VPS de Hetzner en Alemania (compatible con RGPD), sin datos que salgan de la UE.",
+        "stack": ["Python", "LangChain", "Qdrant", "OpenAI GPT-4", "Hetzner Cloud (DE)"],
+        "metrics": [
+          { "label": "Investigación por vídeo", "before": "~10 h", "after": "~2 h" },
+          { "label": "Vídeos publicados al mes", "before": "2", "after": "4" },
+          { "label": "Citas inline trackeadas", "before": "manuales", "after": "automáticas" },
+          { "label": "Coste infraestructura mensual", "before": "—", "after": "€18 VPS" }
+        ],
+        "finalQuote": "Nunca lo pensé como un \"AI replacement\". Lo pensé como un becario paciente que me prepara el brief mientras yo pienso cómo explicar la cosa. El brief llega, lo corrijo a medias, y ya tengo el guion escrito. Es otra forma de trabajar.",
+        "finalQuoteOriginalLang": "Alemán",
+        "finalQuoteAttribution": "Mai Erklärt"
+      },
+      {
+        "slug": "chase-maker",
+        "channelName": "Chase Maker",
+        "channelHandle": "@chasemaker",
+        "tag": "Tutoriales indie game dev",
+        "language": "EN",
+        "subscribers": "215k suscriptores",
+        "format": "Tutoriales Unity/Godot, semanal, 15–25 min",
+        "summary": "Un creador británico de tutoriales game-dev perdía cuatro horas por vídeo preparando el proyecto Unity. Le construimos una CLI que lo hace en 20 minutos, descargando sus assets de escena desde su propio S3.",
+        "heroQuote": "Pasaba medio sábado preparando el scaffolding del proyecto antes de poder pulsar REC. Ahora es un solo comando.",
+        "heroQuoteOriginalLang": "Inglés",
+        "problem": "Cada tutorial requería crear un nuevo proyecto Unity o Godot desde cero: import de los assets estándar, estructura de carpetas, preset de escenas, configuración de OBS para capturar una región específica, audio routing para voz + audio del juego. Tiempo medio medido: 4 horas por tutorial. Peor: aproximadamente una vez al mes descubría a mitad del rodaje que el scaffolding estaba mal configurado y tenía que regrabar las clips. Capacidad de output: 2 tutoriales al mes, con 3 semanas de backlog.",
+        "solution": "Construimos `chase-init`, una CLI en TypeScript que genera un proyecto-tutorial completo desde un solo comando. Elige engine (Unity o Godot) con un flag, descarga los asset bundles reutilizables desde su bucket S3 personal, genera la estructura de carpetas estandarizada, aplica presets de escena, configura OBS con la región de captura y audio routing correctos, e incluye una escena \"tutorial-template\" con slots para intro/outro. Todo open source en el GitHub de Chase — su código, su mantenimiento.",
+        "stack": ["TypeScript", "Node.js CLI", "GitHub Actions", "OBS WebSocket API", "AWS S3"],
+        "metrics": [
+          { "label": "Setup por tutorial", "before": "~4 h", "after": "~20 min" },
+          { "label": "Tutoriales al mes", "before": "2", "after": "4 (+1 deep-dive)" },
+          { "label": "Re-grabaciones necesarias", "before": "~1/mes", "after": "0 en 3 meses" },
+          { "label": "Coste infraestructura mensual", "before": "—", "after": "$6 S3" }
+        ],
+        "finalQuote": "La parte más interesante no es el tiempo ahorrado — es que ahora puedo hospedar un \"vídeo bonus\" deep-dive cada mes, algo que siempre quise hacer pero no tenía energía para construir. La CLI me ha desbloqueado un formato entero.",
+        "finalQuoteOriginalLang": "Inglés",
+        "finalQuoteAttribution": "Chase Maker"
       }
     ]
   },
