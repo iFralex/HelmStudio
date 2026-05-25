@@ -396,6 +396,13 @@
       { "city": "Dublin", "address": "2 Dublin Landings · D01 V4A3" }
     ]
   },
+  "NotFound": {
+    "code": "404",
+    "title": "Site under [demolition].",
+    "body": "This page isn't here. Either it never was, or we moved it, or there's a typo in the URL. It happens.",
+    "ctaHome": "Back to the home",
+    "ctaContact": "Write to us if you were looking for something"
+  },
   "Footer": {
     "company": "HELM Studio SRL",
     "address": "Via Giuseppe Mazzini 9 · 20123 Milan · Italy",
