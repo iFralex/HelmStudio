@@ -143,3 +143,107 @@
     @apply bg-background text-foreground font-sans;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Public marketing site — Cantiere primitives
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Subtle blueprint grid background — only behind the hero by default */
+.bg-blueprint {
+  background-color: var(--brutal-bg);
+  background-image:
+    linear-gradient(to right, rgb(22 22 22 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(22 22 22 / 0.045) 1px, transparent 1px);
+  background-size: 36px 36px;
+  background-position: 0 0;
+}
+
+/* Orchestrated hero entrance animations */
+@keyframes hero-word-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes highlight-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes hazard-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-30%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes brutal-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes brutal-stamp-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.18) rotate(-2deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.97) rotate(0.5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+.animate-hero-word {
+  animation: hero-word-in 540ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.animate-highlight-draw {
+  animation: highlight-draw 480ms cubic-bezier(0.65, 0.05, 0.36, 1) both;
+}
+
+.animate-hazard-slide {
+  animation: hazard-slide 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.animate-brutal-fade-up {
+  animation: brutal-fade-up 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.animate-brutal-stamp {
+  animation: brutal-stamp-in 460ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-word,
+  .animate-highlight-draw,
+  .animate-hazard-slide,
+  .animate-brutal-fade-up,
+  .animate-brutal-stamp {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

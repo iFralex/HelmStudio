@@ -7,22 +7,35 @@
     "home": "Home",
     "howItWorks": "How it works",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
-  "Home": {
-    "heroTitle": "We build bespoke AI automations for content creators.",
-    "heroSubtitle": "Week one: we build the automation tailored to one of your recurring chores. Week two: you use it for free. You pay only if it actually saved you time.",
+  "Hero": {
+    "badgeNumber": "01",
+    "badgeLabel": "Open project",
+    "title": "We build [bespoke] [AI] automations for content creators.",
+    "weekOneLabel": "Week 01",
+    "weekOneText": "we build",
+    "weekTwoLabel": "Week 02",
+    "weekTwoText": "you use it free",
+    "footnote": "You pay only if it actually saved you time.",
     "ctaPrimary": "Get in touch",
-    "ctaSecondary": "How it works"
+    "ctaSecondary": "How it works",
+    "annotation": "no commitment"
   },
   "Footer": {
     "company": "HELM Studio SRL",
-    "address": "Via Giuseppe Mazzini 9, 20123 Milano, Italy",
-    "rights": "All rights reserved",
+    "address": "Via Giuseppe Mazzini 9 · 20123 Milan · Italy",
+    "rightsReserved": "All rights reserved",
     "privacy": "Privacy",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "manifesto": "We build tools that earn time, not clicks."
   },
   "LanguageSwitcher": {
-    "label": "Language"
+    "label": "Language",
+    "italian": "Italiano",
+    "english": "English",
+    "switchTo": "Switch language"
   }
 }
