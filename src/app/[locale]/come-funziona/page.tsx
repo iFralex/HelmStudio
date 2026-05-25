@@ -4,6 +4,17 @@ import { HazardStripe } from '@/components/public/hazard-stripe';
 import { SectionBadge } from '@/components/public/section-badge';
 import { HighlightedHeading } from '@/components/public/highlighted-heading';
 import { FaqItem } from '@/components/public/faq-item';
+import { buildPageMetadata } from '@/lib/seo/metadata';
+import type { Locale } from '@/i18n/routing';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+  return buildPageMetadata({ locale, page: 'howItWorks', path: '/come-funziona' });
+}
 
 type Step = {
   number: string;

@@ -3,6 +3,17 @@ import { SectionBadge } from '@/components/public/section-badge';
 import { HighlightedHeading } from '@/components/public/highlighted-heading';
 import { HazardStripe } from '@/components/public/hazard-stripe';
 import { ContactForm } from './contact-form';
+import { buildPageMetadata } from '@/lib/seo/metadata';
+import type { Locale } from '@/i18n/routing';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+  return buildPageMetadata({ locale, page: 'contact', path: '/contatti' });
+}
 
 export default async function ContattiPage({
   params,

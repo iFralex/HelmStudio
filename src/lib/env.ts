@@ -49,6 +49,10 @@ const EnvSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   CONTACT_EMAIL_TO: z.string().email().default('ciao@helmstudio.it'),
   CONTACT_EMAIL_FROM: z.string().default('HELM Studio <onboarding@resend.dev>'),
+
+  // SEO — absolute base URL used in sitemap, canonical links, openGraph, JSON-LD.
+  // No trailing slash. In dev it can be http://localhost:3000.
+  SITE_URL: z.string().url().default('https://helmstudio.it'),
 });
 
 const EnvSchemaRefined = EnvSchema.refine(

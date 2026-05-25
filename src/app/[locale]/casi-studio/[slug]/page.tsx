@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { routing } from '@/i18n/routing';
+import { routing, type Locale } from '@/i18n/routing';
 import { HazardStripe } from '@/components/public/hazard-stripe';
 import { SectionBadge } from '@/components/public/section-badge';
 import { HighlightedHeading } from '@/components/public/highlighted-heading';
@@ -12,11 +12,41 @@ import {
   type CaseStudy,
 } from '@/components/public/case-data';
 import { ChannelAvatar } from '@/components/public/channel-avatar';
+import { buildPageMetadata } from '@/lib/seo/metadata';
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
     CASE_STUDY_SLUGS.map((slug) => ({ locale, slug })),
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale; slug: string }>;
+}) {
+  const { locale, slug } = await params;
+  if (!isCaseSlug(slug)) {
+    // Falls through to the case-studies index meta — the page itself will 404.
+    return buildPageMetadata({ locale, page: 'caseStudies', path: '/casi-studio' });
+  }
+  const t = await getTranslations({ locale, namespace: 'CaseStudies' });
+  const cases = t.raw('cases') as CaseStudy[];
+  const c = cases.find((x) => x.slug === slug);
+  // Build a per-case title + description from the actual case data so the SERP
+  // result for /<locale>/casi-studio/<slug> shows the creator's name and the
+  // outcome rather than the generic listing title.
+  const title = c
+    ? `${c.channelName} — ${c.tag} — HELM Studio`
+    : `${slug} — HELM Studio`;
+  const description = c?.summary ?? '';
+  return buildPageMetadata({
+    locale,
+    page: 'caseStudies',
+    path: `/casi-studio/${slug}`,
+    titleOverride: title,
+    descriptionOverride: description,
+  });
 }
 
 export default async function CaseStudyDetailPage({

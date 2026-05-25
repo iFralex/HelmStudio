@@ -182,12 +182,30 @@
     "manifesto": "Le automazioni vere si vedono sul calendario di pubblicazione, non sulle slide commerciali.",
     "factsLabel": "Lo studio",
     "facts": [
-      { "label": "Fondazione", "value": "2026" },
-      { "label": "Sedi", "value": "Milano · Barcellona · Berlino · Dublino" },
-      { "label": "Casa madre", "value": "Morningside AI · Auckland (NZ)" },
-      { "label": "Mercato", "value": "Europa" },
-      { "label": "Lingue", "value": "Italiano · Deutsch · Español · English" },
-      { "label": "Team", "value": "Localizzato, piccolo, accessibile" }
+      {
+        "label": "Fondazione",
+        "value": "2026"
+      },
+      {
+        "label": "Sedi",
+        "value": "Milano · Barcellona · Berlino · Dublino"
+      },
+      {
+        "label": "Casa madre",
+        "value": "Morningside AI · Auckland (NZ)"
+      },
+      {
+        "label": "Mercato",
+        "value": "Europa"
+      },
+      {
+        "label": "Lingue",
+        "value": "Italiano · Deutsch · Español · English"
+      },
+      {
+        "label": "Team",
+        "value": "Localizzato, piccolo, accessibile"
+      }
     ]
   },
   "HowItWorksPage": {
@@ -273,14 +291,12 @@
     "badgeLabel": "Chi siamo",
     "pageTitle": "Uno [studio]. Non un'agenzia.",
     "pageIntro": "HELM Studio è lo spin-off europeo di Morningside AI — l'agenzia neozelandese che ha codificato il modello \"build custom AI workflows\". Loro lavorano con aziende. Noi lo facciamo per chi gestisce, in prima persona, un canale, un podcast, una newsletter.",
-
     "originTitle": "[Da dove veniamo.]",
     "originParagraphs": [
       "Morningside AI è stata fondata ad Auckland nel 2023. È l'agenzia che per prima ha formalizzato l'idea di non vendere SaaS, ma di costruire automazioni cucite addosso al cliente — codice custom, niente prodotti white-label, niente template riciclati.",
       "Quattro anni dopo, un gruppo di tecnici europei ha portato lo stesso approccio in Europa, con una differenza cruciale: i nostri clienti non sono aziende, sono persone. Creator individuali che lavorano da soli o con team piccolissimi, e che dei tool AI generici non sanno cosa farsene.",
       "Da gennaio 2026 lo studio è basato a Milano, con tre sedi satellite (Barcellona, Berlino, Dublino) — una per ognuno dei mercati principali in cui operiamo. Non per moda \"remote-first\", ma perché stare nei luoghi dove vivono i nostri clienti significa parlare la loro lingua, conoscere le loro piattaforme, capire i loro brand deal."
     ],
-
     "positioningTitle": "Cosa [siamo], cosa non siamo.",
     "positioningIntro": "Il mercato \"AI per creator\" è pieno di rumore. Mettiamo i puntini sulle i.",
     "positioningNotLabel": "Cosa non siamo",
@@ -297,7 +313,6 @@
       "Sul campo in Europa, con quattro sedi e quattro lingue.",
       "Diretti: parli con chi mette le mani sul codice."
     ],
-
     "manifestoTitle": "Quattro [principi] non negoziabili.",
     "manifestoPrinciples": [
       {
@@ -321,7 +336,6 @@
         "body": "Non ti vendiamo views, engagement o crescita social. Ti vendiamo ore che ti tornano sul calendario, da dedicare a quello per cui sei diventato creator."
       }
     ],
-
     "officesTitle": "Le [sedi].",
     "officesIntro": "Una persona fisicamente presente in ognuna delle quattro città in cui operiamo. Non remote-first ideologico — la prossimità conta nei brand deal, nei pagamenti, nella conoscenza dei mercati locali.",
     "officesHqLabel": "Sede legale",
@@ -352,7 +366,6 @@
         "note": "Copre i creator UK + IE e le sponsor relations anglofone."
       }
     ],
-
     "ctaTitle": "Vuoi capire se ha senso [parlarne]?",
     "ctaBody": "La call di step 01 dura 30 minuti e a fine call sai se ha senso o no andare avanti. Niente impegno.",
     "ctaLabel": "Parliamone"
@@ -392,9 +405,18 @@
     "altOfficeLabel": "Sede legale",
     "altOfficesLabel": "Altre sedi",
     "altOffices": [
-      { "city": "Barcellona", "address": "Passeig de Gràcia 17 · 08007" },
-      { "city": "Berlino", "address": "Rosenthaler Str. 43–45 · 10178" },
-      { "city": "Dublino", "address": "2 Dublin Landings · D01 V4A3" }
+      {
+        "city": "Barcellona",
+        "address": "Passeig de Gràcia 17 · 08007"
+      },
+      {
+        "city": "Berlino",
+        "address": "Rosenthaler Str. 43–45 · 10178"
+      },
+      {
+        "city": "Dublino",
+        "address": "2 Dublin Landings · D01 V4A3"
+      }
     ]
   },
   "NotFound": {
@@ -558,10 +580,26 @@
         "solution": "Abbiamo costruito un sistema RAG (Retrieval-Augmented Generation) custom che ingerisce automaticamente le fonti — saved searches accademiche via API, una cartella di PDF tematici, l'inbox dove girano le newsletter selezionate, e il vault Obsidian via export markdown. Dato un argomento, il sistema produce un brief strutturato: executive summary, key findings numerati, citazioni inline con riferimento esatto alla pagina del PDF di origine, e una sezione \"gaps\" che segnala i punti dove serve ricerca manuale aggiuntiva. Hostato su un VPS Hetzner in Germania (GDPR-friendly), niente dati che escono dall'EU.",
         "stack": ["Python", "LangChain", "Qdrant", "OpenAI GPT-4", "Hetzner Cloud (DE)"],
         "metrics": [
-          { "label": "Ricerca per video", "before": "~10 h", "after": "~2 h" },
-          { "label": "Video pubblicati al mese", "before": "2", "after": "4" },
-          { "label": "Citazioni inline tracciate", "before": "manuali", "after": "automatiche" },
-          { "label": "Costo infrastruttura mensile", "before": "—", "after": "€18 VPS" }
+          {
+            "label": "Ricerca per video",
+            "before": "~10 h",
+            "after": "~2 h"
+          },
+          {
+            "label": "Video pubblicati al mese",
+            "before": "2",
+            "after": "4"
+          },
+          {
+            "label": "Citazioni inline tracciate",
+            "before": "manuali",
+            "after": "automatiche"
+          },
+          {
+            "label": "Costo infrastruttura mensile",
+            "before": "—",
+            "after": "€18 VPS"
+          }
         ],
         "finalQuote": "Non l'ho mai pensato come un \"AI replacement\". L'ho pensato come uno stagista paziente che mi prepara il brief mentre penso a come spiegare la cosa. Il brief arriva, lo correggo a metà, e ho già scritto lo script. È un altro modo di lavorare.",
         "finalQuoteOriginalLang": "Tedesco",
@@ -582,10 +620,26 @@
         "solution": "Abbiamo costruito `ace-init`, una CLI in TypeScript che genera un progetto-demo grafico completo da un singolo comando. Scarica gli asset bundle riutilizzabili dal suo bucket S3 personale, genera la struttura di cartelle standardizzata, applica preset di rendering pipeline (Unity URP o Godot ForwardPlus, da flag), configura OBS con regione di cattura e GPU profiler attivo, e include una scena \"demo-template\" con slot per intro/outro. Tutto open source sul suo GitHub — il codice è suo, la manutenzione anche.",
         "stack": ["TypeScript", "Node.js CLI", "GitHub Actions", "OBS WebSocket API", "AWS S3"],
         "metrics": [
-          { "label": "Setup per video", "before": "~4 h", "after": "~20 min" },
-          { "label": "Video al mese", "before": "~1 (con gap)", "after": "~2 stabili" },
-          { "label": "Mesi senza upload", "before": "~3/anno", "after": "0 in 6 mesi" },
-          { "label": "Costo infrastruttura mensile", "before": "—", "after": "$6 S3" }
+          {
+            "label": "Setup per video",
+            "before": "~4 h",
+            "after": "~20 min"
+          },
+          {
+            "label": "Video al mese",
+            "before": "~1 (con gap)",
+            "after": "~2 stabili"
+          },
+          {
+            "label": "Mesi senza upload",
+            "before": "~3/anno",
+            "after": "0 in 6 mesi"
+          },
+          {
+            "label": "Costo infrastruttura mensile",
+            "before": "—",
+            "after": "$6 S3"
+          }
         ],
         "finalQuote": "La parte più interessante non è il tempo risparmiato — è che ora posso ospitare un esperimento \"bonus\" tra un deep-dive e l'altro, qualcosa che ho sempre voluto fare ma non avevo l'energia per costruire da zero. La CLI mi ha sbloccato un format intero.",
         "finalQuoteOriginalLang": "Inglese",
@@ -608,5 +662,41 @@
     "en": "English",
     "de": "Deutsch",
     "es": "Español"
+  },
+  "Seo": {
+    "defaultTitleSuffix": " — HELM Studio",
+    "defaultDescription": "Costruiamo automazioni AI su misura per creator YouTube e podcaster. Pilot di 2 settimane gratis, paghi solo se ti risparmiamo davvero tempo.",
+    "home": {
+      "title": "HELM Studio — Automazioni AI su misura per creator",
+      "description": "Costruiamo workflow AI personalizzati per creator YouTube e podcaster. Pilot di 2 settimane gratis: paghi solo se ti abbiamo davvero risparmiato tempo."
+    },
+    "howItWorks": {
+      "title": "Come funziona — HELM Studio",
+      "description": "Settimana 1 costruiamo, settimana 2 lo usi gratis, paghi solo se ha funzionato. Workflow AI pensati intorno al tuo metodo, niente vendor lock-in."
+    },
+    "caseStudies": {
+      "title": "Casi studio — HELM Studio",
+      "description": "Come abbiamo aiutato creator europei a recuperare ore di lavoro a video con automazioni AI su misura. Numeri reali, workflow concreti."
+    },
+    "about": {
+      "title": "Chi siamo — HELM Studio",
+      "description": "Spin-off europeo di Morningside AI con base a Milano. Costruiamo workflow AI per creator, non SaaS generici. Dati in UE, niente lock-in."
+    },
+    "contact": {
+      "title": "Contatti — HELM Studio",
+      "description": "Raccontaci il tuo workflow attuale e dove perdi tempo. Ti rispondiamo entro un giorno lavorativo con una proposta concreta di pilot."
+    },
+    "privacy": {
+      "title": "Privacy — HELM Studio",
+      "description": "Come trattiamo i dati personali raccolti tramite il sito e durante i pilot. Base legale, finalità, conservazione, diritti GDPR."
+    },
+    "cookie": {
+      "title": "Cookie — HELM Studio",
+      "description": "Sul sito usiamo solo cookie tecnici essenziali. Nessuna profilazione, nessun analytics di terze parti, nessun tracking pubblicitario."
+    },
+    "notFound": {
+      "title": "Pagina non trovata — HELM Studio",
+      "description": "La pagina che cerchi non esiste o è stata spostata. Torna alla homepage o esplora le sezioni del sito."
+    }
   }
 }

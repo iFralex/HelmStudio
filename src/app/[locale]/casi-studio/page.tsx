@@ -5,6 +5,17 @@ import { SectionBadge } from '@/components/public/section-badge';
 import { HighlightedHeading } from '@/components/public/highlighted-heading';
 import { CASE_METADATA, type CaseStudy } from '@/components/public/case-data';
 import { ChannelAvatar } from '@/components/public/channel-avatar';
+import { buildPageMetadata } from '@/lib/seo/metadata';
+import type { Locale } from '@/i18n/routing';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+  return buildPageMetadata({ locale, page: 'caseStudies', path: '/casi-studio' });
+}
 
 export default async function CaseStudiesIndexPage({
   params,

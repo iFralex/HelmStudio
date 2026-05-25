@@ -1,7 +1,27 @@
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { hasLocale } from 'next-intl';
-import { routing } from '@/i18n/routing';
+import { routing, type Locale } from '@/i18n/routing';
+import { buildPageMetadata } from '@/lib/seo/metadata';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const safeLocale: Locale = hasLocale(routing.locales, locale)
+    ? (locale as Locale)
+    : routing.defaultLocale;
+  // 404s must not be indexed; the meta gets attached to the response that
+  // CatchAllNotFound returns before notFound() takes over the body.
+  return buildPageMetadata({
+    locale: safeLocale,
+    page: 'notFound',
+    path: '/',
+    index: false,
+  });
+}
 
 /**
  * Catch-all for any URL inside a locale segment that doesn't match a defined

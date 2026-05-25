@@ -6,6 +6,17 @@ import { HighlightedHeading } from '@/components/public/highlighted-heading';
 import { HowItWorks } from '@/components/public/how-it-works';
 import { WhatWeBuild } from '@/components/public/what-we-build';
 import { About } from '@/components/public/about';
+import { buildPageMetadata } from '@/lib/seo/metadata';
+import type { Locale } from '@/i18n/routing';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+  return buildPageMetadata({ locale, page: 'home', path: '/' });
+}
 
 export default async function HomePage({
   params,
