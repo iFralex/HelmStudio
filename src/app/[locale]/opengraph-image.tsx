@@ -1,6 +1,12 @@
 import { ImageResponse } from 'next/og';
 import { routing, type Locale } from '@/i18n/routing';
 
+// Pre-render the OG image for every supported locale at build time so social
+// crawlers get an instant response instead of cold-rendering Satori.
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 /**
  * Per-locale Open Graph image, generated at request time by next/og (Satori).
  *
@@ -19,10 +25,6 @@ import { routing, type Locale } from '@/i18n/routing';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 export const alt = 'HELM Studio';
-
-export function generateImageMetadata() {
-  return routing.locales.map((locale) => ({ id: locale, alt: 'HELM Studio' }));
-}
 
 const TAGLINES: Record<Locale, string> = {
   it: 'Automazioni AI su misura per creator.',
