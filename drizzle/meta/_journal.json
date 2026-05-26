@@ -43,6 +43,13 @@
       "when": 1779687623891,
       "tag": "0005_cute_tusk",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1779757024383,
+      "tag": "0006_tranquil_anthem",
+      "breakpoints": true
     }
   ]
 }

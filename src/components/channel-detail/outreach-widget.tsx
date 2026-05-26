@@ -18,6 +18,7 @@ import {
 import { copy } from '@/lib/ui/copy';
 import { formatDate, formatRelative } from '@/lib/ui/format';
 import { renderOutreachAsHtml } from '@/lib/email/render';
+import { useOutreachQueue } from '@/lib/outreach/use-outreach-queue';
 import type { Channel, OutreachDraft } from '@/lib/db/queries';
 
 interface OutreachWidgetProps {
@@ -61,7 +62,7 @@ export function OutreachWidget({
       {status === 'drafted' && currentDraft && (
         <DraftedView
           key={currentDraft.id}
-          channelId={channel.id}
+          channel={channel}
           draft={currentDraft}
           draftHistory={draftHistory}
           regenerateDraftAction={regenerateDraftAction}
@@ -203,7 +204,7 @@ function EmailAddedView({
 }
 
 function DraftedView({
-  channelId,
+  channel,
   draft,
   draftHistory,
   regenerateDraftAction,
@@ -211,7 +212,7 @@ function DraftedView({
   updateDraftBodyAction,
   markOutreachStatusAction,
 }: {
-  channelId: string;
+  channel: Channel;
   draft: OutreachDraft;
   draftHistory: OutreachDraft[];
   regenerateDraftAction: (fd: FormData) => Promise<void>;
@@ -219,11 +220,33 @@ function DraftedView({
   updateDraftBodyAction: (fd: FormData) => Promise<void>;
   markOutreachStatusAction: (fd: FormData) => Promise<void>;
 }) {
+  const channelId = channel.id;
   const [subject, setSubject] = useState(draft.subject);
   const [body, setBody] = useState(draft.body);
   const [showHistory, setShowHistory] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [didCopy, setDidCopy] = useState(false);
+  const { items: queueItems, add: addToQueue, remove: removeFromQueue } = useOutreachQueue();
+  const isQueued = queueItems.some((i) => i.channelId === channelId);
+  const canQueue = Boolean(channel.email);
+
+  const handleQueueToggle = () => {
+    if (isQueued) {
+      removeFromQueue(channelId);
+      toast.success(copy.channelDetail.queueRemoved);
+      return;
+    }
+    if (!channel.email) return;
+    addToQueue({
+      channelId,
+      channelTitle: channel.title,
+      recipientEmail: channel.email,
+      subject,
+      body,
+      queuedAt: Date.now(),
+    });
+    toast.success(copy.channelDetail.queueAdded);
+  };
 
   const handleCopy = async () => {
     const text = `${copy.channelDetail.subjectPrefix(subject)}\n\n${body}`;
@@ -319,6 +342,15 @@ function DraftedView({
       <div className="flex flex-wrap gap-2">
         <Button size="sm" variant="outline" onClick={handleCopy} disabled={isPending}>
           {didCopy ? copy.channelDetail.copied : copy.channelDetail.copyToClipboard}
+        </Button>
+        <Button
+          size="sm"
+          variant={isQueued ? 'secondary' : 'outline'}
+          onClick={handleQueueToggle}
+          disabled={isPending || (!isQueued && !canQueue)}
+          title={!canQueue && !isQueued ? copy.channelDetail.addToQueueDisabledNoEmail : undefined}
+        >
+          {isQueued ? copy.channelDetail.inQueue : copy.channelDetail.addToQueue}
         </Button>
         <Button size="sm" variant="outline" onClick={handleRegenerate} disabled={isPending}>
           {isPending ? copy.channelDetail.regenerating : copy.channelDetail.regenerate}

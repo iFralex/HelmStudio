@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { LogoutButton } from '@/components/logout-button';
 import { NavLink } from '@/components/nav-link';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { OutreachQueuePanel } from '@/components/admin/outreach-queue-panel';
 import { copy } from '@/lib/ui/copy';
 import { quotaSummary } from '@/lib/youtube/dashboard';
 import { formatCompact } from '@/lib/ui/format';
@@ -41,6 +42,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </div>
       </nav>
       <main className="flex-1">{children}</main>
+      <OutreachQueuePanel />
     </div>
   );
 }

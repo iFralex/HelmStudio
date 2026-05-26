@@ -323,3 +323,24 @@ export const settings = sqliteTable('settings', {
     .notNull()
     .default(sql`(unixepoch())`),
 });
+
+// One row per .command file the admin downloads. The token is embedded in
+// the script; when the script finishes creating drafts in Mail.app it POSTs
+// back with the token so we can flip every channel's outreachStatus to
+// 'sent' in a single transaction. Idempotent: re-consuming a token is a
+// no-op (consumedAt is set on first consume).
+export const outreachBatches = sqliteTable(
+  'outreach_batches',
+  {
+    id: integer('id').primaryKey({ autoIncrement: true }),
+    token: text('token').notNull().unique(),
+    channelIds: text('channel_ids', { mode: 'json' }).notNull().$type<string[]>(),
+    createdAt: integer('created_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    consumedAt: integer('consumed_at', { mode: 'timestamp' }),
+  },
+  (t) => ({
+    idxToken: uniqueIndex('idx_outreach_batches_token').on(t.token),
+  }),
+);

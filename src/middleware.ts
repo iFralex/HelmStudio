@@ -9,9 +9,14 @@ const intlMiddleware = createIntlMiddleware(routing);
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Auth-protected zones bypass i18n routing entirely
+  // Auth-protected zones bypass i18n routing entirely. The outreach batch
+  // consume endpoint is intentionally not session-protected because it is
+  // hit by the downloaded .command bash script (no browser cookie); the
+  // endpoint validates its own one-time token instead.
   const isProtectedApi =
-    pathname.startsWith('/api/') && !pathname.startsWith('/api/auth');
+    pathname.startsWith('/api/') &&
+    !pathname.startsWith('/api/auth') &&
+    pathname !== '/api/outreach/batch/consume';
   const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/');
 
   if (isAdmin || isProtectedApi) {
