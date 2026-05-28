@@ -1,4 +1,4 @@
-import { eq, and, desc, asc, sql, gte, lte, lt, inArray, or } from 'drizzle-orm';
+import { eq, and, desc, asc, sql, gte, lte, lt, inArray, or, isNull, isNotNull } from 'drizzle-orm';
 export type { OutreachStatus, ListChannelsFilters } from './constants';
 export { ALL_OUTREACH_STATUSES } from './constants';
 import { ALL_OUTREACH_STATUSES } from './constants';
@@ -49,6 +49,19 @@ export async function getChannelById(id: string, db: Db = getDb()): Promise<Chan
   return db.select().from(channels).where(eq(channels.id, id)).get() ?? null;
 }
 
+export async function topChannelsWithoutEmail(
+  limit = 10,
+  db: Db = getDb(),
+): Promise<Channel[]> {
+  return db
+    .select()
+    .from(channels)
+    .where(and(isNull(channels.email), isNotNull(channels.latestAutomationScore)))
+    .orderBy(desc(channels.latestAutomationScore))
+    .limit(limit)
+    .all();
+}
+
 export async function findChannelByIdOrHandle(
   identifier: string,
   db: Db = getDb(),
@@ -59,8 +72,15 @@ export async function findChannelByIdOrHandle(
   const byId = db.select().from(channels).where(eq(channels.id, trimmed)).get();
   if (byId) return byId;
 
-  const normalizedHandle = trimmed.startsWith('@') ? trimmed : `@${trimmed}`;
-  return db.select().from(channels).where(eq(channels.handle, normalizedHandle)).get() ?? null;
+  // Handles may be stored with or without a leading '@'; match both forms.
+  const bare = trimmed.replace(/^@+/, '');
+  return (
+    db
+      .select()
+      .from(channels)
+      .where(or(eq(channels.handle, bare), eq(channels.handle, `@${bare}`)))
+      .get() ?? null
+  );
 }
 
 export async function listChannels(

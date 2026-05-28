@@ -54,7 +54,7 @@ import {
   addManualDraft,
   getDraftPrompt,
 } from '@/lib/services/outreach';
-import { findChannelByIdOrHandle } from '@/lib/db/queries';
+import { findChannelByIdOrHandle, topChannelsWithoutEmail } from '@/lib/db/queries';
 import { LlmFormatError } from '@/lib/llm/call';
 
 const CHANNEL_ID = 'UC_outreach_test01';
@@ -440,6 +440,62 @@ describe.skipIf(!sqlite3Available)('getDraftPrompt', () => {
   });
 });
 
+describe.skipIf(!sqlite3Available)('topChannelsWithoutEmail', () => {
+  let db: Db;
+
+  beforeEach(() => {
+    db = makeDb();
+  });
+
+  function insertChannel(
+    id: string,
+    score: number | null,
+    email: string | null,
+  ): void {
+    db.insert(schema.channels)
+      .values({ id, title: id, latestAutomationScore: score, email })
+      .run();
+  }
+
+  it('returns scored channels without an email, ordered by score desc', async () => {
+    insertChannel('UC_a', 90, null);
+    insertChannel('UC_b', 50, null);
+    insertChannel('UC_c', 70, null);
+
+    const rows = await topChannelsWithoutEmail(10, db);
+
+    expect(rows.map((r) => r.id)).toEqual(['UC_a', 'UC_c', 'UC_b']);
+  });
+
+  it('excludes channels that already have an email', async () => {
+    insertChannel('UC_a', 90, 'a@example.com');
+    insertChannel('UC_b', 50, null);
+
+    const rows = await topChannelsWithoutEmail(10, db);
+
+    expect(rows.map((r) => r.id)).toEqual(['UC_b']);
+  });
+
+  it('excludes channels with no score', async () => {
+    insertChannel('UC_a', null, null);
+    insertChannel('UC_b', 40, null);
+
+    const rows = await topChannelsWithoutEmail(10, db);
+
+    expect(rows.map((r) => r.id)).toEqual(['UC_b']);
+  });
+
+  it('honours the limit', async () => {
+    insertChannel('UC_a', 90, null);
+    insertChannel('UC_b', 80, null);
+    insertChannel('UC_c', 70, null);
+
+    const rows = await topChannelsWithoutEmail(2, db);
+
+    expect(rows.map((r) => r.id)).toEqual(['UC_a', 'UC_b']);
+  });
+});
+
 describe.skipIf(!sqlite3Available)('findChannelByIdOrHandle', () => {
   let db: Db;
 
@@ -463,6 +519,12 @@ describe.skipIf(!sqlite3Available)('findChannelByIdOrHandle', () => {
     db.insert(schema.channels).values({ id: CHANNEL_ID, title: 'T', handle: '@mychannel' }).run();
     const found = await findChannelByIdOrHandle('mychannel', db);
     expect(found!.id).toBe(CHANNEL_ID);
+  });
+
+  it('matches a handle stored without @ regardless of the @ in the query', async () => {
+    db.insert(schema.channels).values({ id: CHANNEL_ID, title: 'T', handle: 'mychannel' }).run();
+    expect((await findChannelByIdOrHandle('mychannel', db))!.id).toBe(CHANNEL_ID);
+    expect((await findChannelByIdOrHandle('@mychannel', db))!.id).toBe(CHANNEL_ID);
   });
 
   it('returns null when nothing matches', async () => {

@@ -28,6 +28,7 @@ pnpm tsx scripts/qualify-one.ts <channelId>  # force-qualify one channel already
 pnpm tsx scripts/draft-one.ts <channelId>    # generate outreach draft for a qualified channel (requires live LLM proxy)
 pnpm draft:add --channel <id|@handle> --subject "..." (--body "..." | --body-file f.txt) [--lang it|en] [--name "Mario"]  # manually add an outreach draft before an email address is entered (no LLM, no quota)
 pnpm draft:prompt --channel <id|@handle>  # print the exact LLM prompt (JSON {system, user, language}) that would generate the draft email — no LLM call, no quota
+pnpm channels:top [--limit N]  # print top N qualified channels by automation score with no email yet (best outreach leads), as JSON; default N=10
 ```
 
 ## Language convention
@@ -81,7 +82,8 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `getChannelDetail(channelId, db?)` in `src/lib/db/queries.ts` is the stable contract for the channel detail page. Returns `{ channel, videos, qualification, videoSelection, transcriptsByVideo, currentDraft, draftHistory }` or `null` if the channel doesn't exist. `transcriptsByVideo` is a `Record<videoId, Transcript | null>` covering all 20 video rows (null for videos without a transcript). Do not query the underlying tables directly from channel detail components.
 - `listRuns(opts?, db?)` in `src/lib/db/queries.ts` is the stable contract for the runs list page. Accepts `{ limit?, before? }` (before is a ms timestamp for cursor pagination); returns `PipelineRun[]` ordered by `startedAt DESC`.
 - `getRunById(id, db?)` in `src/lib/db/queries.ts` returns a single `PipelineRun | null`; used by the run detail page.
-- `findChannelByIdOrHandle(identifier, db?)` in `src/lib/db/queries.ts` resolves a channel by primary-key `id` first, then by `handle` (normalising a missing leading `@`). Used by the `add-draft` CLI; returns `Channel | null`.
+- `findChannelByIdOrHandle(identifier, db?)` in `src/lib/db/queries.ts` resolves a channel by primary-key `id` first, then by `handle` matching both the `@`-prefixed and bare forms (handles are stored WITHOUT a leading `@` in practice). Used by the `add-draft`, `show-draft-prompt`, and `top-channels` CLIs; returns `Channel | null`.
+- `topChannelsWithoutEmail(limit?, db?)` in `src/lib/db/queries.ts` returns the top channels by `latestAutomationScore DESC` that have a score (qualified) and no `email` yet — the best outreach leads still to contact. Backs the `channels:top` CLI. Default limit 10.
 - `listEventsForRun(runId, opts?, db?)` in `src/lib/db/queries.ts` returns `Array<PipelineEvent & { channelTitle: string | null }>` with optional `stage` and `channelId` filters; LEFT JOINs `channels`. Used by the run detail page events table.
 - `listKeywords(db?)`, `createKeyword(input, db?)`, `updateKeyword(id, patch, db?)`, `deleteKeyword(id, db?)` in `src/lib/db/queries.ts` are the stable CRUD contracts for seed keywords. `createKeyword` throws `KeywordAlreadyExists` (exported from the same module) on case-insensitive duplicate.
 - Schema evolution: edit schema → `pnpm db:generate` → review generated SQL → `pnpm db:migrate`.

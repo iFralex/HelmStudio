@@ -24,6 +24,7 @@
     "seed:keywords": "tsx scripts/seed-keywords.ts",
     "draft:add": "tsx scripts/add-draft.ts",
     "draft:prompt": "tsx scripts/show-draft-prompt.ts",
+    "channels:top": "tsx scripts/top-channels.ts",
     "bootstrap": "tsx scripts/bootstrap.ts",
     "worker:run": "tsx src/worker/run.ts",
     "worker:manual": "tsx src/worker/run.ts --manual",
