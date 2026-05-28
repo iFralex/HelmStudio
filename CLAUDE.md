@@ -26,6 +26,8 @@ pnpm seed:keywords             # upsert ~70 curated Italian keywords into seed_k
 pnpm tsx scripts/run-discovery.ts  # manual discovery pipeline smoke run (~3,200 quota units consumed)
 pnpm tsx scripts/qualify-one.ts <channelId>  # force-qualify one channel already in the DB (requires live LLM proxy)
 pnpm tsx scripts/draft-one.ts <channelId>    # generate outreach draft for a qualified channel (requires live LLM proxy)
+pnpm draft:add --channel <id|@handle> --subject "..." (--body "..." | --body-file f.txt) [--lang it|en] [--name "Mario"]  # manually add an outreach draft before an email address is entered (no LLM, no quota)
+pnpm draft:prompt --channel <id|@handle>  # print the exact LLM prompt (JSON {system, user, language}) that would generate the draft email — no LLM call, no quota
 ```
 
 ## Language convention
@@ -79,6 +81,7 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `getChannelDetail(channelId, db?)` in `src/lib/db/queries.ts` is the stable contract for the channel detail page. Returns `{ channel, videos, qualification, videoSelection, transcriptsByVideo, currentDraft, draftHistory }` or `null` if the channel doesn't exist. `transcriptsByVideo` is a `Record<videoId, Transcript | null>` covering all 20 video rows (null for videos without a transcript). Do not query the underlying tables directly from channel detail components.
 - `listRuns(opts?, db?)` in `src/lib/db/queries.ts` is the stable contract for the runs list page. Accepts `{ limit?, before? }` (before is a ms timestamp for cursor pagination); returns `PipelineRun[]` ordered by `startedAt DESC`.
 - `getRunById(id, db?)` in `src/lib/db/queries.ts` returns a single `PipelineRun | null`; used by the run detail page.
+- `findChannelByIdOrHandle(identifier, db?)` in `src/lib/db/queries.ts` resolves a channel by primary-key `id` first, then by `handle` (normalising a missing leading `@`). Used by the `add-draft` CLI; returns `Channel | null`.
 - `listEventsForRun(runId, opts?, db?)` in `src/lib/db/queries.ts` returns `Array<PipelineEvent & { channelTitle: string | null }>` with optional `stage` and `channelId` filters; LEFT JOINs `channels`. Used by the run detail page events table.
 - `listKeywords(db?)`, `createKeyword(input, db?)`, `updateKeyword(id, patch, db?)`, `deleteKeyword(id, db?)` in `src/lib/db/queries.ts` are the stable CRUD contracts for seed keywords. `createKeyword` throws `KeywordAlreadyExists` (exported from the same module) on case-insensitive duplicate.
 - Schema evolution: edit schema → `pnpm db:generate` → review generated SQL → `pnpm db:migrate`.
@@ -197,8 +200,12 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 
 ## Outreach draft
 
-- Entry point for UI callers is `src/lib/services/outreach.ts`. Three exported functions: `generateDraftForChannel(channelId, db?)`, `listDraftsForChannel(channelId, db?)`, `getCurrentDraft(channelId, db?)`.
+- Entry point for UI callers is `src/lib/services/outreach.ts`. Exported functions: `generateDraftForChannel(channelId, db?)`, `getDraftPrompt(channelId, db?)`, `addManualDraft(args, db?)`, `listDraftsForChannel(channelId, db?)`, `getCurrentDraft(channelId, db?)`.
 - `generateDraftForChannel` requires the channel to have a `latestQualificationId`; throws immediately otherwise. Fetches the most-recent qualification row and the 5 most-recent videos to build the prompt context.
+- Prompt-context construction is shared via the private `buildDraftContext(channelId, db)` helper (returns `{ input: DraftInput, qualificationId, language }`); both `generateDraftForChannel` and `getDraftPrompt` use it, so the inspected prompt is byte-identical to what generation would send.
+- `getDraftPrompt(channelId, db?)` returns `{ system, user, language }` — the exact system + user messages `callLLM` would send for the draft — without calling the LLM or consuming quota. The greeting/footer are NOT part of the prompt (they are appended to the response), so they are absent. The CLI `scripts/show-draft-prompt.ts` (`pnpm draft:prompt`) prints this as JSON.
+- `addManualDraft({ channelId, subject, body, language, recipientFirstName? }, db?)` inserts an operator-authored draft without calling the LLM. It runs `body` through `assembleEmail` (greeting + footer prepended/appended like the LLM path, so `body` is the email CORE only), sets `modelUsed`/`promptVersion`/`rawResponsePath` to the sentinel `'manual'`, demotes prior current drafts, logs a `draft_added_manually` event, and does NOT touch `outreachStatus`. Works on channels without a qualification (`qualificationId` is then null). The CLI `scripts/add-draft.ts` (`pnpm draft:add`) resolves the channel via `findChannelByIdOrHandle` and calls this.
+- `saveEmailAndDraft` (server action) short-circuits: if a current draft already exists for the channel (e.g. one added via `addManualDraft`), it skips LLM generation entirely, saves the email, and sets `outreachStatus='drafted'` directly. Only when no current draft exists does it run `generateDraftForChannel`.
 - Lower-level caller is `runDraftGeneration` in `src/lib/llm/draft.ts`. Uses `tier: 'fast'` model. Adds a word-count retry loop (one retry if body word count < 80 or > 250); accumulates token usage across both `callLLM` calls. Throws `LlmFormatError` if the retry still fails.
 - Subject length > 60 chars is warn-only (logged, not an error); the draft is accepted anyway.
 - `validateDraftOutput(d)` in `src/lib/llm/schemas.ts` performs the word-count check (80–250 words). Called by `runDraftGeneration` after `callLLM` returns.

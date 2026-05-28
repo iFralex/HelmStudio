@@ -47,7 +47,14 @@ function makeDb(): Db {
   return db;
 }
 
-import { generateDraftForChannel, listDraftsForChannel, getCurrentDraft } from '@/lib/services/outreach';
+import {
+  generateDraftForChannel,
+  listDraftsForChannel,
+  getCurrentDraft,
+  addManualDraft,
+  getDraftPrompt,
+} from '@/lib/services/outreach';
+import { findChannelByIdOrHandle } from '@/lib/db/queries';
 import { LlmFormatError } from '@/lib/llm/call';
 
 const CHANNEL_ID = 'UC_outreach_test01';
@@ -302,5 +309,164 @@ describe.skipIf(!sqlite3Available)('generateDraftForChannel', () => {
     const rows = await listDraftsForChannel(CHANNEL_ID, db);
     expect(rows[0]!.id).toBe(secondId);
     expect(rows[1]!.id).toBe(firstId);
+  });
+});
+
+describe.skipIf(!sqlite3Available)('addManualDraft', () => {
+  let db: Db;
+
+  beforeEach(() => {
+    mockCallLLM.mockReset();
+    db = makeDb();
+  });
+
+  it('inserts a current draft without calling the LLM, assembling greeting and footer', async () => {
+    insertFixtures(db);
+
+    const { draftId } = await addManualDraft(
+      { channelId: CHANNEL_ID, subject: 'Oggetto manuale', body: 'Corpo scritto a mano.', language: 'it' },
+      db,
+    );
+
+    expect(draftId).toBeGreaterThan(0);
+    expect(mockCallLLM).not.toHaveBeenCalled();
+
+    const row = db
+      .select()
+      .from(schema.outreachDrafts)
+      .where(eq(schema.outreachDrafts.id, draftId))
+      .get();
+
+    expect(row!.isCurrent).toBe(true);
+    expect(row!.subject).toBe('Oggetto manuale');
+    expect(row!.body.startsWith('Ciao,')).toBe(true);
+    expect(row!.body).toContain('Corpo scritto a mano.');
+    expect(row!.body).toContain('HELM Studio SRL');
+    expect(row!.modelUsed).toBe('manual');
+    expect(row!.promptVersion).toBe('manual');
+    expect(row!.rawResponsePath).toBe('manual');
+    expect(row!.qualificationId).not.toBeNull();
+  });
+
+  it('uses the recipient first name in the greeting when provided', async () => {
+    insertFixtures(db);
+
+    const { draftId } = await addManualDraft(
+      {
+        channelId: CHANNEL_ID,
+        subject: 'Ciao',
+        body: 'Testo.',
+        language: 'it',
+        recipientFirstName: 'Mario',
+      },
+      db,
+    );
+
+    const row = db
+      .select()
+      .from(schema.outreachDrafts)
+      .where(eq(schema.outreachDrafts.id, draftId))
+      .get();
+
+    expect(row!.body.startsWith('Ciao Mario,')).toBe(true);
+  });
+
+  it('demotes the previous current draft', async () => {
+    insertFixtures(db);
+
+    const { draftId: firstId } = await addManualDraft(
+      { channelId: CHANNEL_ID, subject: 'A', body: 'uno', language: 'it' },
+      db,
+    );
+    const { draftId: secondId } = await addManualDraft(
+      { channelId: CHANNEL_ID, subject: 'B', body: 'due', language: 'it' },
+      db,
+    );
+
+    const first = db.select().from(schema.outreachDrafts).where(eq(schema.outreachDrafts.id, firstId)).get();
+    const second = db.select().from(schema.outreachDrafts).where(eq(schema.outreachDrafts.id, secondId)).get();
+
+    expect(first!.isCurrent).toBe(false);
+    expect(second!.isCurrent).toBe(true);
+  });
+
+  it('works for a channel without a qualification (qualificationId null)', async () => {
+    insertFixtures(db, { skipQualification: true });
+
+    const { draftId } = await addManualDraft(
+      { channelId: CHANNEL_ID, subject: 'No qual', body: 'testo', language: 'en' },
+      db,
+    );
+
+    const row = db.select().from(schema.outreachDrafts).where(eq(schema.outreachDrafts.id, draftId)).get();
+    expect(row!.qualificationId).toBeNull();
+    expect(row!.language).toBe('en');
+  });
+
+  it('throws when the channel does not exist', async () => {
+    await expect(
+      addManualDraft({ channelId: 'nope', subject: 's', body: 'b', language: 'it' }, db),
+    ).rejects.toThrow(/channel not found/i);
+  });
+});
+
+describe.skipIf(!sqlite3Available)('getDraftPrompt', () => {
+  let db: Db;
+
+  beforeEach(() => {
+    mockCallLLM.mockReset();
+    db = makeDb();
+  });
+
+  it('returns system + user prompt without calling the LLM', async () => {
+    insertFixtures(db);
+
+    const { system, user, language } = await getDraftPrompt(CHANNEL_ID, db);
+
+    expect(mockCallLLM).not.toHaveBeenCalled();
+    expect(system.length).toBeGreaterThan(0);
+    expect(user).toContain('Test Channel');
+    expect(language).toBe('it');
+  });
+
+  it('throws when the channel has no qualification', async () => {
+    insertFixtures(db, { skipQualification: true });
+
+    await expect(getDraftPrompt(CHANNEL_ID, db)).rejects.toThrow(/no qualification/i);
+  });
+
+  it('throws when the channel does not exist', async () => {
+    await expect(getDraftPrompt('non_existent_ch', db)).rejects.toThrow(/channel not found/i);
+  });
+});
+
+describe.skipIf(!sqlite3Available)('findChannelByIdOrHandle', () => {
+  let db: Db;
+
+  beforeEach(() => {
+    db = makeDb();
+  });
+
+  it('finds a channel by id', async () => {
+    db.insert(schema.channels).values({ id: CHANNEL_ID, title: 'T', handle: '@mychannel' }).run();
+    const found = await findChannelByIdOrHandle(CHANNEL_ID, db);
+    expect(found!.id).toBe(CHANNEL_ID);
+  });
+
+  it('finds a channel by handle with the @ prefix', async () => {
+    db.insert(schema.channels).values({ id: CHANNEL_ID, title: 'T', handle: '@mychannel' }).run();
+    const found = await findChannelByIdOrHandle('@mychannel', db);
+    expect(found!.id).toBe(CHANNEL_ID);
+  });
+
+  it('finds a channel by handle without the @ prefix', async () => {
+    db.insert(schema.channels).values({ id: CHANNEL_ID, title: 'T', handle: '@mychannel' }).run();
+    const found = await findChannelByIdOrHandle('mychannel', db);
+    expect(found!.id).toBe(CHANNEL_ID);
+  });
+
+  it('returns null when nothing matches', async () => {
+    const found = await findChannelByIdOrHandle('unknown', db);
+    expect(found).toBeNull();
   });
 });

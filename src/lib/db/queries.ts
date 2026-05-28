@@ -49,6 +49,20 @@ export async function getChannelById(id: string, db: Db = getDb()): Promise<Chan
   return db.select().from(channels).where(eq(channels.id, id)).get() ?? null;
 }
 
+export async function findChannelByIdOrHandle(
+  identifier: string,
+  db: Db = getDb(),
+): Promise<Channel | null> {
+  const trimmed = identifier.trim();
+  if (!trimmed) return null;
+
+  const byId = db.select().from(channels).where(eq(channels.id, trimmed)).get();
+  if (byId) return byId;
+
+  const normalizedHandle = trimmed.startsWith('@') ? trimmed : `@${trimmed}`;
+  return db.select().from(channels).where(eq(channels.handle, normalizedHandle)).get() ?? null;
+}
+
 export async function listChannels(
   opts: ListChannelsOpts = {},
   db: Db = getDb(),

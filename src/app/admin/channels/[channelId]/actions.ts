@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { forceRequalifyChannel } from '@/lib/pipeline/qualification';
-import { generateDraftForChannel } from '@/lib/services/outreach';
+import { generateDraftForChannel, getCurrentDraft } from '@/lib/services/outreach';
 import { getDb } from '@/lib/db/client';
 import { channels, outreachDrafts, pipelineEvents } from '@/lib/db/schema';
 import { deleteRawForChannel } from '@/lib/storage/raw';
@@ -59,6 +59,24 @@ export async function saveEmailAndDraft(formData: FormData): Promise<void> {
 
   const { channelId, email } = parsed.data;
   const db = getDb();
+
+  const existingDraft = await getCurrentDraft(channelId, db);
+  if (existingDraft) {
+    logger.info({ channelId, email, draftId: existingDraft.id }, 'saving email; reusing existing draft');
+    db.transaction((tx) => {
+      tx.update(channels)
+        .set({ email, outreachStatus: 'drafted', emailAddedAt: new Date() })
+        .where(eq(channels.id, channelId))
+        .run();
+      tx.insert(pipelineEvents)
+        .values({ channelId, stage: 'meta', level: 'info', event: 'email_saved', details: { email } })
+        .run();
+    });
+    revalidatePath(`/admin/channels/${channelId}`);
+    revalidatePath('/admin/channels');
+    return;
+  }
+
   logger.info({ channelId, email }, 'saving email and generating draft');
 
   db.transaction((tx) => {

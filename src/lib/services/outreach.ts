@@ -1,13 +1,14 @@
 import { and, desc, eq, inArray } from 'drizzle-orm';
 import { getDb } from '@/lib/db/client';
-import { outreachDrafts, transcripts, videos } from '@/lib/db/schema';
+import { outreachDrafts, pipelineEvents, transcripts, videos } from '@/lib/db/schema';
 import {
   getChannelById,
   getQualificationById,
   getCurrentDraft as queryGetCurrentDraft,
 } from '@/lib/db/queries';
 import type { OutreachDraft } from '@/lib/db/queries';
-import { runDraftGeneration } from '@/lib/llm/draft';
+import { assembleEmail, runDraftGeneration } from '@/lib/llm/draft';
+import { system as draftSystem, userTemplate as draftUserTemplate } from '@/lib/llm/prompts/draft';
 import type { DraftInput, HookVideo } from '@/lib/llm/prompts/draft';
 import type { QualifyOutput } from '@/lib/llm/schemas';
 import type { ChannelDetail, VideoDetail } from '@/lib/youtube/types';
@@ -141,10 +142,10 @@ function rowToQualifyOutput(
   };
 }
 
-export async function generateDraftForChannel(
+async function buildDraftContext(
   channelId: string,
-  db: Db = getDb(),
-): Promise<{ draftId: number; subject: string; body: string; language: 'it' | 'en' }> {
+  db: Db,
+): Promise<{ input: DraftInput; qualificationId: number; language: 'it' | 'en' }> {
   const channel = await getChannelById(channelId, db);
   if (!channel) throw new Error(`Channel not found: ${channelId}`);
 
@@ -192,7 +193,7 @@ export async function generateDraftForChannel(
   const hookVideo = pickHookVideo(channelId, recentVideos, qualification.signals, db);
   const recipientFirstName = resolveRecipientFirstName(channelDetail, qualification);
 
-  const draftInput: DraftInput = {
+  const input: DraftInput = {
     channel: channelDetail,
     qualification,
     recentVideos,
@@ -201,12 +202,82 @@ export async function generateDraftForChannel(
     language,
   };
 
+  return { input, qualificationId: qualRow.id, language };
+}
+
+export async function generateDraftForChannel(
+  channelId: string,
+  db: Db = getDb(),
+): Promise<{ draftId: number; subject: string; body: string; language: 'it' | 'en' }> {
+  const { input, qualificationId, language } = await buildDraftContext(channelId, db);
+
   const { draftId, output } = await runDraftGeneration(
-    { channelId, qualificationId: qualRow.id, input: draftInput },
+    { channelId, qualificationId, input },
     db,
   );
 
   return { draftId, subject: output.subject, body: output.body, language };
+}
+
+export async function getDraftPrompt(
+  channelId: string,
+  db: Db = getDb(),
+): Promise<{ system: string; user: string; language: 'it' | 'en' }> {
+  const { input, language } = await buildDraftContext(channelId, db);
+  return { system: draftSystem, user: draftUserTemplate(input), language };
+}
+
+export async function addManualDraft(
+  args: {
+    channelId: string;
+    subject: string;
+    body: string;
+    language: 'it' | 'en';
+    recipientFirstName?: string | null;
+  },
+  db: Db = getDb(),
+): Promise<{ draftId: number }> {
+  const { channelId, subject, body, language, recipientFirstName = null } = args;
+
+  const channel = await getChannelById(channelId, db);
+  if (!channel) throw new Error(`Channel not found: ${channelId}`);
+
+  const assembledBody = assembleEmail(body, recipientFirstName, language);
+
+  const draftId = db.transaction((tx) => {
+    tx.update(outreachDrafts)
+      .set({ isCurrent: false })
+      .where(and(eq(outreachDrafts.channelId, channelId), eq(outreachDrafts.isCurrent, true)))
+      .run();
+
+    const row = tx
+      .insert(outreachDrafts)
+      .values({
+        channelId,
+        qualificationId: channel.latestQualificationId ?? null,
+        language,
+        subject,
+        body: assembledBody,
+        modelUsed: 'manual',
+        promptVersion: 'manual',
+        inputTokens: null,
+        outputTokens: null,
+        costUsd: null,
+        rawResponsePath: 'manual',
+        isCurrent: true,
+      })
+      .returning({ id: outreachDrafts.id })
+      .get()!;
+
+    tx.insert(pipelineEvents)
+      .values({ channelId, stage: 'meta', level: 'info', event: 'draft_added_manually' })
+      .run();
+
+    return row.id;
+  });
+
+  logger.info({ channelId, draftId }, 'manual outreach draft added');
+  return { draftId };
 }
 
 export async function listDraftsForChannel(
