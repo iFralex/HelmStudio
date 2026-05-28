@@ -3,7 +3,7 @@ import { config as loadDotenv } from 'dotenv';
 
 // Load .env in non-production; in production, env vars are injected by the host OS
 if (process.env.NODE_ENV !== 'production') {
-  loadDotenv();
+  loadDotenv({ quiet: true });
 }
 
 const EnvSchema = z.object({

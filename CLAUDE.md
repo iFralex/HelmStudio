@@ -213,6 +213,7 @@ All user-facing UI strings must be in Italian. All code identifiers, comments, l
 - `validateDraftOutput(d)` in `src/lib/llm/schemas.ts` performs the word-count check (80–250 words). Called by `runDraftGeneration` after `callLLM` returns.
 - DB: `outreach_drafts` table (schema in `src/lib/db/schema.ts`). Only one draft per channel has `isCurrent=true`; `runDraftGeneration` demotes all previous current drafts inside a SQLite transaction before inserting the new row.
 - `getCurrentDraft(channelId, db?)` in `src/lib/db/queries.ts` is the stable query contract for UI consumption.
+- Draft language comes from `qualifications.pitchLanguage`, which is set at qualify time via `pitchLanguageForCountry(channel.country)` in `src/lib/outreach/pitch-language.ts` (`'IT'` or unknown country → `it`, else `en`). NOTE: `pitchAngle`/`suggestedSolution` are intentionally always written in English by the qualify prompt (internal context only) — only `pitchLanguage` controls the actual email language. Run `pnpm backfill:pitch-language` to recompute the field on existing qualifications (older rows had a hardcoded `'en'`).
 - Outreach draft tests conditionally skip DB-dependent cases when `better-sqlite3` native bindings cannot load — same pattern as other DB-dependent tests.
 
 ## Qualification pipeline

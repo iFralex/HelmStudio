@@ -16,6 +16,7 @@ import {
 import { truncateMiddle } from './tokens';
 import { LlmBusinessRuleError } from './call';
 import { logger } from '@/lib/logger';
+import { pitchLanguageForCountry } from '@/lib/outreach/pitch-language';
 
 type Db = ReturnType<typeof getDb>;
 
@@ -148,7 +149,7 @@ export async function runFinalQualification(
       automatableWorkflows: output.automatableWorkflows,
       suggestedSolution: output.suggestedSolution,
       pitchAngle: output.pitchAngle,
-      pitchLanguage: 'en',
+      pitchLanguage: pitchLanguageForCountry(input.channel.country),
       signals: output.signals,
       disqualifiers: output.disqualifiers,
       disqualifierScoreImpact: output.disqualifierScoreImpact,
