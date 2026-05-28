@@ -81,7 +81,6 @@ export function OutreachQueuePanel() {
         clear();
         setOpen(false);
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.error('outreach batch download failed', err);
         toast.error(copy.outreachQueue.downloadError);
       }

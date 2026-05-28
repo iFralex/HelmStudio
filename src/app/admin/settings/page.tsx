@@ -75,6 +75,7 @@ export default async function SettingsPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">{copy.settings.exportTitle}</h2>
         <p className="text-sm text-muted-foreground">{copy.settings.exportDescription}</p>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- API route CSV download, not a page navigation */}
         <a
           href="/api/channels/export"
           className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
